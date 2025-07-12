@@ -1,0 +1,198 @@
+import React, { useRef, useEffect } from 'react';
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Alert,
+  Animated
+} from 'react-native';
+import { gstyles } from '../styles/gstyles';
+import { storeData } from "../components/LocalStorage"
+import { login } from '../api/MH/login';
+import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  Home: undefined;
+};
+
+const Login = () => {
+  const loginRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+  const [logins, setLogin] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [anim] = React.useState(new Animated.Value(0));
+
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Home'>>();
+
+  const Save = () => {
+    if (!logins.trim()) {
+      Alert.alert('Помилка', 'Будь ласка, введіть логін');
+      return;
+    }
+    if (!password.trim()) {
+      Alert.alert('Помилка', 'Будь ласка, введіть пароль');
+      return;
+    }
+
+    login(logins, password).then((data) => {
+      storeData("login", logins);
+      storeData("password", password);
+      alert('Ви успішно увійшли!');
+      navigation.navigate('Home');
+    }).catch((e) => {
+      Alert.alert('Помилка', 'Сервер не відповідає');
+      console.error(e);
+    });
+  };
+
+  useEffect(() => {
+    Animated.timing(anim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+    loginRef.current?.focus();
+  }, []);
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1, backgroundColor: '#f7f7fa' }}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Animated.View style={{
+          ...styles.wrapper,
+          opacity: anim,
+          transform: [
+            { scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
+            { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [40, 0] }) }
+          ]
+        }}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../assets/Icons/icon.png')}
+              resizeMode="contain"
+              style={styles.logo}
+            />
+            <Text style={styles.title}>FastShark</Text>
+            <Text style={styles.subtitle}>Пірнай у нормальний клієнт моєї школи</Text>
+          </View>
+          <View style={styles.form}>
+            <TextInput
+              ref={loginRef}
+              style={styles.input}
+              placeholder="Логін"
+              placeholderTextColor="#b0b3b8"
+              returnKeyType="next"
+              value={logins}
+              onChangeText={setLogin}
+              autoCapitalize="none"
+            />
+            <TextInput
+              ref={passwordRef}
+              style={styles.input}
+              placeholder="Пароль"
+              placeholderTextColor="#b0b3b8"
+              secureTextEntry
+              returnKeyType="done"
+              value={password}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity style={styles.button} onPress={Save}>
+              <Text style={styles.buttonText}>Увійти</Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+};
+
+const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    backgroundColor: '#f7f7fa',
+  },
+  wrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+    backgroundColor: '#f7f7fa',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 32,
+    marginTop: 10,
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    borderRadius: 32,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#222',
+    marginBottom: 2,
+    letterSpacing: 0.5,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#888',
+    marginTop: 2,
+    marginBottom: 10,
+  },
+  form: {
+    width: '90%',
+    alignSelf: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOpacity: 0.07,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  input: {
+    backgroundColor: '#f2f2f7',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 18,
+    fontSize: 17,
+    color: '#222',
+    borderColor: '#e5e5ea',
+    borderWidth: 1,
+  },
+  button: {
+    backgroundColor: '#007aff',
+    paddingVertical: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 8,
+    shadowColor: '#007aff',
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 17,
+    letterSpacing: 0.2,
+  },
+});
+
+export default Login;
