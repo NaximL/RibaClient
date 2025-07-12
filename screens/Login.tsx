@@ -37,23 +37,23 @@ const Login = () => {
   const Save = () => {
     setLogin(del(logins));
     setPassword(del(password));
-    
+
     if (!logins.trim()) {
-      Alert.alert('Помилка', 'Будь ласка, введіть логін');
+      alert('Будь ласка, введіть логін');
       return;
     }
     if (!password.trim()) {
-      Alert.alert('Помилка', 'Будь ласка, введіть пароль');
+      alert('Будь ласка, введіть пароль');
       return;
     }
 
     GetAllData(logins, password).then(() => {
       storeData("login", logins);
       storeData("password", password);
-      Alert.alert('Успіх', 'Ви успішно увійшли!');
+      alert('Ви успішно увійшли!');
       navigation.replace('App');
     }).catch((e) => {
-      Alert.alert('Помилка', 'Сервер не відповідає');
+      alert('Невірний логін або пароль');
       console.error(e);
     });
   };
