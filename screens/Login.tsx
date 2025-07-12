@@ -28,8 +28,16 @@ const Login = () => {
   const [anim] = React.useState(new Animated.Value(0));
 
   const navigation = useNavigation<NavigationProp>();
-
+  function del(str: string): string {
+    if (str.endsWith(' ')) {
+      return str.slice(0, -1);
+    }
+    return str;
+  }
   const Save = () => {
+    setLogin(del(logins));
+    setPassword(del(password));
+    
     if (!logins.trim()) {
       Alert.alert('Помилка', 'Будь ласка, введіть логін');
       return;
