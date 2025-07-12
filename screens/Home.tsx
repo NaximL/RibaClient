@@ -13,6 +13,7 @@ import useProfileStore from '../store/ProfileStore';
 import { GetProfil } from '../api/MH/GetProfil';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { GetAllData } from '../api/MH/GetAlldata';
 
 export default function Home() {
   const load = useLoadingStore((state) => state.load);
@@ -29,6 +30,9 @@ export default function Home() {
   const setProfile = useProfileStore((state) => state.setProfile);
 
   const [Menu, setMenu] = useState<Array<any> | []>([]);
+
+
+
 
   const [Lesion, setLesion] = useState<string | ''>("");
   const [mis, setMis] = useState<number | null>(null);
@@ -72,34 +76,45 @@ export default function Home() {
       const logins: string | null = await getData("login");
       const password: string | null = await getData("password");
       if (logins !== null && password !== null) {
-        login(logins, password).then((data) => {
-          console.log(data);
-          setBal(data[14]);
-          setMis(data[15]);
-          setPovidok(data[10]);
-          setLoad(!load);
 
+        GetAllData(logins, password).then((MHDATA) => {
 
-        });
-        GetLesion(logins, password, true).then((data) => {
-          setLesion(data)
-        })
-        GetLesion(logins, password, false).then((data) => {
-          setLesions(data)
-        })
+          const HomePage = MHDATA[0];
+          const HomeWork = MHDATA[1];
+          const Lesions = MHDATA[2];
+          const ProfilUser = MHDATA[3];
 
-        GetHomeWork(logins, password).then((list) => {
-          if (list && Array.isArray(list.value)) {
-            setHomeWork(list.value);
+          setBal(HomePage[14]);
+          setMis(HomePage[15]);
+          setPovidok(HomePage[10]);
+          setLesions(Lesions)
+          setProfile(ProfilUser)
+          
+          if (HomeWork && Array.isArray(HomeWork.value)) {
+            setHomeWork(HomeWork.value);
           } else {
             setHomeWork([]);
           }
+
+          GetLesion(Lesions).then((data) => {
+            setLesion(data)
+          })
+
+          setLoad(!load);
         });
 
-        GetProfil(logins, password).then((data) => {
-          console.log(data);
-          setProfile(data)
-        })
+        // GetLesion(logins, password, true).then((data) => {
+        //   setLesion(data)
+        // })
+        // GetLesion(logins, password, false).then((data) => {
+        //   setLesions(data)
+        // })
+
+
+        // GetProfil(logins, password).then((data) => {
+        //   console.log(data);
+        //   setProfile(data)
+        // })
 
       }
     };

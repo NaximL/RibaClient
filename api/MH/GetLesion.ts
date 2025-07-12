@@ -4,20 +4,7 @@ import { SERVER_URL } from "../../config/config";
 
 
 
-export async function GetLesion(username:string, password:string,math:boolean) {
-  const res = await fetch(`${SERVER_URL}/api/rozklad`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  });
-
-  if (!res.ok) {
-    const data = await res.json();
-    throw new Error(data.message || "Ошибка при логине");
-  }
-  const fs = await res.json();
+export async function GetLesion(fs:Array<any>) {
   let rozkl = '';
   try {
     const now = new Date();
@@ -50,11 +37,7 @@ export async function GetLesion(username:string, password:string,math:boolean) {
     rozkl = 'Не вдалося отримати розклад.';
   }
  
-  if (math) {
-    return rozkl;
-  }
-  else {
-    return fs;
-  }
+  
+  return rozkl;
 }
 

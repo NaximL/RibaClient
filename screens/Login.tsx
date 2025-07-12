@@ -12,15 +12,13 @@ import {
   Alert,
   Animated
 } from 'react-native';
-import { gstyles } from '../styles/gstyles';
 import { storeData } from "../components/LocalStorage"
-import { login } from '../api/MH/login';
+import { GetAllData } from '../api/MH/GetAlldata';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../router';
 
-type RootStackParamList = {
-  Home: undefined;
-};
+type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const Login = () => {
   const loginRef = useRef<TextInput>(null);
@@ -29,7 +27,7 @@ const Login = () => {
   const [password, setPassword] = React.useState('');
   const [anim] = React.useState(new Animated.Value(0));
 
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Home'>>();
+  const navigation = useNavigation<NavigationProp>();
 
   const Save = () => {
     if (!logins.trim()) {
@@ -41,11 +39,11 @@ const Login = () => {
       return;
     }
 
-    login(logins, password).then((data) => {
+    GetAllData(logins, password).then(() => {
       storeData("login", logins);
       storeData("password", password);
-      alert('Ви успішно увійшли!');
-      navigation.navigate('Home');
+      Alert.alert('Успіх', 'Ви успішно увійшли!');
+      navigation.replace('App');
     }).catch((e) => {
       Alert.alert('Помилка', 'Сервер не відповідає');
       console.error(e);

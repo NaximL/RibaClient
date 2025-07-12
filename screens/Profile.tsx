@@ -7,28 +7,33 @@ import { getData, removeData } from '../components/LocalStorage';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../router';
+import { VERSION } from '../config/config';
+
+
 
 export default function Profile() {
-  const navigation = useNavigation<any>();
+  type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const Profile = useProfileStore((state) => state.Prof);
   const Bal = useBalStore((state) => state.bal);
-
+  const navigation = useNavigation<NavigationProp>();
   const [login, setLogin] = React.useState<string | null>(null);
   const [anim] = React.useState(new Animated.Value(0));
-    useFocusEffect(
-        useCallback(() => {
-            anim.setValue(0);
-            Animated.timing(anim, {
-                toValue: 1,
-                duration: 500,
-                useNativeDriver: true,
-            }).start();
-     
-     
-        }, [])
-    );
+  useFocusEffect(
+    useCallback(() => {
+      anim.setValue(0);
+      Animated.timing(anim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
 
-  
+
+    }, [])
+  );
+
+
   useEffect(() => {
     Animated.timing(anim, {
       toValue: 1,
@@ -39,9 +44,7 @@ export default function Profile() {
   }, []);
   const logout = async () => {
     await removeData('login');
-    navigation.reset({
-      index: 0,
-    });
+    navigation.replace('Login');
   };
 
   return (
@@ -69,25 +72,21 @@ export default function Profile() {
             <Text style={styles.avatarIcon}>🧑‍🎓</Text>
           </View>
           <Text style={styles.profileName}>{Profile.entext[0]}</Text>
-          <Text style={styles.profileInfo}>{` ${Profile.entext[15]} • ${Profile.entext[22]} `}</Text>
+          <Text style={styles.profileInfo}>{` ${Profile.entext[15]} • ${Profile.entext[Profile.entext.length - 7]} `}</Text>
         </View>
         <View style={styles.card}>
           <View style={styles.cardSection}>
             <Text style={styles.cardTitle}>Логін</Text>
             <View style={styles.row}>
               <Text style={styles.cardValue}>{login}</Text>
-              <TouchableOpacity>
-                <Text style={styles.link}>Змінити логін</Text>
-              </TouchableOpacity>
+
             </View>
           </View>
           <View>
             <Text style={styles.cardTitle}>{ }</Text>
             <View style={styles.row}>
               <Text style={styles.cardValue}>********</Text>
-              <TouchableOpacity>
-                <Text style={styles.link}>Змінити пароль</Text>
-              </TouchableOpacity>
+
             </View>
           </View>
         </View>
@@ -149,6 +148,8 @@ export default function Profile() {
         <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
           <Text style={styles.logoutText}>Вийти</Text>
         </TouchableOpacity>
+        <Text style={styles.versionText}>{VERSION}</Text>
+
       </Animated.View>
     </ScrollView>
   )
@@ -278,6 +279,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 2,
+  },
+  versionText: {
+    color: '#888',
+    fontSize: 16,
+    textAlign: 'center',
+
+    marginTop: 20,
   },
   logoutText: { color: '#d21919', fontSize: 16, fontWeight: '600' },
 });
