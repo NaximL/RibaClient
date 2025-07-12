@@ -13,25 +13,30 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.maixm.fastshark"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.maixm.fastshark"
     },
     "web": {
       "favicon": "./assets/icons/icon.png"
     },
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "extra": {
       "eas": {
         "projectId": "f04a5084-27eb-4053-9b97-e8a020671b68"
       }
     },
-
     "owner": "maixm"
   }
 }
