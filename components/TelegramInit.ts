@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
+
 export {};
 
 declare global {
@@ -36,36 +37,39 @@ declare global {
     Telegram?: TelegramGlobal;
   }
 }
+
 export default function TelegramInit() {
   useEffect(() => {
-    
+    // Работает только на web
     if (Platform.OS !== 'web') return;
 
-    
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isTelegram = userAgent.includes('telegram');
-
-    if (!isTelegram) {
-      console.log('❌ Не в Telegram Mini App');
-      return;
-    }
-
-    
     const script = document.createElement('script');
     script.src = 'https://telegram.org/js/telegram-web-app.js';
     script.async = true;
-    document.body.appendChild(script);
 
     script.onload = () => {
       const tg = window.Telegram?.WebApp;
-      if (tg) {
-        tg.ready();
-        tg.setBackgroundColor('#f2f4f8');
-        console.log('✅ Telegram WebApp SDK ініціалізовано');
-      } else {
-        console.warn('⚠️ Telegram.WebApp не знайдено');
+
+      // Проверяем, что Telegram.WebApp реально существует и у него есть initData
+      if (!tg || !tg.initData) {
+        console.warn('❌ Не в Telegram Mini App — initData отсутствует');
+        return;
       }
+
+      tg.ready();
+      tg.setBackgroundColor('#f2f4f8');
+
+      // 👉 Запускаем полноэкранный режим
+      if (!tg.isExpanded) {
+        tg.expand();
+        console.log('🖥️ Telegram WebApp expanded to fullscreen');
+      }
+
+      console.log('✅ Telegram WebApp SDK ініціалізовано');
+      console.log('📦 initData:', tg.initData);
     };
+
+    document.body.appendChild(script);
   }, []);
 
   return null;
