@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Animated, Platform } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Animated, Platform,Image } from 'react-native'
 import useBalStore from '../store/BalStore';
 import useProfileStore from '../store/ProfileStore';
 import { gstyles } from '../styles/gstyles';
@@ -69,7 +69,7 @@ export default function Profile() {
       >
         <View style={styles.profileBlock}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarIcon}>🧑‍🎓</Text>
+            <Image style={styles.avatarIcon} source={require("@emoji/Student.png")} />
           </View>
           <Text style={styles.profileName}>{Profile.entext[0]}</Text>
           <Text style={styles.profileInfo}>{` ${Profile.entext[15]} • ${Profile.entext[Profile.entext.length - 7]} `}</Text>
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-  avatarIcon: { fontSize: 48 },
+  avatarIcon: { width:48,height:48 },
   profileName: { fontSize: 26, fontWeight: '700', color: '#222' },
   profileInfo: { color: '#888', fontSize: 16 },
   card: {

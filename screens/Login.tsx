@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../router';
 import { ISPROD } from 'config/config';
+import UseErrorStore from '@store/Error';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -27,6 +28,7 @@ const Login = () => {
   const [logins, setLogin] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [anim] = React.useState(new Animated.Value(0));
+  const seterrors = UseErrorStore((state) => state.setError);
 
   const navigation = useNavigation<NavigationProp>();
   function del(str: string): string {
@@ -66,6 +68,7 @@ const Login = () => {
         .then(response => response.json())
         .then(data => {
           if (data[0]?.status === true) {
+            seterrors(data[0])
             navigation.replace('Stop');
           }
         })

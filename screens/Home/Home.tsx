@@ -22,6 +22,7 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router';
 import { useNavigation } from '@react-navigation/native';
 import { ISPROD } from 'config/config';
+import UseErrorStore from '@store/Error';
 
 export default function Home() {
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
@@ -30,6 +31,8 @@ export default function Home() {
   const load = useLoadingStore((state) => state.load);
   const setLoad = useLoadingStore((state) => state.setLoad);
 
+
+  const seterrors = UseErrorStore((state) => state.setError);
 
   const Bal = useBalStore((state) => state.bal);
   const setBal = useBalStore((state) => state.setBal);
@@ -85,16 +88,18 @@ export default function Home() {
 
   useEffect(() => {
     if (ISPROD) {
-    fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
-      .then(response => response.json())
-      .then(data => {
-        if (data[0]?.status === true) {
-          navigation.replace('Login');
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      })
+      fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
+        .then(response => response.json())
+        .then(data => {
+          if (data[0]?.status === true) {
+            
+            seterrors(data[0])
+            navigation.replace('Stop');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        })
     }
 
 

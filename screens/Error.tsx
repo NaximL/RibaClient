@@ -6,12 +6,15 @@ import {
   Animated,
   ScrollView,
   ActivityIndicator,
+  Image
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import UseErrorStore from '@store/Error';
 
 export default function Stop() {
   const navigation = useNavigation();
+  const error = UseErrorStore((state) => state.errors);
 
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState<string>('Помилка');
@@ -29,22 +32,11 @@ export default function Stop() {
   }, [cardAnim]);
 
   useEffect(() => {
-    fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
-      .then((response) => response.json())
-      .then((data) => {
-        if (data[0]?.status === true) {
-          setTitle(data[0].title || 'Помилка');
-          setLabel(data[0].label || 'Будь ласка, спробуйте пізніше');
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      })
-      .finally(() => {
-        setLoading(false);
-        animateCard();
-      });
-  }, [animateCard]);
+    setTitle(error.name || 'Помилка');
+    setLabel(error.label || 'Будь ласка, спробуйте пізніше');
+    setLoading(false);
+    animateCard();
+  }, [animateCard, error]);
 
   if (loading) {
     return (
@@ -78,7 +70,10 @@ export default function Stop() {
           },
         ]}
       >
-        <Text style={styles.icon}>⚠️</Text>
+        <Image
+          source={require("@emoji/Warning.png")}
+          style={styles.icon}
+        />
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.label}>{label}</Text>
       </Animated.View>
@@ -117,7 +112,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   icon: {
-    fontSize: 50,
+    width:50,
+    height:50,
     marginBottom: 20,
   },
   title: {
