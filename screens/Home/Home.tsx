@@ -21,6 +21,7 @@ import Widget from './components/Widget';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router';
 import { useNavigation } from '@react-navigation/native';
+import { ISPROD } from 'config/config';
 
 export default function Home() {
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
@@ -83,7 +84,7 @@ export default function Home() {
   }, [load]);
 
   useEffect(() => {
-
+    if (ISPROD) {
     fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
       .then(response => response.json())
       .then(data => {
@@ -94,7 +95,7 @@ export default function Home() {
       .catch(error => {
         console.error('Error fetching data:', error);
       })
-
+    }
 
 
     const fetchData = async () => {

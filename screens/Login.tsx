@@ -17,6 +17,7 @@ import { GetAllData } from '../api/MH/GetAlldata';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../router';
+import { ISPROD } from 'config/config';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -59,18 +60,20 @@ const Login = () => {
   };
 
   useEffect(() => {
+    if (ISPROD) {
 
-        fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
-          .then(response => response.json())
-          .then(data => {
-            if (data[0]?.status === true) {
-              navigation.replace('Stop');
-            }
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          })
-    
+      fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
+        .then(response => response.json())
+        .then(data => {
+          if (data[0]?.status === true) {
+            navigation.replace('Stop');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        })
+    }
+
     Animated.timing(anim, {
       toValue: 1,
       duration: 500,
