@@ -38,7 +38,7 @@ const Schedule = () => {
                 duration: 500,
                 useNativeDriver: true,
             }).start();
-       
+
         }, [])
     );
 
@@ -50,6 +50,7 @@ const Schedule = () => {
         }));
     };
     useEffect(() => {
+
         let d = Lesion;
         d.pop()
         d.pop()
@@ -70,39 +71,42 @@ const Schedule = () => {
                     { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [40, 0] }) }
                 ]
             }}>
-                {Array.isArray(Le) && Le.map((day: ScheduleDay, index: number) => (
-                    <View key={index} style={styles.daySection}>
-                        <TouchableOpacity
-                            onPress={() => toggleDay(index)}
-                            style={[
-                                styles.dayHeader,
-                                openDays[index] && styles.dayHeaderActive,
-                            ]}
-                            activeOpacity={0.85}
-                        >
-                            <Text style={styles.dayTitle}>
-                                {daysOfWeek[index] || `День ${index + 1}`}
-                            </Text>
-                            <Text style={styles.arrow}>
-                                {openDays[index] ? "▲" : "▼"}
-                            </Text>
-                        </TouchableOpacity>
-                        {openDays[index] && (
-                            <View style={styles.cardsWrapper}>
-                                {day.map((urok: Lesson, lessonIndex: number) => (
-                                    <View key={lessonIndex} style={styles.card}>
-                                        <View style={styles.cardHeader}>
-                                            <Text style={styles.lessonTitle}>{urok.urok}</Text>
-                                            <Text style={styles.timeValue}>{urok.time}</Text>
-                                        </View>
-                                    </View>
-                                ))}
-                            </View>
-                        )}
-                    </View>
-                ))}
-                {Array.isArray(Lesion) && Lesion.length === 0 && (
+                { Lesion.length === 0 || Lesion[0].length === 0 ? (
                     <Text style={styles.emptyText}>На даний момент уроків немає.</Text>
+                ): (
+                <>
+                    {Array.isArray(Le) && Le.map((day: ScheduleDay, index: number) => (
+                        <View key={index} style={styles.daySection}>
+                            <TouchableOpacity
+                                onPress={() => toggleDay(index)}
+                                style={[
+                                    styles.dayHeader,
+                                    openDays[index] && styles.dayHeaderActive,
+                                ]}
+                                activeOpacity={0.85}
+                            >
+                                <Text style={styles.dayTitle}>
+                                    {daysOfWeek[index] || `День ${index + 1}`}
+                                </Text>
+                                <Text style={styles.arrow}>
+                                    {openDays[index] ? "▲" : "▼"}
+                                </Text>
+                            </TouchableOpacity>
+                            {openDays[index] && (
+                                <View style={styles.cardsWrapper}>
+                                    {day.map((urok: Lesson, lessonIndex: number) => (
+                                        <View key={lessonIndex} style={styles.card}>
+                                            <View style={styles.cardHeader}>
+                                                <Text style={styles.lessonTitle}>{urok.urok}</Text>
+                                                <Text style={styles.timeValue}>{urok.time}</Text>
+                                            </View>
+                                        </View>
+                                    ))}
+                                </View>
+                            )}
+                        </View>
+                    ))}
+                </>
                 )}
             </Animated.View>
         </ScrollView>

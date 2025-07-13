@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, Pressable, StyleSheet, Text, useWindowDimensions, View, Animated, Platform } from 'react-native';
+import { ScrollView, Pressable, StyleSheet, Text, useWindowDimensions, View, Animated, Platform} from 'react-native';
 import RenderHTML from 'react-native-render-html';
-import { GetHomeWork } from '../api/MH/GetHomeWork';
-import { gstyles } from '../styles/gstyles';
 import FullScreenModal from '../components/Modal';
 import useHomeWorkStore from '../store/HomeWorkStore';
-import Home from './Home';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 
@@ -50,7 +47,7 @@ export default function HomeWork() {
             cardAnim.setValue(0);
             Animated.timing(cardAnim, {
                 toValue: 1,
-                duration: 500,
+                duration: 900,
                 useNativeDriver: true,
             }).start();
         }, [])
@@ -59,7 +56,7 @@ export default function HomeWork() {
     useEffect(() => {
         Animated.timing(cardAnim, {
             toValue: 1,
-            duration: 500,
+            duration: 900,
             useNativeDriver: true,
         }).start();
         const d = rem(HomeWork, 'UzduotiesAprasymas');
@@ -107,13 +104,15 @@ export default function HomeWork() {
                             style={{
                                 ...styles.card,
                                 opacity: cardAnim,
-                                transform: [
+                                transform: [ 
                                     { scale: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
                                     { translateY: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] }) }
                                 ]
                             }}
                         >
-                            <Pressable onPress={() => SetSelect(el)}>
+                            <Pressable onPress={() => {
+                                SetSelect(el); 
+                            }}>
                                 <Text style={styles.label}>{el.Dalykas ?? ''}</Text>
                                 {el.UzduotiesAprasymas && containsHTML(el.UzduotiesAprasymas) ? (
                                     <RenderHTML
@@ -138,8 +137,9 @@ export default function HomeWork() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f7f7fa',
+        backgroundColor: 'rgb(247, 247, 250)',
         paddingVertical: Platform.OS === 'ios' || Platform.OS === 'android' ? 50 : 0,
+        paddingBottom: 65
     },
     contentContainer: {
         padding: 18,

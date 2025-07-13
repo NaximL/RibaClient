@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Animated, Platform } from 'react-native';
 
-import Home from './screens/Home';
+import Home from '@screens/Home/Home';
 import Profile from './screens/Profile';
 import useLoadingStore from './store/LoadStore';
 import HomeWork from './screens/HomeWork';

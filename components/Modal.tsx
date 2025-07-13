@@ -9,6 +9,7 @@ type FullScreenModalProps = {
 };
 
 export default function FullScreenModal({ visible, onClose, children }: FullScreenModalProps) {
+  
   return (
     <Modal
       animationType="fade"
