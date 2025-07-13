@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 
-export {};
+export { };
 
 declare global {
   interface TelegramWebApp {
@@ -50,23 +50,23 @@ export default function TelegramInit() {
     script.onload = () => {
       const tg = window.Telegram?.WebApp;
 
-      // Проверяем, что Telegram.WebApp реально существует и у него есть initData
+
       if (!tg || !tg.initData) {
         console.warn('❌ Не в Telegram Mini App — initData отсутствует');
         return;
       }
 
       tg.ready();
-      tg.setBackgroundColor('#f2f4f8');
 
-      // 👉 Запускаем полноэкранный режим
+      tg.setHeaderColor('#f7f7fa');
+      tg.expand();
+
       if (!tg.isExpanded) {
         tg.expand();
         console.log('🖥️ Telegram WebApp expanded to fullscreen');
       }
 
-      console.log('✅ Telegram WebApp SDK ініціалізовано');
-      console.log('📦 initData:', tg.initData);
+
     };
 
     document.body.appendChild(script);
