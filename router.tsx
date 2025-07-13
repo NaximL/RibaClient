@@ -13,8 +13,6 @@ import Login from './screens/Login';
 import { getData } from './components/LocalStorage';
 import Schedule from './screens/Schedule';
 import Stop from '@screens/Error';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -26,25 +24,12 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 function AppTabs() {
-  type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+
 
   const load = useLoadingStore((state) => state.load);
   const [tabAnim] = useState(new Animated.Value(0));
-  const navigation = useNavigation<NavigationProp>();
 
   useEffect(() => {
-
-    fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
-      .then(response => response.json())
-      .then(data => {
-        if (data[0]?.status === true) {
-          navigation.replace('Stop');
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      })
-
     Animated.timing(tabAnim, {
       toValue: load ? 0 : 1,
       duration: 400,
