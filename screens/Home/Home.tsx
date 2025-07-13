@@ -18,13 +18,8 @@ import { GetLesion } from '@api/GetLesion';
 import { GetAllData } from '@api/GetAlldata';
 import { getData, storeData } from '@components/LocalStorage';
 import Widget from './components/Widget';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../router';
-import { useNavigation } from '@react-navigation/native';
 
 export default function Home() {
-  type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
-  const navigation = useNavigation<NavigationProp>();
 
   const load = useLoadingStore((state) => state.load);
   const setLoad = useLoadingStore((state) => state.setLoad);
@@ -84,19 +79,7 @@ export default function Home() {
 
   useEffect(() => {
 
-    fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
-      .then(response => response.json())
-      .then(data => {
-        if (data[0]?.status === true) {
-          navigation.replace('Stop');
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      })
-
-
-
+    
     const fetchData = async () => {
       const logins: string | null = await getData("login");
       const password: string | null = await getData("password");
