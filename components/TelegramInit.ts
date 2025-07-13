@@ -40,7 +40,7 @@ declare global {
 
 export default function TelegramInit() {
   useEffect(() => {
-    // Работает только на web
+    
     if (Platform.OS !== 'web') return;
 
     const script = document.createElement('script');
@@ -52,7 +52,8 @@ export default function TelegramInit() {
 
 
       if (!tg || !tg.initData) {
-        console.warn('❌ Не в Telegram Mini App — initData отсутствует');
+       
+        console.clear();
         return;
       }
 

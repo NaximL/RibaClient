@@ -12,10 +12,12 @@ import HomeWork from './screens/HomeWork';
 import Login from './screens/Login';
 import { getData } from './components/LocalStorage';
 import Schedule from './screens/Schedule';
+import Stop from '@screens/Erorr';
 
 export type RootStackParamList = {
   Login: undefined;
   App: undefined;
+  Stop: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -101,6 +103,7 @@ export default function Router() {
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialScreen}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="App" component={AppTabs} />
+        <Stack.Screen name="Stop" component={Stop} />
       </Stack.Navigator>
     </NavigationContainer>
   );

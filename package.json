@@ -20,6 +20,7 @@
     "expo-blur": "~14.1.5",
     "expo-device": "~7.1.4",
     "expo-haptics": "~14.1.4",
+    "expo-linear-gradient": "^14.1.5",
     "expo-notifications": "~0.31.2",
     "expo-status-bar": "~2.2.3",
     "expo-updates": "~0.28.17",
