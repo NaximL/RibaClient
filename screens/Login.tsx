@@ -19,6 +19,7 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../router';
 import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
+import { Logins } from '@api/Login';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -50,11 +51,18 @@ const Login = () => {
       return;
     }
 
-    GetAllData(logins, password).then(() => {
-      storeData("login", logins);
-      storeData("password", password);
-      alert('Ви успішно увійшли!');
-      navigation.replace('App');
+    Logins(logins, password).then((sts) => {
+      console.log(sts.sts)
+      if (sts.sts) {
+        storeData("login", logins);
+        storeData("password", password);
+        alert('Ви успішно увійшли!');
+        navigation.replace('App');
+      }
+      else {
+        alert('Невірний логін або пароль');
+
+      }
     }).catch((e) => {
       alert('Невірний логін або пароль');
       console.error(e);
