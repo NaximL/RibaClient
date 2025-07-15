@@ -7,11 +7,15 @@ import {
   TouchableOpacity,
   ImageSourcePropType
 } from 'react-native';
+import { RootStackParamList } from '../../../router';
+import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 
 type Item = {
   image: ImageSourcePropType;
   lable: string;
   data: string | number;
+  source?: string;
 };
 
 type WidgetProps = {
@@ -21,6 +25,9 @@ type WidgetProps = {
 };
 
 const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim }) => {
+  type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+  const navigation = useNavigation<NavigationProp>();
+
   return (
     <Animated.View
       key={index}
@@ -39,7 +46,9 @@ const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim }) => {
         activeOpacity={0.8}
         style={{ width: '100%', alignItems: 'center' }}
         onPress={() => {
-
+          if (item.source && typeof item.source === 'string') {
+            navigation.replace(item.source as keyof RootStackParamList);
+          }
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>

@@ -40,8 +40,9 @@ declare global {
 
 export default function TelegramInit() {
   useEffect(() => {
-    
     if (Platform.OS !== 'web') return;
+
+
 
     const script = document.createElement('script');
     script.src = 'https://telegram.org/js/telegram-web-app.js';
@@ -50,27 +51,23 @@ export default function TelegramInit() {
     script.onload = () => {
       const tg = window.Telegram?.WebApp;
 
-
       if (!tg || !tg.initData) {
-       
-        console.clear();
         return;
       }
 
       tg.ready();
-
       tg.setHeaderColor('#f7f7fa');
       tg.expand();
 
       if (!tg.isExpanded) {
         tg.expand();
-        console.log('🖥️ Telegram WebApp expanded to fullscreen');
+        console.log('🖥️ Telegram WebApp expanded to fullscreen'); 
       }
-
-
     };
 
     document.body.appendChild(script);
+
+  
   }, []);
 
   return null;

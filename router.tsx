@@ -13,11 +13,16 @@ import Login from './screens/Login';
 import { getData } from './components/LocalStorage';
 import Schedule from './screens/Schedule';
 import Stop from '@screens/Error';
+import ChoiceChat from '@screens/Message/ChoiceChat';
+
+import FullMessage from '@screens/Message/Chat';
 
 export type RootStackParamList = {
   Login: undefined;
   App: undefined;
   Stop: undefined;
+  Message: undefined;
+  FullMessage: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -83,6 +88,8 @@ function AppTabs() {
       <Tab.Screen name="HomeWork" component={HomeWork} options={{ tabBarLabel: 'Домашка' }} />
       <Tab.Screen name="Schedule" component={Schedule} options={{ tabBarLabel: 'Розклад' }} />
       <Tab.Screen name="Profile" component={Profile} options={{ tabBarLabel: 'Профіль' }} />
+      
+
     </Tab.Navigator>
   );
 }
@@ -105,7 +112,9 @@ export default function Router() {
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialScreen}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="App" component={AppTabs} />
+        <Stack.Screen name="Message" component={ChoiceChat} />
         <Stack.Screen name="Stop" component={Stop} />
+        <Stack.Screen name="FullMessage" component={FullMessage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

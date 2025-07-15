@@ -23,6 +23,7 @@ import { RootStackParamList } from '../../router';
 import { useNavigation } from '@react-navigation/native';
 import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
+import useMessageStore from '@store/MessageStore';
 
 export default function Home() {
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
@@ -36,6 +37,8 @@ export default function Home() {
 
   const Bal = useBalStore((state) => state.bal);
   const setBal = useBalStore((state) => state.setBal);
+
+  const setMessage = useMessageStore((state) => state.SetMessage);
 
   const setHomeWork = useHomeWorkStore((state) => state.SetHomeWork);
 
@@ -92,7 +95,7 @@ export default function Home() {
         .then(response => response.json())
         .then(data => {
           if (data[0]?.status === true) {
-            
+
             seterrors(data[0])
             navigation.replace('Stop');
           }
@@ -110,30 +113,41 @@ export default function Home() {
 
         GetAllData(logins, password).then((MHDATA) => {
 
-          const HomePage = MHDATA[0];
-          const HomeWork = MHDATA[1];
-          const Lesions = MHDATA[2];
-          const ProfilUser = MHDATA[3];
+          storeData("check", JSON.stringify(MHDATA))
+          // const MHDATA = await getData("check");
 
-          setBal(HomePage[14]);
-          setMis(HomePage[15]);
-          setPovidok(HomePage[10]);
-          setLesions(Lesions)
-          setProfile(ProfilUser)
+          if (MHDATA != null) {
 
-          if (HomeWork && Array.isArray(HomeWork.value)) {
-            setHomeWork(HomeWork.value);
-          } else {
-            setHomeWork([]);
+            const newMH = MHDATA
+            const HomePage = newMH[0];
+            const HomeWork = newMH[1];
+            const Lesions = newMH[2];
+            const ProfilUser = newMH[3];
+            const Message = newMH[4];
+
+            setBal(HomePage[14]);
+            setMis(HomePage[15]);
+            setPovidok(HomePage[10]);
+            setLesions(Lesions)
+            setProfile(ProfilUser)
+            setMessage(Message.value);
+
+            if (HomeWork && Array.isArray(HomeWork.value)) {
+              setHomeWork(HomeWork.value);
+            } else {
+              setHomeWork([]);
+            }
+
+            GetLesion(Lesions).then((data) => {
+              setLesion(data)
+            })
+            Haptics.notificationAsync(
+              Haptics.NotificationFeedbackType.Success
+            )
+            setLoad(!load);
           }
 
-          GetLesion(Lesions).then((data) => {
-            setLesion(data)
-          })
-          Haptics.notificationAsync(
-            Haptics.NotificationFeedbackType.Success
-          )
-          setLoad(!load);
+
         });
 
       }
@@ -156,7 +170,8 @@ export default function Home() {
     {
       "image": require('@emoji/Mail.png'),
       "lable": "Повідомлення",
-      "data": Povidok ?? '...'
+      "data": Povidok ?? '...',
+      "source": "Message"
     },
     {
       "image": require('@emoji/Analitik.png'),
