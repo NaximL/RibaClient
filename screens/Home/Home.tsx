@@ -5,6 +5,7 @@ import {
   Animated,
   ScrollView,
   ActivityIndicator,
+  Platform
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from '@react-navigation/native';
@@ -16,7 +17,7 @@ import useProfileStore from '@store/ProfileStore';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { GetLesion } from '@api/GetLesion';
 import { GetAllData } from '@api/GetAlldata';
-import { getData, storeData } from '@components/LocalStorage';
+import { getData, removeData, storeData } from '@components/LocalStorage';
 import Widget from './components/Widget';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router';
@@ -24,6 +25,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
 import useMessageStore from '@store/MessageStore';
+import useFetchStore from '@store/fetchStore';
 
 export default function Home() {
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
@@ -32,6 +34,9 @@ export default function Home() {
   const load = useLoadingStore((state) => state.load);
   const setLoad = useLoadingStore((state) => state.setLoad);
 
+
+  const Loadsd = useFetchStore((state) => state.loads);
+  const setLoadsd = useFetchStore((state) => state.setLoads);
 
   const seterrors = UseErrorStore((state) => state.setError);
 
@@ -50,7 +55,7 @@ export default function Home() {
 
 
 
-
+  const [Loads, setLoads] = useState(true)
   const [Lesion, setLesion] = useState<string | ''>("");
   const [mis, setMis] = useState<number | null>(null);
 
@@ -105,51 +110,53 @@ export default function Home() {
         })
     }
 
-
     const fetchData = async () => {
-      const logins: string | null = await getData("login");
-      const password: string | null = await getData("password");
-      if (logins !== null && password !== null) {
+      const login = await getData("login");
+      const password = await getData("password");
 
-        GetAllData(logins, password).then((MHDATA) => {
+      if (!login || !password) return;
 
-          storeData("check", JSON.stringify(MHDATA))
-          // const MHDATA = await getData("check");
+      const applyData = async (MHDATA: any, triggerHaptics: boolean) => {
+        if (!MHDATA) return;
 
-          if (MHDATA != null) {
+        const [HomePage, HomeWork, Lesions, ProfilUser, Message] = MHDATA;
 
-            const newMH = MHDATA
-            const HomePage = newMH[0];
-            const HomeWork = newMH[1];
-            const Lesions = newMH[2];
-            const ProfilUser = newMH[3];
-            const Message = newMH[4];
+        setBal(HomePage[14]);
+        setMis(HomePage[15]);
+        setPovidok(HomePage[10]);
+        setLesions(Lesions);
+        setProfile(ProfilUser);
+        setMessage(Message.value);
 
-            setBal(HomePage[14]);
-            setMis(HomePage[15]);
-            setPovidok(HomePage[10]);
-            setLesions(Lesions)
-            setProfile(ProfilUser)
-            setMessage(Message.value);
+        setHomeWork(Array.isArray(HomeWork?.value) ? HomeWork.value : []);
 
-            if (HomeWork && Array.isArray(HomeWork.value)) {
-              setHomeWork(HomeWork.value);
-            } else {
-              setHomeWork([]);
-            }
+        const lesionData = await GetLesion(Lesions);
+        setLesion(lesionData);
 
-            GetLesion(Lesions).then((data) => {
-              setLesion(data)
-            })
-            Haptics.notificationAsync(
-              Haptics.NotificationFeedbackType.Success
-            )
-            setLoad(!load);
-          }
+        if (triggerHaptics) {
+          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
+      };
 
 
-        });
+      const cachedData = await getData("check");
+      if (cachedData) {
+        const parsed = JSON.parse(cachedData);
+        applyData(parsed, false);
+        setLoad(false);
+      }
 
+      if (!Loadsd) {
+        const freshData = await GetAllData(login, password);
+        if (freshData) {
+          await storeData("check", JSON.stringify(freshData));
+          applyData(freshData, true);
+          setLoads(false);
+          setLoadsd(true)
+        }
+      }
+      else {
+        setLoads(false);
       }
     };
     fetchData();
@@ -193,13 +200,17 @@ export default function Home() {
   }
 
   return (
-    <ScrollView style={styles.wrapper} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
-      {menu.map((item, index) =>
-        <Widget key={index} item={item} index={index} cardAnim={cardAnim} />
-      )}
-      <StatusBar style="auto" />
-    </ScrollView>
+    <>
 
+      {Loads && <View style={styles.LargeLoad}><ActivityIndicator size="small" color="#007aff" /></View>}
+
+      <ScrollView style={styles.wrapper} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
+        {menu.map((item, index) =>
+          <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
+        )}
+        <StatusBar style="auto" />
+      </ScrollView>
+    </>
   );
 }
 
@@ -209,5 +220,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f7f7fa',
     paddingVertical: 50,
     paddingBottom: 100
+  },
+  LargeLoad: {
+    position: "absolute",
+    left: Platform.OS === 'ios' || Platform.OS === 'android' ? 20 : 10,
+    top: Platform.OS === 'ios' || Platform.OS === 'android' ? 25 : 10,
+    zIndex: 1000,
   }
 });

@@ -22,9 +22,10 @@ type WidgetProps = {
   item: Item;
   index: number;
   cardAnim: Array<Animated.Value>;
+  load:boolean
 };
 
-const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim }) => {
+const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim ,load}) => {
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const navigation = useNavigation<NavigationProp>();
 
@@ -61,7 +62,7 @@ const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim }) => {
           )}
           <Text style={styles.label}>{item.lable}</Text>
         </View>
-        <Text style={styles.value}>{item.data}</Text>
+        <Text style={[styles.value,{ color: load ? '#888' : '#222' }]}>{item.data}</Text>
       </TouchableOpacity>
     </Animated.View>
   );
