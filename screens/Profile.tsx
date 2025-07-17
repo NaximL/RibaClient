@@ -73,8 +73,8 @@ export default function Profile() {
           <View style={styles.avatar}>
             <Image style={styles.avatarIcon} source={require("@emoji/Student.png")} />
           </View>
-          <Text style={styles.profileName}>{Profile.entext[Profile.entext.length - 20]}</Text>
-          <Text style={styles.profileInfo}>{` ${Profile.entext[Profile.entext.length - 4]} • ${Profile.entext[10]} `}</Text>
+          <Text style={styles.profileName}>{Profile.entext[9]}</Text>
+          <Text style={styles.profileInfo}>{` ${Profile.entext[25]} • ${Profile.entext[10]} `}</Text>
         </View>
         <View style={styles.card}>
           <View style={styles.cardSection}>
