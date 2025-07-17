@@ -20,6 +20,7 @@ export default function Profile() {
   const navigation = useNavigation<NavigationProp>();
   const [login, setLogin] = React.useState<string | null>(null);
   const [anim] = React.useState(new Animated.Value(0));
+  
   useFocusEffect(
     useCallback(() => {
       anim.setValue(0);
@@ -35,6 +36,7 @@ export default function Profile() {
 
 
   useEffect(() => {
+    console.log(Profile) 
     Animated.timing(anim, {
       toValue: 1,
       duration: 500,
@@ -71,8 +73,8 @@ export default function Profile() {
           <View style={styles.avatar}>
             <Image style={styles.avatarIcon} source={require("@emoji/Student.png")} />
           </View>
-          <Text style={styles.profileName}>{Profile.entext[0]}</Text>
-          <Text style={styles.profileInfo}>{` ${Profile.entext[15]} • ${Profile.entext[Profile.entext.length - 7]} `}</Text>
+          <Text style={styles.profileName}>{Profile.entext[Profile.entext.length - 20]}</Text>
+          <Text style={styles.profileInfo}>{` ${Profile.entext[Profile.entext.length - 4]} • ${Profile.entext[10]} `}</Text>
         </View>
         <View style={styles.card}>
           <View style={styles.cardSection}>
