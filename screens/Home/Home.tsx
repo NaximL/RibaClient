@@ -17,7 +17,7 @@ import useProfileStore from '@store/ProfileStore';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { GetLesion } from '@api/GetLesion';
 import { GetAllData } from '@api/GetAlldata';
-import { getData, removeData, storeData } from '@components/LocalStorage';
+import { getData, storeData } from '@components/LocalStorage';
 import Widget from './components/Widget';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router';
