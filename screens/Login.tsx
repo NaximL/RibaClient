@@ -10,7 +10,8 @@ import {
   Platform,
   ScrollView,
   Alert,
-  Animated
+  Animated,
+  ActivityIndicator
 } from 'react-native';
 import { storeData } from "../components/LocalStorage"
 import { GetAllData } from '../api/MH/GetAlldata';
@@ -28,6 +29,8 @@ const Login = () => {
   const passwordRef = useRef<TextInput>(null);
   const [logins, setLogin] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [Load, SetLoad] = React.useState(false);
+
   const [anim] = React.useState(new Animated.Value(0));
   const seterrors = UseErrorStore((state) => state.setError);
 
@@ -50,7 +53,7 @@ const Login = () => {
       alert('Будь ласка, введіть пароль');
       return;
     }
-
+    SetLoad(true);
     Logins(logins, password).then((sts) => {
       console.log(sts.sts)
       if (sts.sts) {
@@ -61,11 +64,12 @@ const Login = () => {
       }
       else {
         alert('Невірний логін або пароль');
-
+        SetLoad(false);
       }
     }).catch((e) => {
       alert('Невірний логін або пароль');
       console.error(e);
+      SetLoad(false);
     });
   };
 
@@ -94,57 +98,66 @@ const Login = () => {
   }, []);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1, backgroundColor: '#f7f7fa' }}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Animated.View style={{
-          ...styles.wrapper,
-          opacity: anim,
-          transform: [
-            { scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
-            { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [40, 0] }) }
-          ]
-        }}>
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../assets/Icons/icon.png')}
-              resizeMode="contain"
-              style={styles.logo}
-            />
-            <Text style={styles.title}>FastShark</Text>
-            <Text style={styles.subtitle}>Пірнай у нормальний клієнт моєї школи</Text>
-          </View>
-          <View style={styles.form}>
-            <TextInput
-              ref={loginRef}
-              style={styles.input}
-              placeholder="Логін"
-              placeholderTextColor="#b0b3b8"
-              returnKeyType="next"
-              value={logins}
-              onChangeText={setLogin}
-              autoCapitalize="none"
-            />
-            <TextInput
-              ref={passwordRef}
-              style={styles.input}
-              placeholder="Пароль"
-              placeholderTextColor="#b0b3b8"
-              secureTextEntry
-              returnKeyType="done"
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity style={styles.button} onPress={Save}>
-              <Text style={styles.buttonText}>Увійти</Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    <>
+      {Load === true ?
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#007aff" />
+        </View>
+        :
+
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1, backgroundColor: '#f7f7fa' }}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <Animated.View style={{
+              ...styles.wrapper,
+              opacity: anim,
+              transform: [
+                { scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
+                { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [40, 0] }) }
+              ]
+            }}>
+              <View style={styles.logoContainer}>
+                <Image
+                  source={require('../assets/Icons/icon.png')}
+                  resizeMode="contain"
+                  style={styles.logo}
+                />
+                <Text style={styles.title}>FastShark</Text>
+                <Text style={styles.subtitle}>Пірнай у нормальний клієнт моєї школи</Text>
+              </View>
+              <View style={styles.form}>
+                <TextInput
+                  ref={loginRef}
+                  style={styles.input}
+                  placeholder="Логін"
+                  placeholderTextColor="#b0b3b8"
+                  returnKeyType="next"
+                  value={logins}
+                  onChangeText={setLogin}
+                  autoCapitalize="none"
+                />
+                <TextInput
+                  ref={passwordRef}
+                  style={styles.input}
+                  placeholder="Пароль"
+                  placeholderTextColor="#b0b3b8"
+                  returnKeyType="done"
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <TouchableOpacity style={styles.button} onPress={Save}>
+                  <Text style={styles.buttonText}>Увійти</Text>
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      }
+    </>
+
   );
 };
 

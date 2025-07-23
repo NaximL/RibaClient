@@ -8,6 +8,7 @@ import {
   Platform,
   TouchableOpacity,
   Linking,
+  ActivityIndicator
 } from "react-native";
 import { useRoute, useNavigation } from '@react-navigation/native';
 import RenderHTML from 'react-native-render-html';
@@ -63,7 +64,7 @@ const FullMessage = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      
+
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.replace("Message")}>
         <Ionicons name="arrow-back" size={24} color="#007aff" />
         <Text style={styles.backText}>Назад</Text>
@@ -79,11 +80,17 @@ const FullMessage = () => {
 
       <View style={styles.section}>
         <Text style={styles.label}>Повідомлення:</Text>
-        <RenderHTML
-          contentWidth={width - 40}
-          source={{ html: body || "<p>(порожньо)</p>" }}
-          baseStyle={styles.html}
-        />
+        {body ? (
+          <RenderHTML
+            contentWidth={width - 40}
+            source={{ html: body }}
+            baseStyle={styles.html}
+          />
+        ) :
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 40 }}>
+            <ActivityIndicator size="large" color="#007aff" />
+          </View>
+        }
       </View>
 
       <View style={styles.section}>

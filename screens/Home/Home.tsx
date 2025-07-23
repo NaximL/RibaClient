@@ -127,7 +127,7 @@ export default function Home() {
         setLesions(Lesions);
         setProfile(ProfilUser);
         setMessage(Message.value);
-
+        
         setHomeWork(Array.isArray(HomeWork?.value) ? HomeWork.value : []);
 
         const lesionData = await GetLesion(Lesions);
