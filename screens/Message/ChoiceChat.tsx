@@ -123,7 +123,7 @@ const ChoiceChat = () => {
           showsVerticalScrollIndicator={false}
         />
 
-          <View style={{ height: 65 }}></View>
+          
     </View>
   );
 };
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   listContent: {
     paddingTop: 96,
     paddingHorizontal: 16,
-    paddingBottom: 32,
+    paddingBottom: 100,
   },
 
   noreed: {
