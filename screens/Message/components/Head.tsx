@@ -46,9 +46,7 @@ const Head = ({nav,modal}:any) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.circle} onPress={() => nav.replace("App")}>
-        <Ionicons name="arrow-back" size={24} color="#007aff" />
-      </TouchableOpacity>
+      <View ></View>
 
       <View style={styles.rightGroup}>
         <TouchableOpacity style={styles.circle} onPress={toggleDropdown}>

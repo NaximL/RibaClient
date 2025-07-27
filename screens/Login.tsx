@@ -17,7 +17,7 @@ import { storeData } from "../components/LocalStorage"
 import { GetAllData } from '../api/MH/GetAlldata';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../router';
+import { RootStackParamList } from '../router/router';
 import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
 import { Logins } from '@api/Login';

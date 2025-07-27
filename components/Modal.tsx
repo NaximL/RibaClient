@@ -1,6 +1,5 @@
 import React from 'react';
-import { Modal, View, StyleSheet, Text, Pressable,Platform } from 'react-native';
-import { ScrollView } from 'react-native';
+import { Modal, View, StyleSheet, Text, Pressable, ScrollView, Platform } from 'react-native';
 
 type FullScreenModalProps = {
   visible: boolean;
@@ -9,7 +8,6 @@ type FullScreenModalProps = {
 };
 
 export default function FullScreenModal({ visible, onClose, children }: FullScreenModalProps) {
-  
   return (
     <Modal
       animationType="fade"
@@ -44,11 +42,18 @@ const styles = StyleSheet.create({
     padding: 24,
     maxHeight: '90%',
     minHeight: 0,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
-    elevation: 20,
-    gap: 10,
+
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.15,
+        shadowRadius: 16,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   scrollContent: {
     flexGrow: 1,
@@ -60,13 +65,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 12,
-    shadowColor: '#007aff',
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 2,
+
+    // Cross-platform shadow
+    ...Platform.select({
+      ios: {
+        shadowColor: '#007aff',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+
     width: '100%',
-    display: 'flex',
     alignItems: 'center',
   },
   closeText: {

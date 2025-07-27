@@ -16,7 +16,7 @@ import { getData } from '@components/LocalStorage';
 import { GetMessage } from "@api/GetMessage";
 import { Ionicons } from '@expo/vector-icons';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../router';
+import { RootStackParamList } from '../../router/router';
 
 type FileLink = {
   name: string;
@@ -65,7 +65,7 @@ const FullMessage = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.replace("Message")}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("App", {screen: "Message"}) }>
         <Ionicons name="arrow-back" size={24} color="#007aff" />
         <Text style={styles.backText}>Назад</Text>
       </TouchableOpacity>
@@ -113,7 +113,7 @@ const FullMessage = () => {
           </>
         )}
       </View>
-    </ScrollView>
+    </ScrollView >
   );
 };
 

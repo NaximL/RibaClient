@@ -149,10 +149,8 @@ const styles = StyleSheet.create({
         borderRadius: 18,
         padding: 20,
         marginBottom: 14,
-        shadowColor: '#000',
-        shadowOpacity: 0.07,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 10,
+
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
         elevation: 2,
     },
     label: {

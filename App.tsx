@@ -1,5 +1,5 @@
 import TelegramInit from "@components/TelegramInit";
-import Router from "./router";
+import Router from "./router/router";
 import { ISPROD } from "config/config";
 
 

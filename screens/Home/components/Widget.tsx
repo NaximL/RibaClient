@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ImageSourcePropType
 } from 'react-native';
-import { RootStackParamList } from '../../../router';
+import { RootStackParamList } from '../../../router/router';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 
@@ -79,10 +79,7 @@ const styles = StyleSheet.create({
     marginVertical: 14,
     width: '90%',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.10,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 16,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     elevation: 8,
   },
   label: {

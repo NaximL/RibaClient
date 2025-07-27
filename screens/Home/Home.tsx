@@ -20,7 +20,7 @@ import { GetAllData } from '@api/GetAlldata';
 import { getData, storeData } from '@components/LocalStorage';
 import Widget from './components/Widget';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../router';
+import { RootStackParamList } from '../../router/router';
 import { useNavigation } from '@react-navigation/native';
 import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
@@ -102,7 +102,7 @@ export default function Home() {
           if (data[0]?.status === true) {
 
             seterrors(data[0])
-            navigation.replace('Stop');
+            navigation.navigate('Stop');
           }
         })
         .catch(error => {
@@ -180,7 +180,7 @@ export default function Home() {
       "image": require('@emoji/Mail.png'),
       "lable": "Повідомлення",
       "data": Povidok ?? '...',
-      "source": "Message"
+
     },
     {
       "image": require('@emoji/Analitik.png'),

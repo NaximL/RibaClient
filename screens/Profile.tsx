@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Animated, Platform,Image } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Animated, Platform, Image } from 'react-native'
 import useBalStore from '../store/BalStore';
 import useProfileStore from '../store/ProfileStore';
 import { gstyles } from '../styles/gstyles';
@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../router';
+import { RootStackParamList } from '../router/router';
 import { VERSION } from '../config/config';
 
 
@@ -20,7 +20,7 @@ export default function Profile() {
   const navigation = useNavigation<NavigationProp>();
   const [login, setLogin] = React.useState<string | null>(null);
   const [anim] = React.useState(new Animated.Value(0));
-  
+
   useFocusEffect(
     useCallback(() => {
       anim.setValue(0);
@@ -36,7 +36,7 @@ export default function Profile() {
 
 
   useEffect(() => {
-    console.log(Profile) 
+    console.log(Profile)
     Animated.timing(anim, {
       toValue: 1,
       duration: 500,
@@ -169,13 +169,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.07,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     elevation: 2,
   },
-  avatarIcon: { width:48,height:48 },
+  avatarIcon: { width: 48, height: 48 },
   profileName: { fontSize: 26, fontWeight: '700', color: '#222' },
   profileInfo: { color: '#888', fontSize: 16 },
   card: {
@@ -183,10 +180,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 22,
     marginBottom: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.07,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 12,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     elevation: 2,
   },
   cardSection: { marginBottom: 16 },
@@ -199,10 +193,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 22,
     marginBottom: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.07,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 12,
+
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     elevation: 2,
     flexDirection: 'row',
     alignItems: 'center',
@@ -226,10 +218,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 22,
     marginBottom: 32,
-    shadowColor: '#000',
-    shadowOpacity: 0.07,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 12,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     elevation: 2,
   },
   teachersTitle: {
@@ -276,10 +265,7 @@ const styles = StyleSheet.create({
     padding: 14,
     alignItems: 'center',
     marginTop: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.07,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     elevation: 2,
   },
   versionText: {
