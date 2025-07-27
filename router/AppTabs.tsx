@@ -30,7 +30,10 @@ function AppTabs() {
         outputRange: [30, 0],
     });
 
-    
+    const opacity = tabAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+    });;
 
     return (
         <Tab.Navigator
@@ -50,12 +53,6 @@ function AppTabs() {
                 tabBarActiveTintColor: '#007aff',
                 tabBarInactiveTintColor: '#b0b3b8',
                 tabBarShowLabel: false,
-                tabBarLabelStyle: {
-                    marginTop: 4,
-                    fontSize: 12,
-                    fontWeight: '600',
-                    letterSpacing: 0.2,
-                },
 
 
                 tabBarBackground: () => (
@@ -64,12 +61,14 @@ function AppTabs() {
                             flex: 1,
                             borderRadius: 24,
                             overflow: 'hidden',
+
                         }}
                     >
                         <BlurView
                             tint="light"
                             intensity={30}
                             style={{
+
                                 flex: 1,
                                 backgroundColor: 'rgba(255, 255, 255, 0.15)',
                             }}
@@ -94,6 +93,7 @@ function AppTabs() {
                     shadowRadius: 12,
                     transform: [{ translateY }],
                     elevation: 10,
+                    opacity: opacity,
                 },
             })}
         >

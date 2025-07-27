@@ -48,7 +48,7 @@ const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim ,load}) => {
         style={{ width: '100%', alignItems: 'center' }}
         onPress={() => {
           if (item.source && typeof item.source === 'string') {
-            navigation.replace(item.source as keyof RootStackParamList);
+            navigation.replace(item.source as any);
           }
         }}
       >

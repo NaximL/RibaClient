@@ -22,7 +22,7 @@ import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
 import { Logins } from '@api/Login';
 
-type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+
 
 const Login = () => {
   const loginRef = useRef<TextInput>(null);
@@ -34,7 +34,9 @@ const Login = () => {
   const [anim] = React.useState(new Animated.Value(0));
   const seterrors = UseErrorStore((state) => state.setError);
 
+  type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const navigation = useNavigation<NavigationProp>();
+
   function del(str: string): string {
     if (str.endsWith(' ')) {
       return str.slice(0, -1);
@@ -60,7 +62,7 @@ const Login = () => {
         storeData("login", logins);
         storeData("password", password);
         alert('Ви успішно увійшли!');
-        navigation.replace('App');
+        navigation.replace('App',{screen: 'Home'});
       }
       else {
         alert('Невірний логін або пароль');

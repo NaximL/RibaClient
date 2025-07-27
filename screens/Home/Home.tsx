@@ -34,7 +34,6 @@ export default function Home() {
   const load = useLoadingStore((state) => state.load);
   const setLoad = useLoadingStore((state) => state.setLoad);
 
-
   const Loadsd = useFetchStore((state) => state.loads);
   const setLoadsd = useFetchStore((state) => state.setLoads);
 
@@ -100,7 +99,6 @@ export default function Home() {
         .then(response => response.json())
         .then(data => {
           if (data[0]?.status === true) {
-
             seterrors(data[0])
             navigation.navigate('Stop');
           }
@@ -148,14 +146,19 @@ export default function Home() {
 
 
       if (!Loadsd) {
-        const freshData = await GetAllData(login, password);
-        if (freshData) {
-          await storeData("check", JSON.stringify(freshData));
-          applyData(freshData, true);
-          setLoads(false);
-          setLoad(false);
-          setLoadsd(true);
-        }
+        await GetAllData(login, password).then(async (data) => {
+          if (data) {
+            await storeData("check", JSON.stringify(data));
+            applyData(data, true);
+
+            setLoads(false);
+            setLoadsd(true);
+            
+            setLoad(false);
+
+          }
+        })
+
       }
       else {
         setLoads(false);
