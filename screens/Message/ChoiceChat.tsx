@@ -113,13 +113,17 @@ const ChoiceChat = () => {
         </View>
       </FullScreenModal>
 
-      <FlatList
-        data={Message}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.Id.toString()}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-      />
+      
+
+        <FlatList
+          data={Message}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.Id.toString()}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
+
+          <View style={{ height: 65 }}></View>
     </View>
   );
 };
@@ -131,6 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f2f4f8",
     paddingTop: Platform.OS === "ios" ? 64 : 32,
+
   },
 
   headWrapper: {

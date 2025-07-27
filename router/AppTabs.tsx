@@ -30,7 +30,7 @@ function AppTabs() {
         outputRange: [30, 0],
     });
 
-    const opacity = tabAnim;
+    
 
     return (
         <Tab.Navigator
@@ -57,23 +57,21 @@ function AppTabs() {
                     letterSpacing: 0.2,
                 },
 
-                
+
                 tabBarBackground: () => (
                     <Animated.View
                         style={{
                             flex: 1,
                             borderRadius: 24,
                             overflow: 'hidden',
-                            transform: [{ translateY }],
-                            opacity,
                         }}
                     >
                         <BlurView
                             tint="light"
-                            intensity={30} 
+                            intensity={30}
                             style={{
                                 flex: 1,
-                                backgroundColor: 'rgba(255, 255, 255, 0.15)', 
+                                backgroundColor: 'rgba(255, 255, 255, 0.15)',
                             }}
                         />
                     </Animated.View>
@@ -94,6 +92,7 @@ function AppTabs() {
                     shadowOpacity: 0.08,
                     shadowOffset: { width: 0, height: 2 },
                     shadowRadius: 12,
+                    transform: [{ translateY }],
                     elevation: 10,
                 },
             })}

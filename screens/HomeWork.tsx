@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, Pressable, StyleSheet, Text, useWindowDimensions, View, Animated, Platform} from 'react-native';
+import { ScrollView, Pressable, StyleSheet, Text, useWindowDimensions, View, Animated, Platform } from 'react-native';
 import RenderHTML from 'react-native-render-html';
 import FullScreenModal from '../components/Modal';
 import useHomeWorkStore from '../store/HomeWorkStore';
@@ -95,6 +95,7 @@ export default function HomeWork() {
                     </Text>
                 </FullScreenModal>
                 <ScrollView
+                    style={{ paddingBottom: 65 }}
                     contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator={false}
                 >
@@ -104,14 +105,14 @@ export default function HomeWork() {
                             style={{
                                 ...styles.card,
                                 opacity: cardAnim,
-                                transform: [ 
+                                transform: [
                                     { scale: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
                                     { translateY: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] }) }
                                 ]
                             }}
                         >
                             <Pressable onPress={() => {
-                                SetSelect(el); 
+                                SetSelect(el);
                             }}>
                                 <Text style={styles.label}>{el.Dalykas ?? ''}</Text>
                                 {el.UzduotiesAprasymas && containsHTML(el.UzduotiesAprasymas) ? (
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'rgb(247, 247, 250)',
         paddingVertical: Platform.OS === 'ios' || Platform.OS === 'android' ? 50 : 0,
-        paddingBottom: 65
+
     },
     contentContainer: {
         padding: 18,
