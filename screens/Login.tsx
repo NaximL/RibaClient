@@ -121,7 +121,7 @@ const Login = () => {
             }}>
               <View style={styles.logoContainer}>
                 <Image
-                  source={require('../assets/Icons/icon.png')}
+                  source={require('../public/icon.png')}
                   resizeMode="contain"
                   style={styles.logo}
                 />
