@@ -127,7 +127,7 @@ export default function Home() {
         setLesions(Lesions);
         setProfile(ProfilUser);
         setMessage(Message.value);
-        
+
         setHomeWork(Array.isArray(HomeWork?.value) ? HomeWork.value : []);
 
         const lesionData = await GetLesion(Lesions);
@@ -146,13 +146,15 @@ export default function Home() {
         setLoad(false);
       }
 
+
       if (!Loadsd) {
         const freshData = await GetAllData(login, password);
         if (freshData) {
           await storeData("check", JSON.stringify(freshData));
           applyData(freshData, true);
           setLoads(false);
-          setLoadsd(true)
+          setLoad(false);
+          setLoadsd(true);
         }
       }
       else {
