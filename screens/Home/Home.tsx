@@ -53,7 +53,6 @@ export default function Home() {
 
 
 
-
   const [Loads, setLoads] = useState(true)
   const [Lesion, setLesion] = useState<string | ''>("");
   const [mis, setMis] = useState<number | null>(null);

@@ -1,5 +1,5 @@
 
 export const ISPROD = true;
 
-export const VERSION = 'v1.7.3';
-export const SERVER_URL = ISPROD ? "https://fatsharkserv.online" : 'http://192.168.83.210:3001';
+export const VERSION = 'v1.7.4';
+export const SERVER_URL = ISPROD ? "https://fatsharkserv.online" : 'http://192.168.31.162:3001';

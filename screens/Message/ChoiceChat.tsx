@@ -17,6 +17,7 @@ import FullScreenModal from '@components/Modal';
 import { Animated } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRef, useCallback, useEffect } from 'react';
+import CreateMessage from "./components/CreateMessage";
 
 const ChoiceChat = () => {
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
@@ -114,7 +115,7 @@ const ChoiceChat = () => {
       </FullScreenModal>
 
       
-
+        
         <FlatList
           data={Message}
           renderItem={renderItem}

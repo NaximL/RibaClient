@@ -19,6 +19,7 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   FullMessage: undefined;
+  WriteMsg: undefined;
   Stop: undefined;
   App: {
     screen?: keyof AppTabParamList;
@@ -42,6 +43,7 @@ export default function Router() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialScreen}>
+        
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="App" component={AppTabs} />
         <Stack.Screen name="Stop" component={Stop} />

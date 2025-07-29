@@ -16,10 +16,14 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const options = ["Написати повідомлення",'Прочитати всі'];
 
-const Head = ({nav,modal}:any) => {
-  
+const Head = ({ nav, modal, s }: any) => {
+
+  const options = [
+    {
+      text: 'Прочитати всі',
+      play: () => {}
+    }];
   const [open, setOpen] = useState(false);
   const animations = useRef(options.map(() => new Animated.Value(0))).current;
 
@@ -53,7 +57,7 @@ const Head = ({nav,modal}:any) => {
           <Ionicons name="ellipsis-vertical" size={20} color="#007aff" />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=>{modal(true)}} style={styles.circle}>
+        <TouchableOpacity onPress={() => { modal(true) }} style={styles.circle}>
           <Ionicons name="search" size={20} color="#007aff" />
         </TouchableOpacity>
 
@@ -72,8 +76,8 @@ const Head = ({nav,modal}:any) => {
                     key={index}
                     style={[styles.item, { opacity, transform: [{ translateY }] }]}
                   >
-                    <TouchableOpacity>
-                      <Animated.Text style={styles.text}>{option}</Animated.Text>
+                    <TouchableOpacity onPress={() => { option.play(); setOpen(false); }}>
+                      <Animated.Text style={styles.text}>{option.text}</Animated.Text>
                     </TouchableOpacity>
                   </Animated.View>
                 );
@@ -94,7 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 56,
-    
+
   },
   circle: {
     width: 44,
