@@ -11,8 +11,11 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import UseErrorStore from '@store/Error';
+import { Gstyle } from 'styles/gstyles';
 
 export default function Stop() {
+  const { gstyles,ProfilText } = Gstyle();
+
   const navigation = useNavigation();
   const error = UseErrorStore((state) => state.errors);
 
@@ -58,11 +61,12 @@ export default function Stop() {
 
   return (
     <ScrollView
-      contentContainerStyle={styles.wrapper}
+      contentContainerStyle={[styles.wrapper, gstyles.back]}
       showsVerticalScrollIndicator={false}
     >
       <Animated.View
         style={[
+          gstyles.WidgetBack,
           styles.card,
           {
             opacity: cardOpacity,
@@ -74,8 +78,8 @@ export default function Stop() {
           source={require("@emoji/Warning.png")}
           style={styles.icon}
         />
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.label}>{label}</Text>
+        <Text style={[styles.title,{color:ProfilText}]}>{title}</Text>
+        <Text style={[styles.label,{color:ProfilText}]}>{label}</Text>
       </Animated.View>
       <StatusBar style="auto" />
     </ScrollView>
@@ -85,7 +89,6 @@ export default function Stop() {
 const styles = StyleSheet.create({
   wrapper: {
     flexGrow: 1,
-    backgroundColor: '#f7f7fa',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 60,
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    backgroundColor: '#fff',
+    
     borderRadius: 16,
     paddingVertical: 40,
     paddingHorizontal: 30,
@@ -112,20 +115,20 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   icon: {
-    width:50,
-    height:50,
+    width: 50,
+    height: 50,
     marginBottom: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#222',
+    
     marginBottom: 10,
     textAlign: 'center',
   },
   label: {
     fontSize: 16,
-    color: '#555',
+    
     textAlign: 'center',
   },
 });

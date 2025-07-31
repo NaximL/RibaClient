@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Animated, Platform, Image } from 'react-native'
 import useBalStore from '../store/BalStore';
 import useProfileStore from '../store/ProfileStore';
-import { gstyles } from '../styles/gstyles';
 import { getData, removeData } from '../components/LocalStorage';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -10,10 +9,13 @@ import { useCallback } from 'react';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../router/router';
 import { VERSION } from '../config/config';
+import { Gstyle } from 'styles/gstyles';
 
 
 
 export default function Profile() {
+  const { gstyles, ProfilText, WidgetColorText, ProfilTextValue , ProfilCircle} = Gstyle();
+
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const Profile = useProfileStore((state) => state.Prof);
   const Bal = useBalStore((state) => state.bal);
@@ -36,7 +38,6 @@ export default function Profile() {
 
 
   useEffect(() => {
-    console.log(Profile)
     Animated.timing(anim, {
       toValue: 1,
       duration: 500,
@@ -53,8 +54,9 @@ export default function Profile() {
     <ScrollView
       style={[
         styles.flex1,
+        gstyles.back,
         {
-          backgroundColor: '#f7f7fa',
+          
           paddingVertical: Platform.OS === 'ios' ? 50 : 0,
         },
       ]}
@@ -73,27 +75,28 @@ export default function Profile() {
           <View style={styles.avatar}>
             <Image style={styles.avatarIcon} source={require("@emoji/Student.png")} />
           </View>
-          <Text style={styles.profileName}>{Profile.entext[9]}</Text>
+          <Text style={[styles.profileName, { color: ProfilText }]}>{Profile.entext[9]}</Text>
           <Text style={styles.profileInfo}>{` ${Profile.entext[25]} • ${Profile.entext[10]} `}</Text>
         </View>
-        <View style={styles.card}>
+        <View style={[styles.card, gstyles.WidgetBack]}>
           <View style={styles.cardSection}>
-            <Text style={styles.cardTitle}>Логін</Text>
+            <Text style={[styles.cardTitle, { color: WidgetColorText }]}>Логін</Text>
             <View style={styles.row}>
-              <Text style={styles.cardValue}>{login}</Text>
+              <Text style={[styles.cardTitle, { color: ProfilTextValue }]}>{login}</Text>
 
             </View>
           </View>
           <View>
-            <Text style={styles.cardTitle}>{ }</Text>
+            <Text style={[styles.cardTitle, { color: ProfilTextValue }]}>{ }</Text>
             <View style={styles.row}>
               <Text style={styles.cardValue}>********</Text>
 
             </View>
           </View>
         </View>
-        <View style={styles.scoreBlock}>
-          <View style={styles.scoreCircle}>
+
+        <View style={[styles.scoreBlock, gstyles.WidgetBack]}>
+          <View style={[styles.scoreCircle,{backgroundColor: ProfilCircle}]}>
             <Text
               style={[
                 styles.scoreText,
@@ -106,10 +109,11 @@ export default function Profile() {
             </Text>
           </View>
           <View>
-            <Text style={styles.scoreTitle}>Середній бал</Text>
+            <Text style={[styles.scoreTitle,{color: WidgetColorText}]}>Середній бал</Text>
             <Text style={styles.scoreSubtitle}>Ваша успішність зростає!</Text>
           </View>
         </View>
+
         {/* <View style={styles.teachersBlock}>
           <Text style={styles.teachersTitle}>Мої вчителі</Text>
           <View style={styles.teachersList}>
@@ -147,7 +151,8 @@ export default function Profile() {
         </View>
          */}
 
-        <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
+
+        <TouchableOpacity style={[styles.logoutBtn,gstyles.WidgetBack]} onPress={logout}>
           <Text style={styles.logoutText}>Вийти</Text>
         </TouchableOpacity>
         <Text style={styles.versionText}>{VERSION}</Text>
@@ -159,8 +164,8 @@ export default function Profile() {
 
 const styles = StyleSheet.create({
   flex1: { flex: 1 },
-  scrollContent: { padding: 24, backgroundColor: '#f7f7fa' },
-  profileBlock: { alignItems: 'center', marginBottom: 32 },
+  scrollContent: { padding: 24 },
+  profileBlock: { alignItems: 'center', paddingBottom: 32 },
   avatar: {
     width: 110,
     height: 110,
@@ -173,10 +178,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   avatarIcon: { width: 48, height: 48 },
-  profileName: { fontSize: 26, fontWeight: '700', color: '#222' },
+  profileName: { fontSize: 26, fontWeight: '700' },
   profileInfo: { color: '#888', fontSize: 16 },
   card: {
-    backgroundColor: '#fff',
+
     borderRadius: 18,
     padding: 22,
     marginBottom: 24,
@@ -189,7 +194,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
   link: { color: '#007aff', fontSize: 14, fontWeight: '500' },
   scoreBlock: {
-    backgroundColor: '#fff',
+    
     borderRadius: 18,
     padding: 22,
     marginBottom: 24,
@@ -260,7 +265,6 @@ const styles = StyleSheet.create({
   teacherInfIconText: { fontSize: 20, color: '#388e3c' },
   teacherInfTitle: { fontSize: 16, fontWeight: '600', color: '#388e3c' },
   logoutBtn: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 14,
     alignItems: 'center',

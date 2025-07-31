@@ -17,6 +17,7 @@ import { GetMessage } from "@api/GetMessage";
 import { Ionicons } from '@expo/vector-icons';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router/router';
+import { Gstyle } from "styles/gstyles";
 
 type FileLink = {
   name: string;
@@ -24,6 +25,7 @@ type FileLink = {
 };
 
 const FullMessage = () => {
+  const { gstyles, ChatText,ChatTitle } = Gstyle();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const navigation = useNavigation<NavigationProp>();
@@ -63,19 +65,19 @@ const FullMessage = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[gstyles.back, styles.container]}>
 
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("App", {screen: "Message"}) }>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("App", { screen: "Message" })}>
         <Ionicons name="arrow-back" size={24} color="#007aff" />
         <Text style={styles.backText}>Назад</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>{item.Tema}</Text>
+      <Text style={[styles.title, { color: ChatTitle }]}>{item.Tema}</Text>
       <Text style={styles.date}>{new Date(item.Data).toLocaleString()}</Text>
 
       <View style={styles.section}>
         <Text style={styles.label}>Від:</Text>
-        <Text style={styles.value}>{item.Siuntejas}</Text>
+        <Text style={[styles.value, { color: ChatText }]}>{item.Siuntejas}</Text>
       </View>
 
       <View style={styles.section}>
@@ -84,7 +86,10 @@ const FullMessage = () => {
           <RenderHTML
             contentWidth={width - 40}
             source={{ html: body }}
-            baseStyle={styles.html}
+            baseStyle={{
+              ...styles.html,
+              color: ChatText,
+            }}
           />
         ) :
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 40 }}>
@@ -122,7 +127,7 @@ export default FullMessage;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#f9fafb",
+
     padding: 20,
     paddingTop: Platform.OS === 'ios' ? 64 : 32,
   },
@@ -158,11 +163,11 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 16,
-    color: "#333333",
+
   },
   html: {
     fontSize: 16,
-    color: "#333333",
+
     lineHeight: 24,
   },
   noFilesText: {

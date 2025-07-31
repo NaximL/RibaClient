@@ -6,6 +6,7 @@ import FullScreenModal from '../components/Modal';
 import useHomeWorkStore from '../store/HomeWorkStore';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { Gstyle } from 'styles/gstyles';
 
 interface HomeworkItem {
     Dalykas?: string;
@@ -17,6 +18,8 @@ interface HomeworkItem {
 }
 
 export default function HomeWork() {
+    const { gstyles, WidgetColorText } = Gstyle();
+
     function rem(arr: Array<HomeworkItem>, key: string) {
         const seen = new Set();
         return arr.filter(item => {
@@ -76,12 +79,12 @@ export default function HomeWork() {
 
     return (
         <>
-            <View style={[styles.container, { backgroundColor: '#f7f7fa' }]}>
+            <View style={[styles.container, gstyles.back]}>
                 <FullScreenModal onClose={() => SetSelect(null)} visible={!!Select}>
-                    <Text style={[styles.label, { fontSize: 30 }]}>{Select?.Dalykas ?? ''}</Text>
-                    <Text style={styles.label}>{Select?.PamokosData ? `Задано: ${formatDate(Select.PamokosData)}` : ''}</Text>
-                    <Text style={styles.label}>{Select?.AtliktiIki ? `Кінцева дата здачі: ${formatDate(Select.AtliktiIki)}` : ''}</Text>
-                    <Text style={{ fontSize: 15, marginTop: 30 }}>
+                    <Text style={[styles.label, { color: WidgetColorText, fontSize: 30 }]}>{Select?.Dalykas ?? ''}</Text>
+                    <Text style={[styles.label, { color: WidgetColorText }]}>{Select?.PamokosData ? `Задано: ${formatDate(Select.PamokosData)}` : ''}</Text>
+                    <Text style={[styles.label, { color: WidgetColorText }]}>{Select?.AtliktiIki ? `Кінцева дата здачі: ${formatDate(Select.AtliktiIki)}` : ''}</Text>
+                    <Text style={{ color: WidgetColorText, fontSize: 15, marginTop: 30 }}>
                         {Select?.UzduotiesAprasymas
                             ? containsHTML(Select.UzduotiesAprasymas)
                                 ? <RenderHTML
@@ -94,40 +97,57 @@ export default function HomeWork() {
                             : '...'}
                     </Text>
                 </FullScreenModal>
+
                 <ScrollView
                     style={{ paddingBottom: 65 }}
                     contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator={false}
                 >
-                    {List.map((el, index) => (
-                        <Animated.View
-                            key={index}
-                            style={{
-                                ...styles.card,
-                                opacity: cardAnim,
-                                transform: [
-                                    { scale: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
-                                    { translateY: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] }) }
-                                ]
-                            }}
-                        >
-                            <Pressable onPress={() => {
-                                SetSelect(el);
-                            }}>
-                                <Text style={styles.label}>{el.Dalykas ?? ''}</Text>
-                                {el.UzduotiesAprasymas && containsHTML(el.UzduotiesAprasymas) ? (
-                                    <RenderHTML
-                                        contentWidth={width}
-                                        source={{ html: el.UzduotiesAprasymas }}
-                                        baseStyle={styles.value}
-                                        ignoredDomTags={['o:p']}
-                                    />
-                                ) : (
-                                    <Text style={styles.value}>{el.UzduotiesAprasymas ?? '...'}</Text>
-                                )}
-                            </Pressable>
-                        </Animated.View>
-                    ))}
+
+                    {List.length === 0 ? <Animated.View
+                        style={{
+                            opacity: cardAnim,
+                            transform: [
+                                { scale: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
+                                { translateY: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] }) }
+                            ]
+                        }}
+                    >
+                        <Text style={styles.emptyText}>Наразі немає домашнього завдання</Text>
+                    </Animated.View> :
+
+                        List.map((el, index) => (
+                            <Animated.View
+                                key={index}
+                                style={{
+                                    ...gstyles.WidgetBack,
+                                    ...styles.card,
+                                    opacity: cardAnim,
+                                    transform: [
+                                        { scale: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
+                                        { translateY: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] }) }
+                                    ]
+                                }}
+                            >
+                                <Pressable onPress={() => {
+                                    SetSelect(el);
+                                }}>
+                                    <Text style={[styles.label, { color: WidgetColorText }]}>{el.Dalykas ?? ''}</Text>
+                                    {el.UzduotiesAprasymas && containsHTML(el.UzduotiesAprasymas) ? (
+                                        <RenderHTML
+                                            contentWidth={width}
+                                            source={{ html: el.UzduotiesAprasymas }}
+                                            baseStyle={styles.value}
+                                            ignoredDomTags={['o:p']}
+                                        />
+                                    ) : (
+                                        <Text style={[styles.value, { color: WidgetColorText }]}>{el.UzduotiesAprasymas ?? '...'}</Text>
+                                    )}
+                                </Pressable>
+                            </Animated.View>
+                        ))}
+
+
                 </ScrollView>
             </View>
             <StatusBar style="dark" />
@@ -146,7 +166,7 @@ const styles = StyleSheet.create({
         padding: 18,
     },
     card: {
-        backgroundColor: '#fff',
+
         borderRadius: 18,
         padding: 20,
         marginBottom: 14,
@@ -158,10 +178,16 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 17,
         marginBottom: 8,
-        color: '#222',
+
     },
     value: {
         fontSize: 15,
         color: '#444',
+    },
+    emptyText: {
+        textAlign: "center",
+        marginTop: 40,
+        color: "#aaa",
+        fontSize: 16,
     },
 });

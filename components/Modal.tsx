@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, View, StyleSheet, Text, Pressable, ScrollView, Platform } from 'react-native';
+import { Gstyle } from 'styles/gstyles';
 
 type FullScreenModalProps = {
   visible: boolean;
@@ -8,6 +9,7 @@ type FullScreenModalProps = {
 };
 
 export default function FullScreenModal({ visible, onClose, children }: FullScreenModalProps) {
+  const { gstyles } = Gstyle();
   return (
     <Modal
       animationType="fade"
@@ -15,7 +17,7 @@ export default function FullScreenModal({ visible, onClose, children }: FullScre
       visible={visible}
     >
       <View style={styles.backdrop}>
-        <View style={styles.modalContent}>
+        <View style={[styles.modalContent, gstyles.WidgetBack]}>
           <ScrollView contentContainerStyle={styles.scrollContent}>
             {children}
           </ScrollView>
@@ -37,7 +39,6 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '92%',
-    backgroundColor: '#fff',
     borderRadius: 22,
     padding: 24,
     maxHeight: '90%',

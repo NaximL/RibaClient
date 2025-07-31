@@ -16,10 +16,13 @@ import { useNavigation } from '@react-navigation/native';
 import FullScreenModal from '@components/Modal';
 import { Animated } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { useRef, useCallback, useEffect } from 'react';
-import CreateMessage from "./components/CreateMessage";
+import { useCallback, useEffect } from 'react';
+import { Gstyle } from "styles/gstyles";
+
 
 const ChoiceChat = () => {
+  const { gstyles,MessageTopicText } = Gstyle();
+
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const navigation = useNavigation<NavigationProp>();
 
@@ -66,14 +69,14 @@ const ChoiceChat = () => {
       }}
     >
       <TouchableOpacity
-        style={styles.messageContainer}
+        style={[styles.messageContainer,gstyles.WidgetBack]}
         onPress={() => navigation.replace("FullMessage", item)}
         activeOpacity={0.8}
       >
         <Text style={[styles.sender, !item.ArPerskaite && styles.noreed]}>
           {item.Siuntejas}
         </Text>
-        <Text style={styles.topic} numberOfLines={1}>
+        <Text style={[styles.topic,{color: MessageTopicText}]} numberOfLines={1}>
           {item.Tema}
         </Text>
         <View style={styles.meta}>
@@ -84,7 +87,7 @@ const ChoiceChat = () => {
   );
 
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, gstyles.back]}>
       <View style={styles.headWrapper}>
         <Head modal={setModalVisible} nav={navigation} />
       </View>
@@ -114,17 +117,17 @@ const ChoiceChat = () => {
         </View>
       </FullScreenModal>
 
-      
-        
-        <FlatList
-          data={Message}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.Id.toString()}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
 
-          
+
+      <FlatList
+        data={Message}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.Id.toString()}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+      />
+
+
     </View>
   );
 };
@@ -134,7 +137,7 @@ export default ChoiceChat;
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: "#f2f4f8",
+    
     paddingTop: Platform.OS === "ios" ? 64 : 32,
 
   },
@@ -158,14 +161,12 @@ const styles = StyleSheet.create({
   },
 
   messageContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+
     elevation: 4,
   },
 

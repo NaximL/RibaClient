@@ -21,10 +21,12 @@ import { RootStackParamList } from '../router/router';
 import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
 import { Logins } from '@api/Login';
+import { Gstyle } from 'styles/gstyles';
 
 
 
 const Login = () => {
+  const { gstyles, MessageTopicText, ProfilText, Login } = Gstyle();
   const loginRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
   const [logins, setLogin] = React.useState('');
@@ -62,7 +64,7 @@ const Login = () => {
         storeData("login", logins);
         storeData("password", password);
         alert('Ви успішно увійшли!');
-        navigation.replace('App',{screen: 'Home'});
+        navigation.replace('App', { screen: 'Home' });
       }
       else {
         alert('Невірний логін або пароль');
@@ -102,19 +104,20 @@ const Login = () => {
   return (
     <>
       {Load === true ?
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={[{ flex: 1, justifyContent: 'center', alignItems: 'center' }, gstyles.back]}>
           <ActivityIndicator size="large" color="#007aff" />
         </View>
         :
 
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1, backgroundColor: '#f7f7fa' }}
+          style={[{ flex: 1, }, gstyles.back]}
           keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
         >
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <Animated.View style={{
               ...styles.wrapper,
+              ...gstyles.back,
               opacity: anim,
               transform: [
                 { scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
@@ -127,10 +130,10 @@ const Login = () => {
                   resizeMode="contain"
                   style={styles.logo}
                 />
-                <Text style={styles.title}>FastShark</Text>
-                <Text style={styles.subtitle}>Пірнай у нормальний клієнт моєї школи</Text>
+                <Text style={[styles.title, { color: ProfilText }]}>FastShark</Text>
+                <Text style={[styles.subtitle, { color: MessageTopicText }]}>Пірнай у нормальний клієнт моєї школи</Text>
               </View>
-              <View style={styles.form}>
+              <View style={[styles.form, { backgroundColor: Login }]}>
                 <TextInput
                   ref={loginRef}
                   style={styles.input}
@@ -150,7 +153,7 @@ const Login = () => {
                   value={password}
                   onChangeText={setPassword}
                 />
-                <TouchableOpacity style={styles.button} onPress={Save}>
+                <TouchableOpacity style={[styles.button]} onPress={Save}>
                   <Text style={styles.buttonText}>Увійти</Text>
                 </TouchableOpacity>
               </View>
@@ -174,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 40,
-    backgroundColor: '#f7f7fa',
+
   },
   logoContainer: {
     alignItems: 'center',
@@ -190,20 +193,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#222',
+
     marginBottom: 2,
     letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 16,
-    color: '#888',
+
     marginTop: 2,
     marginBottom: 10,
   },
   form: {
     width: '90%',
     alignSelf: 'center',
-    backgroundColor: '#fff',
+
     borderRadius: 18,
     padding: 24,
     shadowColor: '#000',

@@ -3,9 +3,10 @@ import { GetLesion } from "../api/MH/GetLesion";
 import { getData } from "../components/LocalStorage";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated, Platform } from "react-native";
 import useLesionStore from "../store/LesionStore";
-import { gstyles } from "../styles/gstyles";
+
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { Gstyle } from "styles/gstyles";
 
 const daysOfWeek = [
     "Понеділок",
@@ -23,6 +24,8 @@ interface Lesson {
 type ScheduleDay = Lesson[];
 
 const Schedule = () => {
+    const { gstyles } = Gstyle();
+
     const [openDays, setOpenDays] = useState<{ [key: number]: boolean }>({});
     const setLesions = useLesionStore((state) => state.setLesions);
     const Lesion = useLesionStore((state) => state.lesion);
@@ -63,7 +66,7 @@ const Schedule = () => {
     }, [])
 
     return (
-        <ScrollView style={[styles.container]} showsVerticalScrollIndicator={false}>
+        <ScrollView style={[styles.container,gstyles.back]} showsVerticalScrollIndicator={false}>
             <Animated.View style={{
                 opacity: anim,
                 transform: [
@@ -71,42 +74,42 @@ const Schedule = () => {
                     { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [40, 0] }) }
                 ]
             }}>
-                { Lesion.length === 0 || Lesion[0].length === 0 ? (
+                {Lesion.length === 0 || Lesion[0].length === 0 ? (
                     <Text style={styles.emptyText}>На даний момент уроків немає.</Text>
-                ): (
-                <>
-                    {Array.isArray(Le) && Le.map((day: ScheduleDay, index: number) => (
-                        <View key={index} style={styles.daySection}>
-                            <TouchableOpacity
-                                onPress={() => toggleDay(index)}
-                                style={[
-                                    styles.dayHeader,
-                                    openDays[index] && styles.dayHeaderActive,
-                                ]}
-                                activeOpacity={0.85}
-                            >
-                                <Text style={styles.dayTitle}>
-                                    {daysOfWeek[index] || `День ${index + 1}`}
-                                </Text>
-                                <Text style={styles.arrow}>
-                                    {openDays[index] ? "▲" : "▼"}
-                                </Text>
-                            </TouchableOpacity>
-                            {openDays[index] && (
-                                <View style={styles.cardsWrapper}>
-                                    {day.map((urok: Lesson, lessonIndex: number) => (
-                                        <View key={lessonIndex} style={styles.card}>
-                                            <View style={styles.cardHeader}>
-                                                <Text style={styles.lessonTitle}>{urok.urok}</Text>
-                                                <Text style={styles.timeValue}>{urok.time}</Text>
+                ) : (
+                    <>
+                        {Array.isArray(Le) && Le.map((day: ScheduleDay, index: number) => (
+                            <View key={index} style={styles.daySection}>
+                                <TouchableOpacity
+                                    onPress={() => toggleDay(index)}
+                                    style={[
+                                        styles.dayHeader,
+                                        openDays[index] && styles.dayHeaderActive,
+                                    ]}
+                                    activeOpacity={0.85}
+                                >
+                                    <Text style={styles.dayTitle}>
+                                        {daysOfWeek[index] || `День ${index + 1}`}
+                                    </Text>
+                                    <Text style={styles.arrow}>
+                                        {openDays[index] ? "▲" : "▼"}
+                                    </Text>
+                                </TouchableOpacity>
+                                {openDays[index] && (
+                                    <View style={styles.cardsWrapper}>
+                                        {day.map((urok: Lesson, lessonIndex: number) => (
+                                            <View key={lessonIndex} style={styles.card}>
+                                                <View style={styles.cardHeader}>
+                                                    <Text style={styles.lessonTitle}>{urok.urok}</Text>
+                                                    <Text style={styles.timeValue}>{urok.time}</Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                    ))}
-                                </View>
-                            )}
-                        </View>
-                    ))}
-                </>
+                                        ))}
+                                    </View>
+                                )}
+                            </View>
+                        ))}
+                    </>
                 )}
             </Animated.View>
         </ScrollView>
@@ -116,7 +119,7 @@ const Schedule = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#f7f7fa",
+
         padding: 16,
         paddingVertical: 50,
     },

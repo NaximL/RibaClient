@@ -94,7 +94,7 @@ function AppTabs() {
                     transform: [{ translateY }],
                     elevation: 10,
                     opacity: opacity,
-                    zIndex: 1, // 👈 добавь
+                    zIndex: 1,
                 },
             })}
         >

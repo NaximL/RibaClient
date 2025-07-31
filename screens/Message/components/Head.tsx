@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 import { BlurView } from 'expo-blur';
+import { Gstyle } from 'styles/gstyles';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -18,11 +19,12 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 
 const Head = ({ nav, modal, s }: any) => {
+  const { gstyles, Circle } = Gstyle();
 
   const options = [
     {
       text: 'Прочитати всі',
-      play: () => {}
+      play: () => { }
     }];
   const [open, setOpen] = useState(false);
   const animations = useRef(options.map(() => new Animated.Value(0))).current;
@@ -53,11 +55,11 @@ const Head = ({ nav, modal, s }: any) => {
       <View ></View>
 
       <View style={styles.rightGroup}>
-        <TouchableOpacity style={styles.circle} onPress={toggleDropdown}>
+        <TouchableOpacity style={[styles.circle, { backgroundColor: Circle }]} onPress={toggleDropdown}>
           <Ionicons name="ellipsis-vertical" size={20} color="#007aff" />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { modal(true) }} style={styles.circle}>
+        <TouchableOpacity onPress={() => { modal(true) }} style={[styles.circle, { backgroundColor: Circle }]}>
           <Ionicons name="search" size={20} color="#007aff" />
         </TouchableOpacity>
 
@@ -104,6 +106,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
+
     backgroundColor: 'rgba(255,255,255,0.9)',
     justifyContent: 'center',
     alignItems: 'center',

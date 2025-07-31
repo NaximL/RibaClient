@@ -10,6 +10,8 @@ import {
 import { RootStackParamList } from '../../../router/router';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import { Gstyle } from 'styles/gstyles';
+
 
 type Item = {
   image: ImageSourcePropType;
@@ -22,10 +24,12 @@ type WidgetProps = {
   item: Item;
   index: number;
   cardAnim: Array<Animated.Value>;
-  load:boolean
+  load: boolean
 };
 
-const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim ,load}) => {
+const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim, load }) => {
+  const { gstyles, WidgetColorText } = Gstyle();
+
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const navigation = useNavigation<NavigationProp>();
 
@@ -34,6 +38,7 @@ const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim ,load}) => {
       key={index}
       style={[
         styles.card,
+        gstyles.WidgetBack,
         {
           opacity: cardAnim[index],
           transform: [
@@ -62,7 +67,7 @@ const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim ,load}) => {
           )}
           <Text style={styles.label}>{item.lable}</Text>
         </View>
-        <Text style={[styles.value,{ color: load ? '#888' : '#222' }]}>{item.data}</Text>
+        <Text style={[styles.value, { color: load ? '#888' : WidgetColorText }]}>{item.data}</Text>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -73,7 +78,6 @@ export default Widget;
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
     borderRadius: 24,
     padding: 28,
     marginVertical: 14,
@@ -91,7 +95,6 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#222',
     letterSpacing: 0.5,
   }
 });

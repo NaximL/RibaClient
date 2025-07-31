@@ -5,7 +5,8 @@ import {
   Animated,
   ScrollView,
   ActivityIndicator,
-  Platform
+  Platform,
+  useColorScheme
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from '@react-navigation/native';
@@ -26,8 +27,12 @@ import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
 import useMessageStore from '@store/MessageStore';
 import useFetchStore from '@store/fetchStore';
+import { Gstyle } from 'styles/gstyles';
+
 
 export default function Home() {
+  const { gstyles } = Gstyle();
+
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const navigation = useNavigation<NavigationProp>();
 
@@ -49,7 +54,6 @@ export default function Home() {
   const setLesions = useLesionStore((state) => state.setLesions);
 
   const setProfile = useProfileStore((state) => state.setProfile);
-
 
 
 
@@ -152,7 +156,7 @@ export default function Home() {
 
             setLoads(false);
             setLoadsd(true);
-            
+
             setLoad(false);
 
           }
@@ -197,7 +201,7 @@ export default function Home() {
   ]
   if (load) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f7f7fa' }}>
+      <View style={[gstyles.back, { flex: 1, justifyContent: 'center', alignItems: 'center', }]}>
         <ActivityIndicator size="large" color="#007aff" />
       </View>
     );
@@ -208,7 +212,7 @@ export default function Home() {
 
       {Loads && <View style={styles.LargeLoad}><ActivityIndicator size="small" color="#007aff" /></View>}
 
-      <ScrollView style={styles.wrapper} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
+      <ScrollView style={[gstyles.back, styles.wrapper]} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
         {menu.map((item, index) =>
           <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
         )}
@@ -221,7 +225,6 @@ export default function Home() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#f7f7fa',
     paddingVertical: 50,
     paddingBottom: 100
   },
