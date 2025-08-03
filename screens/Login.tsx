@@ -22,6 +22,7 @@ import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
 import { Logins } from '@api/Login';
 import { Gstyle } from 'styles/gstyles';
+import { GetToken } from 'api/MH_APP/GetToken';
 
 
 
@@ -45,7 +46,7 @@ const Login = () => {
     }
     return str;
   }
-  const Save = () => {
+  const Save = async () => {
     setLogin(del(logins));
     setPassword(del(password));
 
@@ -58,9 +59,11 @@ const Login = () => {
       return;
     }
     SetLoad(true);
-    Logins(logins, password).then((sts) => {
-      console.log(sts.sts)
-      if (sts.sts) {
+
+    await Logins(logins, password).then(async data => {
+
+      if (data.sts) {
+        await storeData("tokens", JSON.stringify(data.tokens));
         storeData("login", logins);
         storeData("password", password);
         alert('Ви успішно увійшли!');
@@ -70,11 +73,9 @@ const Login = () => {
         alert('Невірний логін або пароль');
         SetLoad(false);
       }
-    }).catch((e) => {
-      alert('Невірний логін або пароль');
-      console.error(e);
-      SetLoad(false);
-    });
+    })
+
+
   };
 
   useEffect(() => {

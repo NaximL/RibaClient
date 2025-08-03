@@ -6,13 +6,13 @@ import { SERVER_URL } from "../../config/config";
 
 
 
-export async function GetMessage(username:string, password:string,id:number) {
-  const res = await fetch(`${SERVER_URL}/api/getmessage`, {
+export async function GetMessage(token:string,id:number) {
+  const res = await fetch(`${SERVER_URL}/api/onemessage`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ username, password,id }),
+    body: JSON.stringify({ token,id }),
   });
 
   if (!res.ok) {

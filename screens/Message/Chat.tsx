@@ -25,7 +25,7 @@ type FileLink = {
 };
 
 const FullMessage = () => {
-  const { gstyles, ChatText,ChatTitle } = Gstyle();
+  const { gstyles, ChatText, ChatTitle } = Gstyle();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const navigation = useNavigation<NavigationProp>();
@@ -48,13 +48,13 @@ const FullMessage = () => {
 
   useEffect(() => {
     (async () => {
-      const login = await getData("login");
-      const password = await getData("password");
-      if (login && password) {
-        const msg = await GetMessage(login, password, item.Id);
-        setAttachments(msg.links || []);
-        setBody(msg.body || "");
-      }
+      const tokens = await getData("tokens");
+
+      if (!tokens) return
+      const msg = await GetMessage(tokens, item.Id);
+      setAttachments(msg.links || []);
+      setBody(msg.body || "");
+
     })();
   }, [item.Id]);
 

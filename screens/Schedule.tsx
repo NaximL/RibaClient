@@ -55,8 +55,6 @@ const Schedule = () => {
     useEffect(() => {
 
         let d = Lesion;
-        d.pop()
-        d.pop()
         setLe(d)
         Animated.timing(anim, {
             toValue: 1,
@@ -66,7 +64,7 @@ const Schedule = () => {
     }, [])
 
     return (
-        <ScrollView style={[styles.container,gstyles.back]} showsVerticalScrollIndicator={false}>
+        <ScrollView style={[styles.container, gstyles.back]} showsVerticalScrollIndicator={false}>
             <Animated.View style={{
                 opacity: anim,
                 transform: [

@@ -7,31 +7,41 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { useFocusEffect } from '@react-navigation/native';
+import { useEffect, useState, useRef, useCallback } from 'react';
+
+
+
 import useLoadingStore from '@store/LoadStore';
 import useBalStore from '@store/BalStore';
 import useLesionStore from '@store/LesionStore';
 import useHomeWorkStore from '@store/HomeWorkStore';
 import useProfileStore from '@store/ProfileStore';
-import { useEffect, useState, useRef, useCallback } from 'react';
-import { GetLesion } from '@api/GetLesion';
-import { GetAllData } from '@api/GetAlldata';
-import { getData, storeData } from '@components/LocalStorage';
-import Widget from './components/Widget';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../router/router';
-import { useNavigation } from '@react-navigation/native';
-import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
 import useMessageStore from '@store/MessageStore';
 import useFetchStore from '@store/fetchStore';
-import { Gstyle } from 'styles/gstyles';
+
+import { useFocusEffect } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+
 
 import BooksEmoji from '@emoji/Books.png';
 import MailEmoji from '@emoji/Mail.png';
 import AnalitikEmoji from '@emoji/Analitik.png';
 import MedalEmoji from '@emoji/Medal.png';
+
+import Widget from './components/Widget';
 import LoadWidget from './components/LoadWidget';
+import { Gstyle } from 'styles/gstyles';
+import { ISPROD } from 'config/config';
+import { RootStackParamList } from '../../router/router';
+import { getData, storeData } from '@components/LocalStorage';
+
+
+import { CheckToken } from '@api/CheckToken';
+import { GetLesion } from '@api/GetLesion';
+import { GetAllData } from '@api/GetAlldata';
+import { Logins } from '@api/Login';
 
 
 export default function Home() {
@@ -88,6 +98,7 @@ export default function Home() {
     }, [])
   );
 
+
   useEffect(() => {
     if (!load) {
       cardAnim.forEach((anim, i) => {
@@ -124,20 +135,24 @@ export default function Home() {
 
       const applyData = async (MHDATA: any, triggerHaptics: boolean) => {
         if (!MHDATA) return;
-
+        
         const [HomePage, HomeWork, Lesions, ProfilUser, Message] = MHDATA;
+
 
         setBal(HomePage[14]);
         setMis(HomePage[15]);
         setPovidok(HomePage[10]);
-        setLesions(Lesions);
-        setProfile(ProfilUser);
-        setMessage(Message.value);
 
+        
+        setProfile(ProfilUser);
+
+        setMessage(Message.value);
         setHomeWork(Array.isArray(HomeWork?.value) ? HomeWork.value : []);
+
 
         const lesionData = await GetLesion(Lesions);
         setLesion(lesionData);
+        setLesions(Lesions);
 
         if (triggerHaptics) {
           await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -152,12 +167,15 @@ export default function Home() {
         setLoad(false);
       }
 
-
-      if (!Loadsd) {
-        await GetAllData(login, password).then(async (data) => {
+      const ChangeData = async (token: string, page: string) => {
+        await GetAllData(token).then(async (data) => {
           if (data) {
-            await storeData("check", JSON.stringify(data));
-            applyData(data, true);
+            let th = data;
+            th[0] = page;
+            console.log(th)
+
+            await storeData("check", JSON.stringify(th));
+            applyData(th, true);
 
             setLoads(false);
             setLoadsd(true);
@@ -165,12 +183,39 @@ export default function Home() {
 
           }
         })
+      }
+
+      if (!Loadsd) {
+
+        const tokens = await getData("tokens");
+        if (!tokens) return
+
+        const CheckTok = async (attempt = 0) => {
+          if (attempt > 3) {
+            console.error("Забагато спроб перевірки токену.");
+            return;
+          }
+
+          await CheckToken(tokens).then(async page => {
+            if (!page.status) {
+              await Logins(login, password).then(async data => {
+                await storeData("tokens", JSON.stringify(data.tokens));
+                await CheckTok(attempt + 1);
+              });
+            } else {
+              ChangeData(tokens, page.status);
+            }
+          }).catch(e => console.error("Помилка перевірки токену:", e));
+        };
+
+        CheckTok();
 
       }
       else {
         setLoads(false);
       }
-    };
+
+    }
     fetchData();
 
 
@@ -204,7 +249,7 @@ export default function Home() {
     }
   ]
 
-  
+
   if (load) {
     return (
       <View style={[gstyles.back, { flex: 1, justifyContent: 'center', alignItems: 'center', }]}>

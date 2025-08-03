@@ -90,7 +90,7 @@ export default function HomeWork() {
                                 ? <RenderHTML
                                     contentWidth={width}
                                     source={{ html: Select.UzduotiesAprasymas }}
-                                    baseStyle={styles.value}
+                                    baseStyle={{...styles.value,color:WidgetColorText}}
                                     ignoredDomTags={['o:p']}
                                 />
                                 : Select.UzduotiesAprasymas
@@ -137,7 +137,7 @@ export default function HomeWork() {
                                         <RenderHTML
                                             contentWidth={width}
                                             source={{ html: el.UzduotiesAprasymas }}
-                                            baseStyle={styles.value}
+                                            baseStyle={{...styles.value,color:WidgetColorText}}
                                             ignoredDomTags={['o:p']}
                                         />
                                     ) : (

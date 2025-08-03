@@ -7,7 +7,7 @@ import { SERVER_URL } from "../../config/config";
 
 
 export async function Logins(username:string, password:string) {
-  const res = await fetch(`${SERVER_URL}/api/login`, {
+  const res = await fetch(`${SERVER_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
