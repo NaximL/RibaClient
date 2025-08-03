@@ -47,6 +47,8 @@ const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim, load }) => {
           ]
         }
       ]}
+      shouldRasterizeIOS
+      renderToHardwareTextureAndroid
     >
       <TouchableOpacity
         activeOpacity={0.8}

@@ -59,9 +59,9 @@ const Head = ({ nav, modal, s }: any) => {
           <Ionicons name="ellipsis-vertical" size={20} color="#007aff" />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { modal(true) }} style={[styles.circle, { backgroundColor: Circle }]}>
+        {/* <TouchableOpacity onPress={() => { modal(true) }} style={[styles.circle, { backgroundColor: Circle }]}>
           <Ionicons name="search" size={20} color="#007aff" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {open && (
           <BlurView intensity={15} tint="light" style={styles.dropdown}>

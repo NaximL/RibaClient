@@ -5,8 +5,6 @@ import {
   Animated,
   ScrollView,
   ActivityIndicator,
-  Platform,
-  useColorScheme
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from '@react-navigation/native';
@@ -29,8 +27,15 @@ import useMessageStore from '@store/MessageStore';
 import useFetchStore from '@store/fetchStore';
 import { Gstyle } from 'styles/gstyles';
 
+import BooksEmoji from '@emoji/Books.png';
+import MailEmoji from '@emoji/Mail.png';
+import AnalitikEmoji from '@emoji/Analitik.png';
+import MedalEmoji from '@emoji/Medal.png';
+import LoadWidget from './components/LoadWidget';
+
 
 export default function Home() {
+
   const { gstyles } = Gstyle();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
@@ -156,7 +161,6 @@ export default function Home() {
 
             setLoads(false);
             setLoadsd(true);
-
             setLoad(false);
 
           }
@@ -178,27 +182,29 @@ export default function Home() {
   const menu = [
 
     {
-      "image": require('@emoji/Books.png'),
+      "image": BooksEmoji,
       "lable": "Урок зараз",
       "data": Lesion ?? '...'
     },
     {
-      "image": require('@emoji/Mail.png'),
+      "image": MailEmoji,
       "lable": "Повідомлення",
       "data": Povidok ?? '...',
 
     },
     {
-      "image": require('@emoji/Analitik.png'),
+      "image": AnalitikEmoji,
       "lable": "Середній бал",
       "data": Bal ?? '...'
     },
     {
-      "image": require('@emoji/Medal.png'),
+      "image": MedalEmoji,
       "lable": "Місце в класі",
       "data": mis ? `${mis} з 32` : '...'
     }
   ]
+
+  
   if (load) {
     return (
       <View style={[gstyles.back, { flex: 1, justifyContent: 'center', alignItems: 'center', }]}>
@@ -210,9 +216,10 @@ export default function Home() {
   return (
     <>
 
-      {Loads && <View style={styles.LargeLoad}><ActivityIndicator size="small" color="#007aff" /></View>}
-
       <ScrollView style={[gstyles.back, styles.wrapper]} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
+
+        {Loads && <LoadWidget />}
+
         {menu.map((item, index) =>
           <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
         )}
@@ -227,11 +234,5 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 50,
     paddingBottom: 100
-  },
-  LargeLoad: {
-    position: "absolute",
-    left: Platform.OS === 'ios' || Platform.OS === 'android' ? 20 : 10,
-    top: Platform.OS === 'ios' || Platform.OS === 'android' ? 25 : 10,
-    zIndex: 1000,
   }
 });

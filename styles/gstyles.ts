@@ -10,6 +10,9 @@ export const Gstyle = () => {
     WidgetBack: {
       backgroundColor: isDark ? '#1C1C1E' : '#fff',
     },
+    LoadingBack: {
+      backgroundColor: isDark ? 'rgba(150, 150, 150, 0.1)' : '#fff',
+    },
     container: {
       flex: 1,
       backgroundColor: '#f7f7fa',
@@ -24,9 +27,11 @@ export const Gstyle = () => {
   const ProfilTextValue = isDark ? '#ffffff' : '#444';
   const ProfilCircle = isDark ? '#33333a' : '#f2f2f7';
 
+
+  const LoginText = isDark ? 'rgb(126 126 126)' : '#000000';
   const ChatText = isDark ? '#ffffff' : '#333333';
   const ChatTitle = isDark ? '#ffffff' : '#222222';
-  
+
   const Login = isDark ? '#1d1d26' : '#fff';
 
 
@@ -42,6 +47,7 @@ export const Gstyle = () => {
     ProfilCircle,
     ChatText,
     ChatTitle,
-    Login
+    Login,
+    LoginText
   };
 };

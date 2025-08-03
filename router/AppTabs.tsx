@@ -48,7 +48,7 @@ function AppTabs() {
                     if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
                     if (route.name === 'Message') iconName = focused ? 'chatbubble' : 'chatbubble-outline';
 
-                    return <Ionicons style={{ marginTop: 20 }} name={iconName} size={30} color={color} />;
+                    return <Ionicons style={{marginTop:20}} name={iconName} size={30} color={color} />;
                 },
                 tabBarActiveTintColor: '#007aff',
                 tabBarInactiveTintColor: '#b0b3b8',
@@ -61,6 +61,7 @@ function AppTabs() {
                             flex: 1,
                             borderRadius: 24,
                             overflow: 'hidden',
+                            
 
                         }}
                     >
@@ -68,7 +69,6 @@ function AppTabs() {
                             tint="light"
                             intensity={30}
                             style={{
-
                                 flex: 1,
                                 backgroundColor: 'rgba(255, 255, 255, 0.15)',
                             }}
@@ -78,7 +78,8 @@ function AppTabs() {
 
                 tabBarStyle: {
                     position: 'absolute',
-                    alignSelf: 'center',
+                    alignContent:"center",
+                    
                     left: 0,
                     right: 0,
                     marginHorizontal: 16,
@@ -92,7 +93,7 @@ function AppTabs() {
                     shadowOffset: { width: 0, height: 2 },
                     shadowRadius: 12,
                     transform: [{ translateY }],
-                    elevation: 10,
+                    elevation: 3,
                     opacity: opacity,
                     zIndex: 1,
                 },

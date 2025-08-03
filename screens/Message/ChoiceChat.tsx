@@ -18,10 +18,11 @@ import { Animated } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect } from 'react';
 import { Gstyle } from "styles/gstyles";
+import ChoiceSend from "./components/ChoiceSend";
 
 
 const ChoiceChat = () => {
-  const { gstyles,MessageTopicText } = Gstyle();
+  const { gstyles, MessageTopicText } = Gstyle();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const navigation = useNavigation<NavigationProp>();
@@ -50,6 +51,10 @@ const ChoiceChat = () => {
     }, [animValues])
   );
 
+
+  
+
+
   const filteredMessages = Message.filter((msg) =>
     msg.Tema.toLowerCase().includes(searchQuery.toLowerCase()) ||
     msg.Siuntejas.toLowerCase().includes(searchQuery.toLowerCase())
@@ -69,14 +74,14 @@ const ChoiceChat = () => {
       }}
     >
       <TouchableOpacity
-        style={[styles.messageContainer,gstyles.WidgetBack]}
+        style={[styles.messageContainer, gstyles.WidgetBack]}
         onPress={() => navigation.replace("FullMessage", item)}
         activeOpacity={0.8}
       >
         <Text style={[styles.sender, !item.ArPerskaite && styles.noreed]}>
           {item.Siuntejas}
         </Text>
-        <Text style={[styles.topic,{color: MessageTopicText}]} numberOfLines={1}>
+        <Text style={[styles.topic, { color: MessageTopicText }]} numberOfLines={1}>
           {item.Tema}
         </Text>
         <View style={styles.meta}>
@@ -90,11 +95,14 @@ const ChoiceChat = () => {
     <View style={[styles.wrapper, gstyles.back]}>
       <View style={styles.headWrapper}>
         <Head modal={setModalVisible} nav={navigation} />
+
+        {/* <ChoiceSend/> */}
+
       </View>
 
 
 
-      <FullScreenModal visible={modalVisible} onClose={() => setModalVisible(false)}>
+      {/* <FullScreenModal visible={modalVisible} onClose={() => setModalVisible(false)}>
         <View style={styles.modalContent}>
           <TextInput
             placeholder="Пошук повідомлень..."
@@ -103,7 +111,7 @@ const ChoiceChat = () => {
             onChangeText={setSearchQuery}
             clearButtonMode="while-editing"
           />
-
+          
           {filteredMessages.length === 0 ? (
             <Text style={styles.noResults}>Нічого не знайдено</Text>
           ) : (
@@ -115,7 +123,7 @@ const ChoiceChat = () => {
             />
           )}
         </View>
-      </FullScreenModal>
+      </FullScreenModal> */}
 
 
 
@@ -128,6 +136,7 @@ const ChoiceChat = () => {
       />
 
 
+
     </View>
   );
 };
@@ -137,7 +146,7 @@ export default ChoiceChat;
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    
+
     paddingTop: Platform.OS === "ios" ? 64 : 32,
 
   },
@@ -161,7 +170,7 @@ const styles = StyleSheet.create({
   },
 
   messageContainer: {
-    
+
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,

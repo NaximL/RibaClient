@@ -14,7 +14,7 @@ import { Gstyle } from 'styles/gstyles';
 
 
 export default function Profile() {
-  const { gstyles, ProfilText, WidgetColorText, ProfilTextValue , ProfilCircle} = Gstyle();
+  const { gstyles, ProfilText, WidgetColorText, ProfilTextValue, ProfilCircle } = Gstyle();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const Profile = useProfileStore((state) => state.Prof);
@@ -22,6 +22,14 @@ export default function Profile() {
   const navigation = useNavigation<NavigationProp>();
   const [login, setLogin] = React.useState<string | null>(null);
   const [anim] = React.useState(new Animated.Value(0));
+  let pazinichi = 0;
+  const Pazinich = () => {
+    pazinichi++;
+    if (pazinichi === 3) {
+      pazinichi = 0;
+      alert("Pazinich")
+    }
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -56,7 +64,6 @@ export default function Profile() {
         styles.flex1,
         gstyles.back,
         {
-          
           paddingVertical: Platform.OS === 'ios' ? 50 : 0,
         },
       ]}
@@ -78,25 +85,22 @@ export default function Profile() {
           <Text style={[styles.profileName, { color: ProfilText }]}>{Profile.entext[9]}</Text>
           <Text style={styles.profileInfo}>{` ${Profile.entext[25]} • ${Profile.entext[10]} `}</Text>
         </View>
+
         <View style={[styles.card, gstyles.WidgetBack]}>
-          <View style={styles.cardSection}>
-            <Text style={[styles.cardTitle, { color: WidgetColorText }]}>Логін</Text>
-            <View style={styles.row}>
-              <Text style={[styles.cardTitle, { color: ProfilTextValue }]}>{login}</Text>
 
-            </View>
-          </View>
-          <View>
-            <Text style={[styles.cardTitle, { color: ProfilTextValue }]}>{ }</Text>
-            <View style={styles.row}>
-              <Text style={styles.cardValue}>********</Text>
+          <Text style={[styles.cardTitle, { color: WidgetColorText }]}>Логін</Text>
+          <View style={styles.row}>
+            <Text style={[styles.cardTitle, { color: ProfilTextValue }]}>{login}</Text>
 
-            </View>
           </View>
+
+
+
+
         </View>
 
         <View style={[styles.scoreBlock, gstyles.WidgetBack]}>
-          <View style={[styles.scoreCircle,{backgroundColor: ProfilCircle}]}>
+          <View style={[styles.scoreCircle, { backgroundColor: ProfilCircle }]}>
             <Text
               style={[
                 styles.scoreText,
@@ -109,7 +113,7 @@ export default function Profile() {
             </Text>
           </View>
           <View>
-            <Text style={[styles.scoreTitle,{color: WidgetColorText}]}>Середній бал</Text>
+            <Text style={[styles.scoreTitle, { color: WidgetColorText }]}>Середній бал</Text>
             <Text style={styles.scoreSubtitle}>Ваша успішність зростає!</Text>
           </View>
         </View>
@@ -152,10 +156,12 @@ export default function Profile() {
          */}
 
 
-        <TouchableOpacity style={[styles.logoutBtn,gstyles.WidgetBack]} onPress={logout}>
+        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack]} onPress={logout}>
           <Text style={styles.logoutText}>Вийти</Text>
         </TouchableOpacity>
-        <Text style={styles.versionText}>{VERSION}</Text>
+        <TouchableOpacity onPress={Pazinich}>
+          <Text style={styles.versionText}>{VERSION}</Text>
+        </TouchableOpacity>
 
       </Animated.View>
     </ScrollView>
@@ -194,7 +200,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
   link: { color: '#007aff', fontSize: 14, fontWeight: '500' },
   scoreBlock: {
-    
+
     borderRadius: 18,
     padding: 22,
     marginBottom: 24,
