@@ -33,7 +33,9 @@ export default function Router() {
   useEffect(() => {
     const checkLogin = async () => {
       const login = await getData('login');
-      setInitialScreen(login ? 'App' : 'Login');
+      const tokens = await getData('tokens');
+
+      setInitialScreen(login && tokens ? 'App' : 'Login');
     };
     checkLogin();
   }, []);
