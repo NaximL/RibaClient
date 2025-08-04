@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    height:500,
+    maxHeight:500,
     backgroundColor: '#fff',
     borderRadius: 18,
     width: 300,

@@ -71,12 +71,10 @@ export default function Home() {
 
   const setProfile = useProfileStore((state) => state.setProfile);
 
-
-
+  const [LoadText, SetLoadText] = useState<string | ''>("Оновлюємо дані...");
   const [Loads, setLoads] = useState(true)
   const [Lesion, setLesion] = useState<string | ''>("");
   const [mis, setMis] = useState<number | null>(null);
-
   const [Povidok, setPovidok] = useState<number | null>(null)
 
   const [cardAnim] = useState([
@@ -99,7 +97,6 @@ export default function Home() {
     }, [])
   );
 
-
   useEffect(() => {
     if (!load) {
       cardAnim.forEach((anim, i) => {
@@ -114,7 +111,7 @@ export default function Home() {
   }, [load]);
 
   useEffect(() => {
-    
+
     if (ISPROD) {
       fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
         .then(response => response.json())
@@ -136,21 +133,19 @@ export default function Home() {
       if (!login || !password) return;
 
       const applyData = async (MHDATA: any, triggerHaptics: boolean) => {
+        SetLoadText("Застосовуємо дані...");
+
         if (!MHDATA) return;
 
         const [HomePage, HomeWork, Lesions, ProfilUser, Message] = MHDATA;
-
 
         setBal(HomePage[14]);
         setMis(HomePage[15]);
         setPovidok(HomePage[10]);
 
-
         setProfile(ProfilUser);
-
         setMessage(Message.value);
         setHomeWork(Array.isArray(HomeWork?.value) ? HomeWork.value : []);
-
 
         const lesionData = await GetLesion(Lesions);
         setLesion(lesionData);
@@ -161,20 +156,19 @@ export default function Home() {
         }
       };
 
-
       const cachedData = await getData("check");
       if (cachedData) {
+        SetLoadText("Зчитуємо дані з кешу...");
         const parsed = JSON.parse(cachedData);
         applyData(parsed, false);
-        setLoad(false);
       }
 
       const ChangeData = async (token: string, page: string) => {
+        SetLoadText("Завантажуємо нові дані...");
         await GetAllData(token).then(async (data) => {
           if (data) {
             let th = data;
             th[0] = page;
-            console.log(th)
 
             await storeData("check", JSON.stringify(th));
             applyData(th, true);
@@ -182,31 +176,27 @@ export default function Home() {
             setLoads(false);
             setLoadsd(true);
             setLoad(false);
-
           }
-        })
+        });
       }
 
       if (!Loadsd) {
+        const CheckTok = async () => {
+          const tokens = await getData("tokens");
+          if (!tokens) return
 
-        const tokens = await getData("tokens");
-        if (!tokens) return
-
-        const CheckTok = async (attempt = 0) => {
-          if (attempt > 3) {
-            console.error("Забагато спроб перевірки токену.");
-            return;
-          }
-
+          SetLoadText("Перевіряємо сесію...");
           await CheckToken(tokens).then(async page => {
             if (!page.status) {
+              SetLoadText("Оновлюємо сесію...");
               await Logins(login, password).then(async data => {
-                await storeData("tokens", JSON.stringify(data.tokens));
-                await CheckTok(attempt + 1);
+                await storeData("tokens", JSON.stringify(data.tokens)).then(() => CheckTok())
               });
             } else {
               const tokens = await getData("tokens");
               if (!tokens) return
+
+              SetLoadText("Валідуємо сесію...");
               ChangeData(tokens, page.status);
             }
           }).catch(e => console.error("Помилка перевірки токену:", e));
@@ -214,22 +204,16 @@ export default function Home() {
 
         CheckTok();
 
-      }
-      else {
+      } else {
         setLoads(false);
       }
 
     }
     fetchData();
 
-
   }, []);
 
-
-
-
   const menu = [
-
     {
       "image": BooksEmoji,
       "lable": "Урок зараз",
@@ -239,7 +223,6 @@ export default function Home() {
       "image": MailEmoji,
       "lable": "Повідомлення",
       "data": Povidok ?? '...',
-
     },
     {
       "image": AnalitikEmoji,
@@ -253,7 +236,6 @@ export default function Home() {
     }
   ]
 
-
   if (load) {
     return (
       <View style={[gstyles.back, { flex: 1, justifyContent: 'center', alignItems: 'center', }]}>
@@ -264,11 +246,8 @@ export default function Home() {
 
   return (
     <>
-
       <ScrollView style={[gstyles.back, styles.wrapper]} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
-
-        {Loads && <LoadWidget />}
-
+        {Loads && <LoadWidget text={LoadText} />}
         {menu.map((item, index) =>
           <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
         )}

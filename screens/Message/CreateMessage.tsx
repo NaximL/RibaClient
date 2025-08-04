@@ -21,17 +21,18 @@ import { getData } from '@components/LocalStorage';
 import SelectModal from './components/SelectModal'
 import { SendMessage } from '@api/SendMessage';
 import BottomAlert from './components/BottomAlert';
+import { Gstyle } from 'styles/gstyles';
 
 const options = [
     { label: 'Обрати...', value: '0' },
-    { label: 'Адміністратор школи', value: '1' },
+
     { label: 'Вчителі школи', value: '2' },
     { label: 'Керівництво школи', value: '8' },
     { label: 'Учні свого класу', value: '9' },
-    { label: 'Працівники бібліотеки', value: '15' },
-    { label: 'Спеціалісти з питань охорони здоров\'я', value: '16' },
-    { label: 'Соціальні педагоги школи', value: '36' },
-    { label: 'Працівники', value: '40' },
+
+
+
+
 ];
 
 const CreateMessageScreen = () => {
@@ -39,7 +40,7 @@ const CreateMessageScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
-
+    const { gstyles, WidgetColorText } = Gstyle()
     const [sendAnim] = useState(new Animated.Value(1));
 
     const [load, setload] = useState(false);
@@ -118,12 +119,13 @@ const CreateMessageScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.safe}>
+
+        <SafeAreaView style={[styles.safe, gstyles.back]}>
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 style={styles.container}
             >
-                <BlurView intensity={60} tint="light" style={styles.blur} pointerEvents="none" />
+
 
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("App", { screen: "Message" })}>
                     <Ionicons name="arrow-back" size={24} color="#007aff" />
@@ -131,7 +133,7 @@ const CreateMessageScreen = () => {
                 </TouchableOpacity>
 
                 <View style={styles.centeredContent}>
-                    <Text style={styles.title}>Написати повідомлення</Text>
+                    <Text style={[styles.title,{color:WidgetColorText}]}>Написати повідомлення</Text>
 
                     {/* Перше випадаюче меню */}
                     <TouchableOpacity
@@ -217,157 +219,105 @@ const CreateMessageScreen = () => {
                 text={TextAlert} />
 
         </SafeAreaView>
+
     );
 };
 
 export default CreateMessageScreen;
-
-
 const styles = StyleSheet.create({
-    safe: {
-        flex: 1,
-        backgroundColor: '#f7f7fa',
-    },
-    container: {
-        flex: 1,
-        backgroundColor: 'transparent',
-    },
-    blur: {
-        ...StyleSheet.absoluteFillObject,
-    },
-    centeredContent: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 24,
-        backgroundColor: 'transparent',
-    },
-    backButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: Platform.OS === 'ios' ? 10 : 10,
-        marginLeft: 8,
-        marginBottom: 10,
-        alignSelf: 'flex-start',
-
-        borderRadius: 12,
-        paddingVertical: 6,
-        paddingHorizontal: 12,
-
-
-    },
-    backText: {
-        color: '#007aff',
-        fontSize: 16,
-        marginLeft: 6,
-        fontWeight: '500',
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: '700',
-        marginBottom: 22,
-        color: '#222',
-        textAlign: 'center',
-        letterSpacing: 0.2,
-    },
-    select: {
-        width: '100%',
-        backgroundColor: '#fff',
-        borderRadius: 14,
-        paddingVertical: 14,
-        paddingHorizontal: 16,
-        marginBottom: 16,
-        borderWidth: 1,
-        borderColor: '#e5e5ea',
-        flexDirection: 'row',
-        alignItems: 'center',
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOpacity: 0.04,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 6,
-    },
-    selectText: {
-        fontSize: 16,
-        color: '#222',
-        flex: 1,
-        fontWeight: '500',
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.18)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalContent: {
-        backgroundColor: '#fff',
-        borderRadius: 18,
-        width: 300,
-        paddingVertical: 8,
-        elevation: 8,
-        shadowColor: '#000',
-        shadowOpacity: 0.12,
-        shadowRadius: 16,
-        shadowOffset: { width: 0, height: 4 },
-    },
-    option: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 16,
-        paddingHorizontal: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f2f2f7',
-    },
-    optionSelected: {
-        backgroundColor: '#f2f8ff',
-    },
-    optionText: {
-        fontSize: 16,
-        color: '#222',
-        flex: 1,
-    },
-    optionTextSelected: {
-        color: '#007aff',
-        fontWeight: '600',
-    },
-    input: {
-        backgroundColor: '#fff',
-        borderRadius: 14,
-        paddingVertical: 14,
-        paddingHorizontal: 16,
-        fontSize: 16,
-        marginBottom: 14,
-        color: '#222',
-        width: '100%',
-        borderWidth: 1,
-        borderColor: '#e5e5ea',
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOpacity: 0.04,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 6,
-    },
-    inputBody: {
-        minHeight: 100,
-        maxHeight: 200,
-        textAlignVertical: 'top',
-    },
-    sendButton: {
-        backgroundColor: '#007aff',
-        borderRadius: 16,
-        paddingVertical: 16,
-        alignItems: 'center',
-        marginTop: 10,
-        width: '100%',
-        elevation: 2,
-        shadowColor: '#007aff',
-        shadowOpacity: 0.12,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 8,
-    },
-    sendText: {
-        color: '#fff',
-        fontSize: 17,
-        fontWeight: '700',
-        letterSpacing: 0.2,
-    },
+  safe: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  centeredContent: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    borderRadius: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginTop: 10,
+  },
+  backText: {
+    color: '#007aff',
+    fontSize: 16,
+    marginLeft: 6,
+    fontWeight: '500',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 24,
+    textAlign: 'center',
+    letterSpacing: 0.3,
+  },
+  select: {
+    width: '100%',
+    backgroundColor: 'rgb(255,255,255)',
+    borderRadius: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginBottom: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 8,
+  },
+  selectText: {
+    fontSize: 16,
+    flex: 1,
+    fontWeight: '500',
+    color: '#222',
+  },
+  input: {
+    backgroundColor: 'rgb(255,255,255)',
+    borderRadius: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    marginBottom: 14,
+    color: '#222',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 8,
+  },
+  inputBody: {
+    minHeight: 120,
+    maxHeight: 200,
+    textAlignVertical: 'top',
+  },
+  sendButton: {
+    backgroundColor: '#007aff',
+    borderRadius: 20,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginTop: 16,
+    width: '100%',
+    shadowColor: '#007aff',
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 10,
+  },
+  sendText: {
+    color: '#fff',
+    fontSize: 17,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
 });

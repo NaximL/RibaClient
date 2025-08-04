@@ -5,14 +5,17 @@ import {
     StyleSheet
 } from 'react-native';
 import { Gstyle } from 'styles/gstyles';
+type Props ={
+  text?:string
+}
 
-const LoadWidget = () => {
+const LoadWidget = ({text="Оновлення…"}:Props) => {
     const { gstyles, LoginText } = Gstyle();
 
     return (
         <View style={[gstyles.LoadingBack, styles.LargeLoad]}>
             <ActivityIndicator size="small" color="#007aff" />
-            <Text style={[styles.LargeLoadText, { color: LoginText }]} >Оновлення…</Text>
+            <Text style={[styles.LargeLoadText, { color: LoginText }]} >{text}</Text>
         </View>
     );
 }

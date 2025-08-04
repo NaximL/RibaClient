@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform, Animated } from 'react-native';
 import { BlurView } from 'expo-blur';
-
+import * as Font from 'expo-font';
 import Home from '@screens/Home/Home';
 import Profile from '../screens/Profile';
 import useLoadingStore from '../store/LoadStore';
@@ -15,9 +15,20 @@ const Tab = createBottomTabNavigator();
 
 function AppTabs() {
     const load = useLoadingStore((state) => state.load);
+    const setLoad = useLoadingStore((state) => state.setLoad);
+
     const [tabAnim] = useState(new Animated.Value(0));
 
     useEffect(() => {
+        const loadFonts = async () => {
+            try {
+                await Font.loadAsync(Ionicons.font).then(() => setLoad(false))
+            } catch (error) {
+                console.error("Помилка завантаження іконок:", error);
+            }
+        };
+
+        loadFonts();
         Animated.timing(tabAnim, {
             toValue: load ? 0 : 1,
             duration: 500,
@@ -48,7 +59,7 @@ function AppTabs() {
                     if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
                     if (route.name === 'Message') iconName = focused ? 'chatbubble' : 'chatbubble-outline';
 
-                    return <Ionicons style={{top:10}} name={iconName} size={30} color={color} />;
+                    return <Ionicons style={{ top: 10 }} name={iconName} size={30} color={color} />;
                 },
                 tabBarActiveTintColor: '#007aff',
                 tabBarInactiveTintColor: '#b0b3b8',
@@ -61,7 +72,7 @@ function AppTabs() {
                             flex: 1,
                             borderRadius: 24,
                             overflow: 'hidden',
-                            
+
 
                         }}
                     >
@@ -78,8 +89,8 @@ function AppTabs() {
 
                 tabBarStyle: {
                     position: 'absolute',
-                    alignContent:"center",
-                    
+                    alignContent: "center",
+
                     left: 0,
                     right: 0,
                     marginHorizontal: 16,
