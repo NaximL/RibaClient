@@ -48,7 +48,7 @@ function AppTabs() {
                     if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
                     if (route.name === 'Message') iconName = focused ? 'chatbubble' : 'chatbubble-outline';
 
-                    return <Ionicons style={{marginTop:20}} name={iconName} size={30} color={color} />;
+                    return <Ionicons style={{top:10}} name={iconName} size={30} color={color} />;
                 },
                 tabBarActiveTintColor: '#007aff',
                 tabBarInactiveTintColor: '#b0b3b8',
