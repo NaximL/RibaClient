@@ -135,7 +135,7 @@ export default function Home() {
 
       const applyData = async (MHDATA: any, triggerHaptics: boolean) => {
         if (!MHDATA) return;
-        
+
         const [HomePage, HomeWork, Lesions, ProfilUser, Message] = MHDATA;
 
 
@@ -143,7 +143,7 @@ export default function Home() {
         setMis(HomePage[15]);
         setPovidok(HomePage[10]);
 
-        
+
         setProfile(ProfilUser);
 
         setMessage(Message.value);
@@ -203,6 +203,8 @@ export default function Home() {
                 await CheckTok(attempt + 1);
               });
             } else {
+              const tokens = await getData("tokens");
+              if (!tokens) return
               ChangeData(tokens, page.status);
             }
           }).catch(e => console.error("Помилка перевірки токену:", e));
