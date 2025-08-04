@@ -8,6 +8,7 @@ import FullMessage from '@screens/Message/Chat';
 import AppTabs from './AppTabs';
 
 import { getData } from '@components/LocalStorage';
+import CreateMessage from '@screens/Message/CreateMessage';
 
 export type AppTabParamList = {
   Home: undefined;
@@ -19,7 +20,7 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   FullMessage: undefined;
-  WriteMsg: undefined;
+  CreateMessage: undefined;
   Stop: undefined;
   App: {
     screen?: keyof AppTabParamList;
@@ -49,6 +50,7 @@ export default function Router() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="App" component={AppTabs} />
         <Stack.Screen name="Stop" component={Stop} />
+        <Stack.Screen name="CreateMessage" component={CreateMessage} />
         <Stack.Screen name="FullMessage" component={FullMessage} />
       </Stack.Navigator>
     </NavigationContainer>

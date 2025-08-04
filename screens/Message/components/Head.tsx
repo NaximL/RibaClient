@@ -9,7 +9,9 @@ import {
   Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { RootStackParamList } from '../../../router/router';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
 import { Gstyle } from 'styles/gstyles';
 
@@ -28,7 +30,8 @@ const Head = ({ nav, modal, s }: any) => {
     }];
   const [open, setOpen] = useState(false);
   const animations = useRef(options.map(() => new Animated.Value(0))).current;
-
+  type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+  const navigation = useNavigation<NavigationProp>();
   useEffect(() => {
     if (open) {
       Animated.stagger(100,
@@ -55,13 +58,13 @@ const Head = ({ nav, modal, s }: any) => {
       <View ></View>
 
       <View style={styles.rightGroup}>
-        <TouchableOpacity style={[styles.circle, { backgroundColor: Circle }]} onPress={toggleDropdown}>
+        {/* <TouchableOpacity style={[styles.circle, { backgroundColor: Circle }]} onPress={toggleDropdown}>
           <Ionicons name="ellipsis-vertical" size={20} color="#007aff" />
-        </TouchableOpacity>
-
-        {/* <TouchableOpacity onPress={() => { modal(true) }} style={[styles.circle, { backgroundColor: Circle }]}>
-          <Ionicons name="search" size={20} color="#007aff" />
         </TouchableOpacity> */}
+
+        <TouchableOpacity onPress={() => { navigation.navigate("CreateMessage"); }} style={[styles.circle, { backgroundColor: Circle }]}>
+          <Ionicons name="add" size={20} color="#007aff" />
+        </TouchableOpacity>
 
         {open && (
           <BlurView intensity={15} tint="light" style={styles.dropdown}>

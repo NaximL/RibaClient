@@ -55,6 +55,7 @@ export default function Profile() {
   }, []);
   const logout = async () => {
     await removeData('login');
+    await removeData('tokens');
     navigation.replace('Login');
   };
 

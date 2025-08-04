@@ -22,7 +22,6 @@ import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
 import { Logins } from '@api/Login';
 import { Gstyle } from 'styles/gstyles';
-import { GetToken } from 'api/MH_APP/GetToken';
 
 
 

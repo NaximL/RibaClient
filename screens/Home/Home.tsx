@@ -21,8 +21,10 @@ import useMessageStore from '@store/MessageStore';
 import useFetchStore from '@store/fetchStore';
 
 import { useFocusEffect } from '@react-navigation/native';
+
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../router/router';
 
 
 import BooksEmoji from '@emoji/Books.png';
@@ -34,7 +36,6 @@ import Widget from './components/Widget';
 import LoadWidget from './components/LoadWidget';
 import { Gstyle } from 'styles/gstyles';
 import { ISPROD } from 'config/config';
-import { RootStackParamList } from '../../router/router';
 import { getData, storeData } from '@components/LocalStorage';
 
 
@@ -113,6 +114,7 @@ export default function Home() {
   }, [load]);
 
   useEffect(() => {
+    
     if (ISPROD) {
       fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
         .then(response => response.json())
