@@ -24,15 +24,9 @@ import BottomAlert from './components/BottomAlert';
 
 const options = [
     { label: 'Обрати...', value: '0' },
-    { label: 'Адміністратор школи', value: '1' },
     { label: 'Вчителі школи', value: '2' },
     { label: 'Керівництво школи', value: '8' },
     { label: 'Учні свого класу', value: '9' },
-    { label: 'Класний керівник', value: '10' },
-    { label: 'Працівники бібліотеки', value: '15' },
-    { label: 'Спеціалісти з питань охорони здоров\'я', value: '16' },
-    { label: 'Соціальні педагоги школи', value: '36' },
-    { label: 'Працівники', value: '40' },
 ];
 
 const CreateMessageScreen = () => {
