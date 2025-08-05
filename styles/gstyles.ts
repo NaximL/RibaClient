@@ -1,4 +1,4 @@
-import { Platform,useColorScheme,StyleSheet } from 'react-native';
+import { Platform, useColorScheme, StyleSheet } from 'react-native';
 import { useEffect } from 'react';
 
 export const Gstyle = () => {
@@ -6,9 +6,9 @@ export const Gstyle = () => {
 
   const backgroundColor = isDark ? '#1a1a1f' : '#f7f7fa';
 
-
   useEffect(() => {
     if (Platform.OS === 'web') {
+      
       let metaThemeColor = document.querySelector("meta[name=theme-color]");
       if (!metaThemeColor) {
         metaThemeColor = document.createElement('meta');
@@ -16,8 +16,20 @@ export const Gstyle = () => {
         document.head.appendChild(metaThemeColor);
       }
       metaThemeColor.setAttribute('content', backgroundColor);
+
+
+      let appleStatusBar = document.querySelector("meta[name=apple-mobile-web-app-status-bar-style]");
+      if (!appleStatusBar) {
+        appleStatusBar = document.createElement('meta');
+        appleStatusBar.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
+        document.head.appendChild(appleStatusBar);
+      }
+      appleStatusBar.setAttribute('content', 'black-translucent');
+
+
+      document.body.style.backgroundColor = backgroundColor;
     }
-  }, [isDark]); 
+  }, [isDark]);
 
   const gstyles = StyleSheet.create({
     back: {
@@ -31,7 +43,7 @@ export const Gstyle = () => {
     },
     container: {
       flex: 1,
-      backgroundColor: '#f7f7fa',
+      backgroundColor: backgroundColor,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -59,6 +71,6 @@ export const Gstyle = () => {
     ChatText,
     ChatTitle,
     Login,
-    LoginText
+    LoginText,
   };
 };
