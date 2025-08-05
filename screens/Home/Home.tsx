@@ -111,7 +111,6 @@ export default function Home() {
   }, [load]);
 
   useEffect(() => {
-
     if (ISPROD) {
       fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
         .then(response => response.json())
@@ -156,12 +155,20 @@ export default function Home() {
         }
       };
 
+
+
       const cachedData = await getData("check");
       if (cachedData) {
         SetLoadText("Зчитуємо дані з кешу...");
         const parsed = JSON.parse(cachedData);
         applyData(parsed, false);
       }
+
+
+
+
+
+
 
       const ChangeData = async (token: string, page: string) => {
         SetLoadText("Завантажуємо нові дані...");

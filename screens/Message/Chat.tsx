@@ -67,7 +67,7 @@ const FullMessage = () => {
   return (
     <ScrollView contentContainerStyle={[gstyles.back, styles.container]}>
 
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("App", { screen: "Message" })}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.replace("App", { screen: "Message" })}>
         <Ionicons name="arrow-back" size={24} color="#007aff" />
         <Text style={styles.backText}>Назад</Text>
       </TouchableOpacity>

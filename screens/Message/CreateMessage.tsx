@@ -11,7 +11,6 @@ import {
     Animated,
     ActivityIndicator
 } from 'react-native';
-import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -25,14 +24,9 @@ import { Gstyle } from 'styles/gstyles';
 
 const options = [
     { label: 'Обрати...', value: '0' },
-
     { label: 'Вчителі школи', value: '2' },
     { label: 'Керівництво школи', value: '8' },
     { label: 'Учні свого класу', value: '9' },
-
-
-
-
 ];
 
 const CreateMessageScreen = () => {

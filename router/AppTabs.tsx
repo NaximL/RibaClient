@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform, Animated } from 'react-native';
 import { BlurView } from 'expo-blur';
 import * as Font from 'expo-font';
+
 import Home from '@screens/Home/Home';
 import Profile from '../screens/Profile';
 import useLoadingStore from '../store/LoadStore';
@@ -17,24 +18,30 @@ function AppTabs() {
     const load = useLoadingStore((state) => state.load);
     const setLoad = useLoadingStore((state) => state.setLoad);
 
-    const [tabAnim] = useState(new Animated.Value(0));
+    // Animated.Value создаётся 1 раз и не пересоздаётся при ререндере
+    const tabAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         const loadFonts = async () => {
             try {
-                await Font.loadAsync(Ionicons.font).then(() => setLoad(false))
+                await Font.loadAsync(Ionicons.font);
+                setLoad(false);
             } catch (error) {
                 console.error("Помилка завантаження іконок:", error);
             }
         };
 
         loadFonts();
+    }, []);
+
+    useEffect(() => {
+        // Анимация запускается только при изменении load
         Animated.timing(tabAnim, {
             toValue: load ? 0 : 1,
             duration: 500,
             useNativeDriver: true,
         }).start();
-    }, [load]);
+    }, [load, tabAnim]);
 
     const translateY = tabAnim.interpolate({
         inputRange: [0, 1],
@@ -44,7 +51,7 @@ function AppTabs() {
     const opacity = tabAnim.interpolate({
         inputRange: [0, 1],
         outputRange: [0, 1],
-    });;
+    });
 
     return (
         <Tab.Navigator
@@ -64,16 +71,13 @@ function AppTabs() {
                 tabBarActiveTintColor: '#007aff',
                 tabBarInactiveTintColor: '#b0b3b8',
                 tabBarShowLabel: false,
-
-
                 tabBarBackground: () => (
                     <Animated.View
                         style={{
                             flex: 1,
                             borderRadius: 24,
                             overflow: 'hidden',
-
-
+                            opacity: opacity,
                         }}
                     >
                         <BlurView
@@ -90,7 +94,6 @@ function AppTabs() {
                 tabBarStyle: {
                     position: 'absolute',
                     alignContent: "center",
-
                     left: 0,
                     right: 0,
                     marginHorizontal: 16,
@@ -105,7 +108,6 @@ function AppTabs() {
                     shadowRadius: 12,
                     transform: [{ translateY }],
                     elevation: 3,
-                    opacity: opacity,
                     zIndex: 1,
                 },
             })}

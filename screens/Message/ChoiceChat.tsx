@@ -13,7 +13,7 @@ import Head from "./components/Head";
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router/router';
 import { useNavigation } from '@react-navigation/native';
-import FullScreenModal from '@components/Modal';
+// import FullScreenModal from '@components/Modal'; 
 import { Animated } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect } from 'react';

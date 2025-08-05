@@ -10,6 +10,7 @@ import AppTabs from './AppTabs';
 import { getData } from '@components/LocalStorage';
 import CreateMessage from '@screens/Message/CreateMessage';
 
+
 export type AppTabParamList = {
   Home: undefined;
   Message: undefined;

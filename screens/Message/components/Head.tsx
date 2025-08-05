@@ -66,7 +66,7 @@ const Head = ({ nav, modal, s }: any) => {
           <Ionicons name="add" size={20} color="#007aff" />
         </TouchableOpacity>
 
-        {open && (
+        {open &&
           <BlurView intensity={15} tint="light" style={styles.dropdown}>
             <View style={styles.dropdownContent}>
               {options.map((option, index) => {
@@ -89,7 +89,7 @@ const Head = ({ nav, modal, s }: any) => {
               })}
             </View>
           </BlurView>
-        )}
+        }
       </View>
     </View>
   );
