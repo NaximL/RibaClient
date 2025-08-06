@@ -1,0 +1,258 @@
+import React, { useEffect, useRef, useCallback } from "react";
+import {
+    View,
+    Text,
+    SectionList,
+    StyleSheet,
+    Animated,
+    Platform,
+    TouchableOpacity,
+    useColorScheme,
+} from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import useDiaryStore from "@store/DiaryStore";
+import { Gstyle } from "styles/gstyles";
+import { format, isToday, isYesterday, parseISO } from "date-fns";
+import { uk } from "date-fns/locale";
+
+const systemicGradeTypeMap: Record<string, string> = {
+    Notebook: "Зошит",
+    Oral: "Усна відповідь",
+    Test: "Тест",
+    Homework: "Домашнє завдання",
+    "Additional test": "Додатковий тест",
+    "Controlwork": "Контрольна робота",
+    "PracticalWork": "Практична робота",
+    "LaboratoryWork": "Лабораторна робота",
+    "IndependentWork": "Самостійна робота",
+    "ProjectWork": "Проєктна робота",
+    "CreativeWork": "Творча робота",
+    "ClassWork": "Класна робота",
+    "SubjectGrade": "Предметна оцінка",
+    "Moduletest": "Модульна контрольна",
+    "Summativeassessment": "Підсумкове оцінювання",
+    "Semesterassessment": "Семестрове оцінювання",
+    "Yearlyassessment": "Річне оцінювання",
+    "Thematicassessment": "Тематичне оцінювання",
+    "Diagnosticwork": "Діагностична робота",
+    Behavior: "Поведінка",
+    "Attendance": "Н-ка",
+    "Lesson activity": "Активність на уроці",
+    "Classroom participation": "Участь у класі",
+    "Educational visit": "Навчальний візит",
+    Other: "Інше",
+    undefined: "Немає",
+    null: "Немає",
+};
+
+function groupByDate(data: any[]) {
+    const groups: Record<string, any[]> = {};
+
+    data.forEach((item) => {
+        const date = parseISO(item.lessonCreatedOn);
+        let key = "";
+
+        if (isToday(date)) key = "Сьогодні";
+        else if (isYesterday(date)) key = "Вчора";
+        else key = format(date, "dd MMMM", { locale: uk });
+
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(item);
+    });
+
+    return Object.entries(groups).map(([title, data]) => ({
+        title,
+        data,
+    }));
+}
+
+const Diary = () => {
+    const { gstyles, WidgetColorText } = Gstyle();
+    const diaryList = useDiaryStore((state) => state.Diary);
+    const sections = groupByDate(diaryList);
+
+
+    const anim = useRef(new Animated.Value(0)).current;
+
+    useFocusEffect(
+        useCallback(() => {
+            anim.setValue(0);
+            Animated.timing(anim, {
+                toValue: 1,
+                duration: 800,
+                useNativeDriver: true,
+            }).start();
+        }, [])
+    );
+
+    const renderItem = ({ item, index }: any) => {
+        const date = new Date(item.lessonCreatedOn).toLocaleDateString("uk-UA");
+        const gradeType = item.systemicGradeType === null ? item.nonSystemicGradeType : systemicGradeTypeMap[item.systemicGradeType] || "-";
+
+        const grade =
+            item.type === "Attendance"
+                ? "Н"
+                : item.grade === "elemNoEvaluation"
+                    ? "Н/О"
+                    : item.grade === "noEvaluation"
+                        ? "Н/А"
+                        : item.grade ?? "-";
+
+        const subject = item.subjectMatter ?? "-";
+        const gradeColorDark: Record<string, string> = {
+            "Н": "#FF3B30",      // Пропуск
+            "Н/О": "#FF9500",    // Не оцінено (об'єктивно)
+            "Н/А": "#A0A0A0",    // Не оцінено (відсутній)
+            "0": "#FF9500",
+            "1": "#FFCC00",
+            "2": "#FFD233",
+            "3": "#FFDD66",
+            "4": "#FFE599",
+            "5": "#F5FAD1",
+            "6": "#C3E57F",
+            "7": "#C3E57F",
+            "8": "#A8E65A",
+            "9": "#A8E65A",
+            "10": "#70D53B",
+            "11": "#70D53B",
+            "12": "#34C759",
+        };
+
+        const gradeColorLight: Record<string, string> = {
+            "Н": "#FF3B30",
+            "Н/О": "#FF6F00",
+            "Н/А": "#999999",
+            "0": "#FF6F00",
+            "1": "#FFB300",
+            "2": "#FFC233",
+            "3": "#FFD966",
+            "4": "#FFEFAA",
+            "5": "#FAFFD8",
+            "6": "#C8E37A",
+            "7": "#C8E37A",
+            "8": "#A0D755",
+            "9": "#A0D755",
+            "10": "#69C835",
+            "11": "#69C835",
+            "12": "#30C759",
+        };
+        const getGradeColor = (grade: string | number, theme: "dark" | "light" = "dark") => {
+            const key = String(grade);
+            const palette = theme === "dark" ? gradeColorDark : gradeColorLight;
+            return palette[key] ?? WidgetColorText;
+        };
+        return (
+            <Animated.View
+                key={index}
+                style={[
+                    styles.card,
+                    {
+                        transform: [
+                            { scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.97, 1] }) },
+                            { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [15, 0] }) },
+                        ],
+                        opacity: anim,
+                    },
+                ]}
+            >
+
+                <View style={styles.cardContent}>
+                    <View style={styles.textBlock}>
+                        <Text style={[styles.title, { color: WidgetColorText }]}>{subject}</Text>
+                        <Text style={styles.gradeType}>{gradeType}</Text>
+                    </View>
+                    <Text style={[styles.value, { color: getGradeColor(grade, useColorScheme() ? "dark" : "light") }]}>{grade}</Text>
+                </View>
+
+            </Animated.View>
+        );
+    };
+    const renderSectionHeader = ({ section: { title } }: any) => (
+        <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>{title}</Text>
+            <View style={styles.line} />
+        </View>
+    );
+
+    return (
+        <View style={[styles.container, gstyles.back]}>
+            <SectionList
+                sections={sections}
+                keyExtractor={(item, index) => item.lessonCreatedOn + index}
+                renderItem={renderItem}
+                renderSectionHeader={renderSectionHeader}
+                contentContainerStyle={styles.listContent}
+                showsVerticalScrollIndicator={false}
+            />
+        </View>
+    );
+};
+
+export default Diary;
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: Platform.OS === "ios" ? 64 : 32,
+    },
+    listContent: {
+        paddingHorizontal: 18,
+        paddingBottom: 100,
+    },
+    sectionHeader: {
+        paddingHorizontal: 4,
+        paddingTop: 16,
+        paddingBottom: 6,
+        backgroundColor: 'transparent',
+    },
+    sectionTitle: {
+        fontSize: 14,
+        fontWeight: "600",
+        color: "#777",
+        marginBottom: 4,
+    },
+    line: {
+        height: 1,
+        backgroundColor: "#ccc",
+        marginHorizontal: 8,
+    },
+
+    card: {
+        borderRadius: 20,
+        overflow: "hidden",
+        padding: 16,
+        backgroundColor: Platform.OS === "android" ? "rgba(255,255,255,0.9)" : "transparent",
+        shadowColor: "#000",
+        shadowOpacity: 0.06,
+        shadowRadius: 10,
+        elevation: 2,
+    },
+    cardContent: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    textBlock: {
+        flex: 1,
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: "600",
+        color: "#1c1c1e",
+    },
+    date: {
+        fontSize: 13,
+        color: "#8e8e93",
+        marginTop: 4,
+    },
+    gradeType: {
+
+        fontSize: 14,
+        color: "#6e6e73",
+        marginTop: 2,
+    },
+    value: {
+        fontSize: 22,
+        fontWeight: "700",
+        color: "#000",
+    },
+});

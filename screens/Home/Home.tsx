@@ -1,16 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
-import {
-  StyleSheet,
-  View,
-  Animated,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
-import * as Haptics from 'expo-haptics';
+// Optimized and accelerated Home screen logic
+
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { View, Animated, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import * as Haptics from 'expo-haptics';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 
-
-
+// Stores
 import useLoadingStore from '@store/LoadStore';
 import useBalStore from '@store/BalStore';
 import useLesionStore from '@store/LesionStore';
@@ -19,255 +16,199 @@ import useProfileStore from '@store/ProfileStore';
 import UseErrorStore from '@store/Error';
 import useMessageStore from '@store/MessageStore';
 import useFetchStore from '@store/fetchStore';
+import useDiaryStore from '@store/DiaryStore';
 
-import { useFocusEffect } from '@react-navigation/native';
-
-import type { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../router/router';
-
-
-import BooksEmoji from '@emoji/Books.png';
-import MailEmoji from '@emoji/Mail.png';
-import AnalitikEmoji from '@emoji/Analitik.png';
-import MedalEmoji from '@emoji/Medal.png';
-
-import Widget from './components/Widget';
-import LoadWidget from './components/LoadWidget';
-import { Gstyle } from 'styles/gstyles';
+// Config and API
 import { ISPROD } from 'config/config';
 import { getData, storeData } from '@components/LocalStorage';
-
-
 import { CheckToken } from '@api/CheckToken';
 import { GetLesion } from '@api/GetLesion';
 import { GetAllData } from '@api/GetAlldata';
 import { Logins } from '@api/Login';
+import { GetToken } from '../../api/MH_APP/GetToken';
+import { ValidToken } from '../../api/MH_APP/ValidToken';
+import { RefreshToken } from '../../api/MH_APP/RefreshToken';
+import { GetDiary } from '../../api/MH_APP/GetDiary';
 
+// UI
+import BooksEmoji from '@emoji/Books.png';
+import MailEmoji from '@emoji/Mail.png';
+import AnalitikEmoji from '@emoji/Analitik.png';
+import MedalEmoji from '@emoji/Medal.png';
+import Widget from './components/Widget';
+import LoadWidget from './components/LoadWidget';
+import { Gstyle } from 'styles/gstyles';
+import { RootStackParamList } from '../../router/router';
 
 export default function Home() {
-
   const { gstyles } = Gstyle();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
 
-  type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
-  const navigation = useNavigation<NavigationProp>();
-
-  const load = useLoadingStore((state) => state.load);
-  const setLoad = useLoadingStore((state) => state.setLoad);
-
-  const Loadsd = useFetchStore((state) => state.loads);
-  const setLoadsd = useFetchStore((state) => state.setLoads);
-
-  const seterrors = UseErrorStore((state) => state.setError);
-
-  const Bal = useBalStore((state) => state.bal);
-  const setBal = useBalStore((state) => state.setBal);
-
-  const setMessage = useMessageStore((state) => state.SetMessage);
-
-  const setHomeWork = useHomeWorkStore((state) => state.SetHomeWork);
-
-  const setLesions = useLesionStore((state) => state.setLesions);
-
-  const setProfile = useProfileStore((state) => state.setProfile);
-
-  const [LoadText, SetLoadText] = useState<string | ''>("Оновлюємо дані...");
-  const [Loads, setLoads] = useState(true)
-  const [Lesion, setLesion] = useState<string | ''>("");
+  const [LoadText, SetLoadText] = useState('Оновлюємо дані...');
+  const [Loads, setLoads] = useState(true);
+  const [Lesion, setLesionText] = useState('');
   const [mis, setMis] = useState<number | null>(null);
-  const [Povidok, setPovidok] = useState<number | null>(null)
-
+  const [Povidok, setPovidok] = useState<number | null>(null);
   const [cardAnim] = useState([
     useRef(new Animated.Value(0)).current,
     useRef(new Animated.Value(0)).current,
     useRef(new Animated.Value(0)).current,
-    useRef(new Animated.Value(0)).current
+    useRef(new Animated.Value(0)).current,
   ]);
+
+  const setLoad = useLoadingStore(state => state.setLoad);
+  const load = useLoadingStore(state => state.load);
+  const setLoadsd = useFetchStore(state => state.setLoads);
+  const Loadsd = useFetchStore(state => state.loads);
+  const SetDiary = useDiaryStore(state => state.SetDiary);
+  const Bal = useBalStore(state => state.bal);
+  const setBal = useBalStore(state => state.setBal);
+  const setProfile = useProfileStore(state => state.setProfile);
+  const setMessage = useMessageStore(state => state.SetMessage);
+  const setHomeWork = useHomeWorkStore(state => state.SetHomeWork);
+  const setLesions = useLesionStore(state => state.setLesions);
+  const seterrors = UseErrorStore(state => state.setError);
+
+  const applyData = async (MHDATA: any, haptic: boolean) => {
+    SetLoadText('Застосовуємо дані...');
+    const [HomePage, HomeWork, Lesions, Profile, Messages] = MHDATA;
+    setBal(HomePage[14]);
+    setMis(HomePage[15]);
+    setPovidok(HomePage[10]);
+    setProfile(Profile);
+    setMessage(Messages.value);
+    setHomeWork(Array.isArray(HomeWork?.value) ? HomeWork.value : []);
+    const lesionData = await GetLesion(Lesions);
+    setLesionText(lesionData);
+    setLesions(Lesions);
+    if (haptic) await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  };
+
+  const checkAndApplyCache = async () => {
+    const cached = await getData('check');
+    if (cached) {
+      SetLoadText('Зчитуємо дані з кешу...');
+      await applyData(JSON.parse(cached), false);
+    }
+  };
+
+  const handleTokenLogic = async (login: string, password: string) => {
+
+    const tokensRaw = await getData('token_app');
+    if (!tokensRaw) {
+      SetLoadText('Отримуємо токен...');
+      const data = await GetToken(login, password);
+      if (!data) {
+        seterrors({ name: 'token error', status: true, label: 'Не вдалось отримати токени' });
+        navigation.navigate('Stop');
+        return;
+      }
+      await storeData('token_app', JSON.stringify(data));
+    } else {
+      const token = JSON.parse(tokensRaw);
+      SetLoadText('Перевіряємо токен...');
+      const valid = await ValidToken(token);
+      if (!valid) {
+        const newTokens = await RefreshToken(token);
+        if (newTokens) {
+          SetLoadText('Оновлюємо токен...');
+          await storeData('token_app', JSON.stringify(newTokens));
+        }
+      } else {
+        SetLoadText('Верифікуємо токен...');
+        const diary = await GetDiary(token, valid.enrollments[0].studentId, 5, 100);
+        SetDiary(diary);
+      }
+
+    }
+  };
+
+  const validateSessionAndFetch = async (login: string, password: string) => {
+
+    const tokens = await getData('tokens');
+    if (!tokens) return;
+
+    SetLoadText('Перевіряємо сесію...');
+    const page = await CheckToken(tokens);
+
+    if (!page.status) {
+      SetLoadText('Оновлюємо сесію...');
+      const data = await Logins(login, password);
+      await storeData('tokens', JSON.stringify(data.tokens));
+      return validateSessionAndFetch(login, password);
+    }
+
+    SetLoadText('Валідуємо сесію...');
+    const data = await GetAllData(tokens);
+
+    if (data) {
+      data[0] = page.status;
+      await applyData(data, true);
+      setLoads(false);
+      setLoadsd(true);
+
+      setLoad(false);
+      await storeData('check', JSON.stringify(data));
+    }
+
+  };
 
   useFocusEffect(
     useCallback(() => {
       cardAnim.forEach((anim, i) => {
         anim.setValue(0);
-        Animated.timing(anim, {
-          toValue: 1,
-          duration: 400 + i * 120,
-          useNativeDriver: true,
-        }).start();
+        Animated.timing(anim, { toValue: 1, duration: 400 + i * 120, useNativeDriver: true }).start();
       });
     }, [])
   );
 
   useEffect(() => {
-    if (!load) {
-      cardAnim.forEach((anim, i) => {
-        anim.setValue(0);
-        Animated.timing(anim, {
-          toValue: 1,
-          duration: 400 + i * 120,
-          useNativeDriver: true,
-        }).start();
-      });
-    }
-  }, [load]);
-
-  useEffect(() => {
     if (ISPROD) {
       fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
-        .then(response => response.json())
-        .then(data => {
-          if (data[0]?.status === true) {
-            seterrors(data[0])
-            navigation.navigate('Stop');
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        })
+        .then(res => res.json())
+        .then(data => data[0]?.status && navigation.navigate('Stop'))
+        .catch(err => console.error('Mock API error:', err));
     }
 
     const fetchData = async () => {
-      const login = await getData("login");
-      const password = await getData("password");
-
+      const login = await getData('login');
+      const password = await getData('password');
       if (!login || !password) return;
+      console.time("load")
 
-      const applyData = async (MHDATA: any, triggerHaptics: boolean) => {
-        SetLoadText("Застосовуємо дані...");
+      await checkAndApplyCache();
+      await handleTokenLogic(login, password);
+      await validateSessionAndFetch(login, password);
+      console.timeEnd("load")
 
-        if (!MHDATA) return;
-
-        const [HomePage, HomeWork, Lesions, ProfilUser, Message] = MHDATA;
-
-        setBal(HomePage[14]);
-        setMis(HomePage[15]);
-        setPovidok(HomePage[10]);
-
-        setProfile(ProfilUser);
-        setMessage(Message.value);
-        setHomeWork(Array.isArray(HomeWork?.value) ? HomeWork.value : []);
-
-        const lesionData = await GetLesion(Lesions);
-        setLesion(lesionData);
-        setLesions(Lesions);
-
-        if (triggerHaptics) {
-          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        }
-      };
-
-
-
-      const cachedData = await getData("check");
-      if (cachedData) {
-        SetLoadText("Зчитуємо дані з кешу...");
-        const parsed = JSON.parse(cachedData);
-        applyData(parsed, false);
-      }
-
-
-
-
-
-
-
-      const ChangeData = async (token: string, page: string) => {
-        SetLoadText("Завантажуємо нові дані...");
-        await GetAllData(token).then(async (data) => {
-          if (data) {
-            let th = data;
-            th[0] = page;
-
-            await storeData("check", JSON.stringify(th));
-            applyData(th, true);
-
-            setLoads(false);
-            setLoadsd(true);
-            setLoad(false);
-          }
-        });
-      }
-
-      if (!Loadsd) {
-        const CheckTok = async () => {
-          const tokens = await getData("tokens");
-          if (!tokens) return
-
-          SetLoadText("Перевіряємо сесію...");
-          await CheckToken(tokens).then(async page => {
-            if (!page.status) {
-              SetLoadText("Оновлюємо сесію...");
-              await Logins(login, password).then(async data => {
-                await storeData("tokens", JSON.stringify(data.tokens)).then(() => CheckTok())
-              });
-            } else {
-              const tokens = await getData("tokens");
-              if (!tokens) return
-
-              SetLoadText("Валідуємо сесію...");
-              ChangeData(tokens, page.status);
-            }
-          }).catch(e => console.error("Помилка перевірки токену:", e));
-        };
-
-        CheckTok();
-
-      } else {
-        setLoads(false);
-      }
-
-    }
+    };
     fetchData();
-
   }, []);
 
   const menu = [
-    {
-      "image": BooksEmoji,
-      "lable": "Урок зараз",
-      "data": Lesion ?? '...'
-    },
-    {
-      "image": MailEmoji,
-      "lable": "Повідомлення",
-      "data": Povidok ?? '...',
-    },
-    {
-      "image": AnalitikEmoji,
-      "lable": "Середній бал",
-      "data": Bal ?? '...'
-    },
-    {
-      "image": MedalEmoji,
-      "lable": "Місце в класі",
-      "data": mis ? `${mis} з 32` : '...'
-    }
-  ]
+    { image: BooksEmoji, lable: 'Урок зараз', data: Lesion || '...' },
+    { image: MailEmoji, lable: 'Повідомлення', data: Povidok || '...' },
+    { image: AnalitikEmoji, lable: 'Середній бал', data: Bal || '...' },
+    { image: MedalEmoji, lable: 'Місце в класі', data: mis ? `${mis} з 32` : '...' },
+  ];
 
   if (load) {
-    return (
-      <View style={[gstyles.back, { flex: 1, justifyContent: 'center', alignItems: 'center', }]}>
-        <ActivityIndicator size="large" color="#007aff" />
-      </View>
-    );
+    return <View style={[gstyles.back, styles.center]}><ActivityIndicator size="large" color="#007aff" /></View>;
   }
 
   return (
-    <>
-      <ScrollView style={[gstyles.back, styles.wrapper]} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
-        {Loads && <LoadWidget text={LoadText} />}
-        {menu.map((item, index) =>
-          <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
-        )}
-        <StatusBar style="auto" />
-      </ScrollView>
-    </>
+    <ScrollView style={[gstyles.back, styles.wrapper]} contentContainerStyle={styles.container}>
+      {Loads && <LoadWidget text={LoadText} />}
+      {menu.map((item, index) => (
+        <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
+      ))}
+      <StatusBar style="auto" />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    paddingVertical: 50,
-    paddingBottom: 100
-  }
+  wrapper: { flex: 1, paddingVertical: 50, paddingBottom: 100 },
+  container: { alignItems: 'center', justifyContent: 'center' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

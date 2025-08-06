@@ -8,9 +8,10 @@ import * as Font from 'expo-font';
 import Home from '@screens/Home/Home';
 import Profile from '../screens/Profile';
 import useLoadingStore from '../store/LoadStore';
-import HomeWork from '../screens/HomeWork';
+import HomeWork from '../screens/HomeWork/HomeWork';
 import Schedule from '../screens/Schedule';
 import ChoiceChat from '@screens/Message/ChoiceChat';
+import Diary from '@screens/Diary/Diary';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,7 +19,7 @@ function AppTabs() {
     const load = useLoadingStore((state) => state.load);
     const setLoad = useLoadingStore((state) => state.setLoad);
 
-    // Animated.Value создаётся 1 раз и не пересоздаётся при ререндере
+    
     const tabAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -35,7 +36,7 @@ function AppTabs() {
     }, []);
 
     useEffect(() => {
-        // Анимация запускается только при изменении load
+        
         Animated.timing(tabAnim, {
             toValue: load ? 0 : 1,
             duration: 500,
@@ -65,6 +66,8 @@ function AppTabs() {
                     if (route.name === 'Schedule') iconName = focused ? 'calendar' : 'calendar-outline';
                     if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
                     if (route.name === 'Message') iconName = focused ? 'chatbubble' : 'chatbubble-outline';
+                    if (route.name === 'Diary') iconName = focused ? 'stats-chart' : 'stats-chart-outline';
+
 
                     return <Ionicons style={{ top: 10 }} name={iconName} size={30} color={color} />;
                 },
@@ -115,8 +118,10 @@ function AppTabs() {
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="HomeWork" component={HomeWork} />
             <Tab.Screen name="Schedule" component={Schedule} />
+            <Tab.Screen name="Diary" component={Diary} />
             <Tab.Screen name="Message" component={ChoiceChat} />
             <Tab.Screen name="Profile" component={Profile} />
+
         </Tab.Navigator>
     );
 }

@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, Pressable, StyleSheet, Text, useWindowDimensions, View, Animated, Platform } from 'react-native';
+import { ScrollView, FlatList, StyleSheet, Text, useWindowDimensions, View, Animated, Platform } from 'react-native';
 import RenderHTML from 'react-native-render-html';
-import FullScreenModal from '../components/Modal';
-import useHomeWorkStore from '../store/HomeWorkStore';
+import FullScreenModal from '../../components/Modal';
+import useHomeWorkStore from '../../store/HomeWorkStore';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { Gstyle } from 'styles/gstyles';
+import HomeWorkEl from './components/HomeWorkEl';
 
 interface HomeworkItem {
+    Id: string;
     Dalykas?: string;
     MokytojoVardasPavarde?: string;
     AtliktiIki?: string;
@@ -32,13 +34,6 @@ export default function HomeWork() {
         });
     }
 
-    const exemple: HomeworkItem = {
-        Dalykas: undefined,
-        MokytojoVardasPavarde: undefined,
-        AtliktiIki: undefined,
-        PamokosData: undefined,
-        UzduotiesAprasymas: undefined,
-    };
     const [List, SetList] = useState<HomeworkItem[]>([]);
     const [Select, SetSelect] = useState<HomeworkItem | null>(null);
     const { width } = useWindowDimensions();
@@ -64,6 +59,8 @@ export default function HomeWork() {
         }).start();
         const d = rem(HomeWork, 'UzduotiesAprasymas');
         SetList(d);
+        console.log(HomeWork)
+
     }, [HomeWork]);
 
     const containsHTML = (str: string) => typeof str === 'string' && /<\/?[a-z][\s\S]*>/i.test(str);
@@ -90,7 +87,7 @@ export default function HomeWork() {
                                 ? <RenderHTML
                                     contentWidth={width}
                                     source={{ html: Select.UzduotiesAprasymas }}
-                                    baseStyle={{...styles.value,color:WidgetColorText}}
+                                    baseStyle={{ ...styles.value, color: WidgetColorText }}
                                     ignoredDomTags={['o:p']}
                                 />
                                 : Select.UzduotiesAprasymas
@@ -114,40 +111,18 @@ export default function HomeWork() {
                         }}
                     >
                         <Text style={styles.emptyText}>Наразі немає домашнього завдання</Text>
+
                     </Animated.View> :
+                        <FlatList
+                            data={List}
+                            renderItem={({ item, index }) => (
+                                <HomeWorkEl item={item} index={index} cardAnim={cardAnim} SetSitemect={SetSelect} />
+                            )}
+                            keyExtractor={(item) => item.Id.toString()}
+                            showsVerticalScrollIndicator={false}
+                        />
 
-                        List.map((el, index) => (
-                            <Animated.View
-                                key={index}
-                                style={{
-                                    ...gstyles.WidgetBack,
-                                    ...styles.card,
-                                    opacity: cardAnim,
-                                    transform: [
-                                        { scale: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
-                                        { translateY: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] }) }
-                                    ]
-                                }}
-                            >
-                                <Pressable onPress={() => {
-                                    SetSelect(el);
-                                }}>
-                                    <Text style={[styles.label, { color: WidgetColorText }]}>{el.Dalykas ?? ''}</Text>
-                                    {el.UzduotiesAprasymas && containsHTML(el.UzduotiesAprasymas) ? (
-                                        <RenderHTML
-                                            contentWidth={width}
-                                            source={{ html: el.UzduotiesAprasymas }}
-                                            baseStyle={{...styles.value,color:WidgetColorText}}
-                                            ignoredDomTags={['o:p']}
-                                        />
-                                    ) : (
-                                        <Text style={[styles.value, { color: WidgetColorText }]}>{el.UzduotiesAprasymas ?? '...'}</Text>
-                                    )}
-                                </Pressable>
-                            </Animated.View>
-                        ))}
-
-
+                    }
                 </ScrollView>
             </View>
             <StatusBar style="dark" />
