@@ -12,10 +12,11 @@ module.exports = function (api) {
             '@screens': './screens',
             '@assets': './assets',
             '@store': './store',
-            '@emoji':'./assets/emoji',
+            '@emoji': './assets/emoji',
           },
         },
       ],
+      'react-native-worklets/plugin',  // <-- добавляем сюда
     ],
   };
 };

@@ -1,7 +1,7 @@
 // Optimized and accelerated Home screen logic
 
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { View, Animated, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Animated, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -41,7 +41,7 @@ import { Gstyle } from 'styles/gstyles';
 import { RootStackParamList } from '../../router/router';
 
 export default function Home() {
-  const { gstyles } = Gstyle();
+  const { gstyles, Circle } = Gstyle();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
 
   const [LoadText, SetLoadText] = useState('Оновлюємо дані...');
@@ -83,6 +83,37 @@ export default function Home() {
     setLesions(Lesions);
     if (haptic) await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
+
+
+  const loadAnim = useRef(new Animated.Value(Loads ? 1 : 0)).current;
+  const [showLoad, setShowLoad] = useState<boolean>(Loads);
+
+
+  useEffect(() => {
+    if (Loads) {
+      setShowLoad(true);
+      Animated.timing(loadAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+
+      Animated.timing(loadAnim, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (finished) setShowLoad(false);
+      });
+    }
+  }, [Loads, loadAnim])
+
+  const loadTranslateY = loadAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-18, 0],
+  });
+  const loadOpacity = loadAnim;
 
   const checkAndApplyCache = async () => {
     const cached = await getData('check');
@@ -143,6 +174,7 @@ export default function Home() {
 
     if (data) {
       data[0] = page.status;
+
       await applyData(data, true);
       setLoads(false);
       setLoadsd(true);
@@ -188,22 +220,37 @@ export default function Home() {
   const menu = [
     { image: BooksEmoji, lable: 'Урок зараз', data: Lesion || '...' },
     { image: MailEmoji, lable: 'Повідомлення', data: Povidok || '...' },
-    { image: AnalitikEmoji, lable: 'Середній бал', data: Bal || '...' },
+    { image: AnalitikEmoji, lable: 'Середній бал', data: Bal || '...', source: "Diary" },
     { image: MedalEmoji, lable: 'Місце в класі', data: mis ? `${mis} з 32` : '...' },
   ];
 
   if (load) {
     return <View style={[gstyles.back, styles.center]}><ActivityIndicator size="large" color="#007aff" /></View>;
   }
-
+  /* <View style={{ alignItems: "flex-end",marginTop:20,marginRight:20 }}>
+        <TouchableOpacity onPress={() => { navigation.navigate("CreateMessage"); }} style={[styles.circle, { backgroundColor: Circle }]}>
+          <Ionicons name="settings-outline" size={20} color="#007aff" />
+        </TouchableOpacity>
+      </View> */
   return (
-    <ScrollView style={[gstyles.back, styles.wrapper]} contentContainerStyle={styles.container}>
-      {Loads && <LoadWidget text={LoadText} />}
-      {menu.map((item, index) => (
-        <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
-      ))}
+
+
+    <ScrollView style={[styles.wrapper, gstyles.back]} contentContainerStyle={styles.container} >
+      {showLoad && (
+        <Animated.View style={{ transform: [{ translateY: loadTranslateY }], opacity: loadOpacity }}>
+          <LoadWidget text={LoadText} />
+        </Animated.View>
+      )
+      }
+
+      {
+        menu.map((item, index) => (
+          <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
+        ))
+      }
       <StatusBar style="auto" />
-    </ScrollView>
+    </ScrollView >
+
   );
 }
 
@@ -211,4 +258,19 @@ const styles = StyleSheet.create({
   wrapper: { flex: 1, paddingVertical: 50, paddingBottom: 100 },
   container: { alignItems: 'center', justifyContent: 'center' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  circle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 6,
+    marginLeft: 8,
+  },
 });

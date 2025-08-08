@@ -9,6 +9,7 @@ import AppTabs from './AppTabs';
 
 import { getData } from '@components/LocalStorage';
 import CreateMessage from '@screens/Message/CreateMessage';
+import Diary from '@screens/Diary/Diary';
 
 
 export type AppTabParamList = {
@@ -47,10 +48,12 @@ export default function Router() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialScreen}>
-        
+
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="App" component={AppTabs} />
         <Stack.Screen name="Stop" component={Stop} />
+        <Stack.Screen name="Diary" component={Diary} />
+
         <Stack.Screen name="CreateMessage" component={CreateMessage} />
         <Stack.Screen name="FullMessage" component={FullMessage} />
       </Stack.Navigator>

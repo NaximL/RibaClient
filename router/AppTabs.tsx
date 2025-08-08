@@ -118,7 +118,6 @@ function AppTabs() {
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="HomeWork" component={HomeWork} />
             <Tab.Screen name="Schedule" component={Schedule} />
-            <Tab.Screen name="Diary" component={Diary} />
             <Tab.Screen name="Message" component={ChoiceChat} />
             <Tab.Screen name="Profile" component={Profile} />
 

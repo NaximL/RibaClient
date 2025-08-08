@@ -156,8 +156,11 @@ export default function Profile() {
         </View>
          */}
 
+        {/* <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack]}>
+          <Text style={[styles.logoutText,{color:WidgetColorText}]}>Edit cards</Text>
+        </TouchableOpacity> */}
 
-        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack]} onPress={logout}>
+        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack,{marginTop:50}]} onPress={logout}>
           <Text style={styles.logoutText}>Вийти</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={Pazinich}>

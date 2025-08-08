@@ -9,11 +9,14 @@ import {
     TouchableOpacity,
     useColorScheme,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import useDiaryStore from "@store/DiaryStore";
 import { Gstyle } from "styles/gstyles";
 import { format, isToday, isYesterday, parseISO } from "date-fns";
 import { uk } from "date-fns/locale";
+import { Ionicons } from '@expo/vector-icons';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../router/router';
 
 const systemicGradeTypeMap: Record<string, string> = {
     Notebook: "Зошит",
@@ -67,6 +70,9 @@ function groupByDate(data: any[]) {
 }
 
 const Diary = () => {
+
+    type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+    const navigation = useNavigation<NavigationProp>();
     const { gstyles, WidgetColorText } = Gstyle();
     const diaryList = useDiaryStore((state) => state.Diary);
     const sections = groupByDate(diaryList);
@@ -156,6 +162,8 @@ const Diary = () => {
                 ]}
             >
 
+
+
                 <View style={styles.cardContent}>
                     <View style={styles.textBlock}>
                         <Text style={[styles.title, { color: WidgetColorText }]}>{subject}</Text>
@@ -175,7 +183,12 @@ const Diary = () => {
     );
 
     return (
+
         <View style={[styles.container, gstyles.back]}>
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.replace("App", { screen: "Home" })}>
+                <Ionicons name="arrow-back" size={24} color="#007aff" />
+                <Text style={styles.backText}>Назад</Text>
+            </TouchableOpacity>
             <SectionList
                 sections={sections}
                 keyExtractor={(item, index) => item.lessonCreatedOn + index}
@@ -254,5 +267,18 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "700",
         color: "#000",
+    },
+
+
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 12,
+        marginLeft:20,
+    },
+    backText: {
+        color: '#007aff',
+        fontSize: 16,
+        marginLeft: 6,
     },
 });
