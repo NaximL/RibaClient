@@ -84,6 +84,12 @@ export default function Home() {
     if (haptic) await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
 
+  const applytokendata = async (token: string, studentId: string) => {
+    const diary = await GetDiary(token, studentId, 5, 100);
+    await storeData('diary', JSON.stringify(diary));
+    SetDiary(diary);
+  };
+
 
   const loadAnim = useRef(new Animated.Value(Loads ? 1 : 0)).current;
   const [showLoad, setShowLoad] = useState<boolean>(Loads);
@@ -117,18 +123,18 @@ export default function Home() {
 
   const checkAndApplyCache = async () => {
     const cached = await getData('check');
+    const diary = await getData('diary');
+
     if (cached) {
       SetLoadText('Зчитуємо дані з кешу...');
       await applyData(JSON.parse(cached), false);
     }
+    if (diary) {
+      SetDiary(JSON.parse(diary));
+    }
   };
 
   const handleTokenLogic = async (login: string, password: string) => {
-
-    const applytokendata = async (token: string, studentId: string) => {
-      const diary = await GetDiary(token, studentId, 5, 100);
-      SetDiary(diary);
-    };
 
     const tokensRaw = await getData('token_app');
 
@@ -145,15 +151,25 @@ export default function Home() {
       const token = JSON.parse(tokensRaw);
       SetLoadText('Перевіряємо токен...');
       const valid = await ValidToken(token);
-
       if (!valid) {
         const newTokens = await RefreshToken(token);
-
+        console.log(newTokens)
         if (newTokens) {
           SetLoadText('Оновлюємо токен...');
 
           applytokendata(newTokens, valid.enrollments[0].studentId)
           await storeData('token_app', JSON.stringify(newTokens));
+        }
+        else {
+          SetLoadText('Оновлюємо токени...');
+          const data = await GetToken(login, password);
+          if (!data) {
+            seterrors({ name: 'token error', status: true, label: 'Не вдалось отримати токени' });
+            navigation.navigate('Stop');
+            return;
+          }
+          await storeData('token_app', JSON.stringify(data));
+          applytokendata(data, valid.enrollments[0].studentId)
         }
       } else {
         SetLoadText('Верифікуємо токен...');
@@ -180,7 +196,6 @@ export default function Home() {
 
     SetLoadText('Валідуємо сесію...');
     const data = await GetAllData(tokens);
-
     if (data) {
       data[0] = page.status;
 
@@ -215,11 +230,13 @@ export default function Home() {
       const login = await getData('login');
       const password = await getData('password');
       if (!login || !password) return;
-      console.time("load")
 
-      await checkAndApplyCache();
-      await handleTokenLogic(login, password);
-      await validateSessionAndFetch(login, password);
+      console.time("load")
+      await Promise.all([
+        checkAndApplyCache(),
+        validateSessionAndFetch(login, password),
+        handleTokenLogic(login, password),
+      ]);
       console.timeEnd("load")
 
     };
