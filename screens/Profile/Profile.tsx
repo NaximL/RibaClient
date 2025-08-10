@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Animated, Platform, Image } from 'react-native'
-import useBalStore from '../store/BalStore';
-import useProfileStore from '../store/ProfileStore';
-import { getData, removeData } from '../components/LocalStorage';
+import useBalStore from '../../store/BalStore';
+import useProfileStore from '../../store/ProfileStore';
+import { getData, removeData } from '../../components/LocalStorage';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../router/router';
-import { VERSION } from '../config/config';
+import { RootStackParamList } from '../../router/router';
+import { VERSION } from '../../config/config';
 import { Gstyle } from 'styles/gstyles';
 
 
@@ -37,7 +37,7 @@ export default function Profile() {
       Animated.timing(anim, {
         toValue: 1,
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }).start();
 
 
@@ -49,7 +49,7 @@ export default function Profile() {
     Animated.timing(anim, {
       toValue: 1,
       duration: 500,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
     getData('login').then(setLogin);
   }, []);
@@ -58,6 +58,49 @@ export default function Profile() {
     await removeData('tokens');
     navigation.replace('Login');
   };
+
+
+  {/* <View style={styles.teachersBlock}>
+          <Text style={styles.teachersTitle}>Мої вчителі</Text>
+          <View style={styles.teachersList}>
+            
+            <View style={[styles.teacherCard, styles.teacherMath]}>
+              <View style={[styles.teacherIconCircle, styles.teacherMathIcon]}>
+                <Text style={styles.teacherMathIconText}>📐</Text>
+              </View>
+              <View>
+                <Text style={styles.teacherMathTitle}>Математика</Text>
+                <Text style={styles.teacherName}>Олена Петрівна Ковальчук</Text>
+              </View>
+            </View>
+            
+            <View style={[styles.teacherCard, styles.teacherUkr]}>
+              <View style={[styles.teacherIconCircle, styles.teacherUkrIcon]}>
+                <Text style={styles.teacherUkrIconText}>📖</Text>
+              </View>
+              <View>
+                <Text style={styles.teacherUkrTitle}>Українська мова</Text>
+                <Text style={styles.teacherName}>Ірина Василівна Шевченко</Text>
+              </View>
+            </View>
+            
+            <View style={[styles.teacherCard, styles.teacherInf]}>
+              <View style={[styles.teacherIconCircle, styles.teacherInfIcon]}>
+                <Text style={styles.teacherInfIconText}>💻</Text>
+              </View>
+              <View>
+                <Text style={styles.teacherInfTitle}>Інформатика</Text>
+                <Text style={styles.teacherName}>Сергій Олександрович Бондар</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+         */}
+
+  {/* <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack]}>
+          <Text style={[styles.logoutText,{color:WidgetColorText}]}>Edit cards</Text>
+        </TouchableOpacity> */}
+
 
   return (
     <ScrollView
@@ -119,48 +162,8 @@ export default function Profile() {
           </View>
         </View>
 
-        {/* <View style={styles.teachersBlock}>
-          <Text style={styles.teachersTitle}>Мої вчителі</Text>
-          <View style={styles.teachersList}>
-            
-            <View style={[styles.teacherCard, styles.teacherMath]}>
-              <View style={[styles.teacherIconCircle, styles.teacherMathIcon]}>
-                <Text style={styles.teacherMathIconText}>📐</Text>
-              </View>
-              <View>
-                <Text style={styles.teacherMathTitle}>Математика</Text>
-                <Text style={styles.teacherName}>Олена Петрівна Ковальчук</Text>
-              </View>
-            </View>
-            
-            <View style={[styles.teacherCard, styles.teacherUkr]}>
-              <View style={[styles.teacherIconCircle, styles.teacherUkrIcon]}>
-                <Text style={styles.teacherUkrIconText}>📖</Text>
-              </View>
-              <View>
-                <Text style={styles.teacherUkrTitle}>Українська мова</Text>
-                <Text style={styles.teacherName}>Ірина Василівна Шевченко</Text>
-              </View>
-            </View>
-            
-            <View style={[styles.teacherCard, styles.teacherInf]}>
-              <View style={[styles.teacherIconCircle, styles.teacherInfIcon]}>
-                <Text style={styles.teacherInfIconText}>💻</Text>
-              </View>
-              <View>
-                <Text style={styles.teacherInfTitle}>Інформатика</Text>
-                <Text style={styles.teacherName}>Сергій Олександрович Бондар</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-         */}
 
-        {/* <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack]}>
-          <Text style={[styles.logoutText,{color:WidgetColorText}]}>Edit cards</Text>
-        </TouchableOpacity> */}
-
-        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack,{marginTop:50}]} onPress={logout}>
+        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 50 }]} onPress={logout}>
           <Text style={styles.logoutText}>Вийти</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={Pazinich}>

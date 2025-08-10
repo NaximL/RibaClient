@@ -13,11 +13,10 @@ import {
   Animated,
   ActivityIndicator
 } from 'react-native';
-import { storeData } from "../components/LocalStorage"
-import { GetAllData } from '../api/MH/GetAlldata';
+import { storeData } from "../../components/LocalStorage"
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../router/router';
+import { RootStackParamList } from '../../router/router';
 import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
 import { Logins } from '@api/Login';
@@ -96,7 +95,7 @@ const Login = () => {
     Animated.timing(anim, {
       toValue: 1,
       duration: 500,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
     loginRef.current?.focus();
   }, []);
@@ -126,7 +125,7 @@ const Login = () => {
             }}>
               <View style={styles.logoContainer}>
                 <Image
-                  source={require('../public/icon.png')}
+                  source={require('../../public/icon.png')}
                   resizeMode="contain"
                   style={styles.logo}
                 />

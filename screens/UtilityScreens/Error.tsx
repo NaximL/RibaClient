@@ -6,7 +6,8 @@ import {
   Animated,
   ScrollView,
   ActivityIndicator,
-  Image
+  Image,
+  Platform
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
@@ -30,7 +31,7 @@ export default function Stop() {
     Animated.timing(cardAnim, {
       toValue: 1,
       duration: 500,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
   }, [cardAnim]);
 

@@ -79,8 +79,8 @@ const CreateMessageScreen = () => {
         if (typeSelected.label != "Обрати..." || selected.label != "Обрати...") {
 
             Animated.sequence([
-                Animated.timing(sendAnim, { toValue: 0.8, duration: 80, useNativeDriver: true }),
-                Animated.timing(sendAnim, { toValue: 1, duration: 80, useNativeDriver: true }),
+                Animated.timing(sendAnim, { toValue: 0.8, duration: 80, useNativeDriver: Platform.OS !== 'web' }),
+                Animated.timing(sendAnim, { toValue: 1, duration: 80, useNativeDriver: Platform.OS !== 'web' }),
             ]).start(async () => {
 
                 setload(true);

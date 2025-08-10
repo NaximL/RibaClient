@@ -1,4 +1,4 @@
-module.exports = function (api) {
+module.exports = function(api) {
   api.cache(true);
   return {
     presets: ['babel-preset-expo'],
@@ -15,8 +15,7 @@ module.exports = function (api) {
             '@emoji': './assets/emoji',
           },
         },
-      ],
-      'react-native-worklets/plugin',  // <-- добавляем сюда
+      ]
     ],
   };
 };

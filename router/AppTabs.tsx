@@ -6,12 +6,12 @@ import { BlurView } from 'expo-blur';
 import * as Font from 'expo-font';
 
 import Home from '@screens/Home/Home';
-import Profile from '../screens/Profile';
+import Profile from '../screens/Profile/Profile';
 import useLoadingStore from '../store/LoadStore';
 import HomeWork from '../screens/HomeWork/HomeWork';
-import Schedule from '../screens/Schedule';
+import Schedule from '../screens/Schedule/Schedule';
 import ChoiceChat from '@screens/Message/ChoiceChat';
-import Diary from '@screens/Diary/Diary';
+// import Diary from '@screens/Diary/Diary';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,7 +19,7 @@ function AppTabs() {
     const load = useLoadingStore((state) => state.load);
     const setLoad = useLoadingStore((state) => state.setLoad);
 
-    
+
     const tabAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -36,11 +36,12 @@ function AppTabs() {
     }, []);
 
     useEffect(() => {
-        
+
+
         Animated.timing(tabAnim, {
             toValue: load ? 0 : 1,
             duration: 500,
-            useNativeDriver: true,
+            useNativeDriver: Platform.OS !== 'web', 
         }).start();
     }, [load, tabAnim]);
 

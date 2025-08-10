@@ -24,9 +24,9 @@ export default LoadWidget;
 
 const styles = StyleSheet.create({
   wrapper: {
-    flex: 1,
-    paddingVertical: 50,
-    paddingBottom: 100
+    // flex: 1,
+    
+    // paddingBottom: 100
   },
   LargeLoad: {
     padding: 10,
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     borderRadius: 10,
     fontSize: 16,
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,

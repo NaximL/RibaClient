@@ -46,7 +46,7 @@ export default function HomeWork() {
             Animated.timing(cardAnim, {
                 toValue: 1,
                 duration: 900,
-                useNativeDriver: true,
+                useNativeDriver: Platform.OS !== 'web',
             }).start();
         }, [])
     );
@@ -55,7 +55,7 @@ export default function HomeWork() {
         Animated.timing(cardAnim, {
             toValue: 1,
             duration: 900,
-            useNativeDriver: true,
+            useNativeDriver: Platform.OS !== 'web',
         }).start();
         const d = rem(HomeWork, 'UzduotiesAprasymas');
         SetList(d);

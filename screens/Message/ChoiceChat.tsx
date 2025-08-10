@@ -45,7 +45,7 @@ const ChoiceChat = () => {
         Animated.timing(anim, {
           toValue: 1,
           duration: 400 + index * 100,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }).start();
       });
     }, [animValues])

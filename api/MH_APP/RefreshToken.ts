@@ -3,7 +3,7 @@
 import { SERVER_URL } from "../../config/config";
 
 export async function RefreshToken(token:string) {
-
+    
     const res = await fetch(`${SERVER_URL}/auth/token/refresh`, {
         method: "POST",
         headers: {

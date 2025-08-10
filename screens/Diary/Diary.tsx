@@ -76,7 +76,7 @@ const Diary = () => {
     const { gstyles, WidgetColorText } = Gstyle();
     const diaryList = useDiaryStore((state) => state.Diary);
     const sections = groupByDate(diaryList);
-
+    console.log(diaryList)
 
     const anim = useRef(new Animated.Value(0)).current;
 
@@ -86,7 +86,7 @@ const Diary = () => {
             Animated.timing(anim, {
                 toValue: 1,
                 duration: 800,
-                useNativeDriver: true,
+                useNativeDriver: Platform.OS !== 'web',
             }).start();
         }, [])
     );
@@ -176,10 +176,22 @@ const Diary = () => {
         );
     };
     const renderSectionHeader = ({ section: { title } }: any) => (
-        <View style={styles.sectionHeader}>
+        <Animated.View
+            style={[
+                styles.sectionHeader,
+                {
+                    transform: [
+                        { scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.97, 1] }) },
+                        { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [15, 0] }) },
+                    ],
+                    opacity: anim,
+                },
+            ]}
+        >
             <Text style={styles.sectionTitle}>{title}</Text>
             <View style={styles.line} />
-        </View>
+        </Animated.View>
+
     );
 
     return (
@@ -202,6 +214,7 @@ const Diary = () => {
 };
 
 export default Diary;
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -274,7 +287,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 12,
-        marginLeft:20,
+        marginLeft: 20,
     },
     backText: {
         color: '#007aff',

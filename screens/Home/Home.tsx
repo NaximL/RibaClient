@@ -1,7 +1,7 @@
 // Optimized and accelerated Home screen logic
 
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { View, Animated, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Animated, ScrollView, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -95,14 +95,14 @@ export default function Home() {
       Animated.timing(loadAnim, {
         toValue: 1,
         duration: 300,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }).start();
     } else {
 
       Animated.timing(loadAnim, {
         toValue: 0,
         duration: 400,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }).start(({ finished }) => {
         if (finished) setShowLoad(false);
       });
@@ -125,7 +125,13 @@ export default function Home() {
 
   const handleTokenLogic = async (login: string, password: string) => {
 
+    const applytokendata = async (token: string, studentId: string) => {
+      const diary = await GetDiary(token, studentId, 5, 100);
+      SetDiary(diary);
+    };
+
     const tokensRaw = await getData('token_app');
+
     if (!tokensRaw) {
       SetLoadText('Отримуємо токен...');
       const data = await GetToken(login, password);
@@ -139,16 +145,19 @@ export default function Home() {
       const token = JSON.parse(tokensRaw);
       SetLoadText('Перевіряємо токен...');
       const valid = await ValidToken(token);
+
       if (!valid) {
         const newTokens = await RefreshToken(token);
+
         if (newTokens) {
           SetLoadText('Оновлюємо токен...');
+
+          applytokendata(newTokens, valid.enrollments[0].studentId)
           await storeData('token_app', JSON.stringify(newTokens));
         }
       } else {
         SetLoadText('Верифікуємо токен...');
-        const diary = await GetDiary(token, valid.enrollments[0].studentId, 5, 100);
-        SetDiary(diary);
+        applytokendata(token, valid.enrollments[0].studentId)
       }
 
     }
@@ -189,7 +198,7 @@ export default function Home() {
     useCallback(() => {
       cardAnim.forEach((anim, i) => {
         anim.setValue(0);
-        Animated.timing(anim, { toValue: 1, duration: 400 + i * 120, useNativeDriver: true }).start();
+        Animated.timing(anim, { toValue: 1, duration: 400 + i * 120, useNativeDriver: Platform.OS !== 'web' }).start();
       });
     }, [])
   );

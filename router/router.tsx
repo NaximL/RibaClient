@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Login from '../screens/Login';
-import Stop from '@screens/Error';
+import Login from '../screens/UtilityScreens/Login';
+import Stop from '@screens/UtilityScreens/Error';
 import FullMessage from '@screens/Message/Chat';
 import AppTabs from './AppTabs';
 
