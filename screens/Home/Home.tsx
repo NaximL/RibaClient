@@ -86,7 +86,9 @@ export default function Home() {
   };
 
   const applytokendata = async (token: string, studentId: string) => {
-    const diary = await GetDiary(token, studentId, 5, 100);
+    const date = new Date();
+    const mm:number = date.getMonth() + 1
+    const diary = await GetDiary(token, studentId, mm, 100);
     await storeData('diary', JSON.stringify(diary));
     SetDiary(diary);
   };
