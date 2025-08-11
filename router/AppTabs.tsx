@@ -41,7 +41,7 @@ function AppTabs() {
         Animated.timing(tabAnim, {
             toValue: load ? 0 : 1,
             duration: 500,
-            useNativeDriver: Platform.OS !== 'web', 
+            useNativeDriver: Platform.OS !== 'web',
         }).start();
     }, [load, tabAnim]);
 
@@ -54,6 +54,7 @@ function AppTabs() {
         inputRange: [0, 1],
         outputRange: [0, 1],
     });
+
 
     return (
         <Tab.Navigator
@@ -87,7 +88,9 @@ function AppTabs() {
                         <BlurView
                             tint="light"
                             intensity={30}
+
                             style={{
+                                transform: [{ scale: opacity }],
                                 flex: 1,
                                 backgroundColor: 'rgba(255, 255, 255, 0.15)',
                             }}

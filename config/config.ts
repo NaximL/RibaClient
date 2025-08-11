@@ -1,5 +1,6 @@
+export const ISPROD:boolean = true;
 
-export const ISPROD = true;
+export const UPDATE_SCHEDULE:number = 0;
 
-export const VERSION = 'v1.9.5';
-export const SERVER_URL = ISPROD ? "https://fatsharkserv.online" : 'http://192.168.31.162';
+export const VERSION:string = 'v1.9.6';
+export const SERVER_URL:string = ISPROD ? "https://fatsharkserv.online" : 'http://192.168.31.162';

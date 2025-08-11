@@ -1,4 +1,5 @@
-import { SERVER_URL } from "../../config/config";
+import { getData, storeData } from "@components/LocalStorage";
+import { SERVER_URL, UPDATE_SCHEDULE } from "../../config/config";
 
 async function fetchData(endpoint: string, token: string, date?: string) {
   try {
@@ -22,21 +23,36 @@ async function fetchData(endpoint: string, token: string, date?: string) {
 
 export async function GetAllData(token: string) {
   const dateObj = new Date();
-  dateObj.setDate(dateObj.getDate() + 1);  // завтра
+  dateObj.setDate(dateObj.getDate() + 1);
 
   const yyyy = dateObj.getFullYear();
-  const mm = String(dateObj.getMonth() + 1).padStart(2, '0'); 
+  const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
   const dd = String(dateObj.getDate()).padStart(2, '0');
   const date = `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
 
+  const numd = await getData('schedulenum')
+  if (!numd) {
+    console.log('schedule create')
+    await storeData('schedulenum', JSON.stringify(UPDATE_SCHEDULE));
+    const sc = await fetchData("schedule", token);
+    await storeData('schedule', JSON.stringify(sc));
+  }
+  if (Number(numd) < UPDATE_SCHEDULE) {
+    console.log('schedule update')
+    await storeData('schedulenum', JSON.stringify(UPDATE_SCHEDULE));
+    const sc = await fetchData("schedule", token);
+    await storeData('schedule', JSON.stringify(sc));
+  }
+
+  const sch = await getData('schedule')
+  if (!sch) return
   const endpoints = [
-    fetchData("schedule", token),
+    JSON.parse(sch),
     fetchData("message", token),
     fetchData("profile", token),
     fetchData("homework", token, date),
   ];
 
   const [schedule, message, profile, homework] = await Promise.all(endpoints);
-
   return [[], homework || [], schedule || [], profile || [], message || []];
 }

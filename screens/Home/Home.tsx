@@ -1,5 +1,3 @@
-// Optimized and accelerated Home screen logic
-
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { View, Animated, ScrollView, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
@@ -39,6 +37,7 @@ import Widget from './components/Widget';
 import LoadWidget from './components/LoadWidget';
 import { Gstyle } from 'styles/gstyles';
 import { RootStackParamList } from '../../router/router';
+import BottomAlert from '@screens/Message/components/BottomAlert';
 
 export default function Home() {
   const { gstyles, Circle } = Gstyle();
@@ -56,6 +55,8 @@ export default function Home() {
     useRef(new Animated.Value(0)).current,
   ]);
 
+  const [alerts, setalerts] = useState(false);
+  const [TextAlert, setTextAlert] = useState('');
   const setLoad = useLoadingStore(state => state.setLoad);
   const load = useLoadingStore(state => state.load);
   const setLoadsd = useFetchStore(state => state.setLoads);
@@ -142,6 +143,8 @@ export default function Home() {
       SetLoadText('Отримуємо токен...');
       const data = await GetToken(login, password);
       if (!data) {
+        setTextAlert("Помилка завантаження даних");
+        setalerts(true)
         seterrors({ name: 'token error', status: true, label: 'Не вдалось отримати токени' });
         navigation.navigate('Stop');
         return;
@@ -151,12 +154,11 @@ export default function Home() {
       const token = JSON.parse(tokensRaw);
       SetLoadText('Перевіряємо токен...');
       const valid = await ValidToken(token);
+
       if (!valid) {
         const newTokens = await RefreshToken(token);
-        console.log(newTokens)
         if (newTokens) {
           SetLoadText('Оновлюємо токен...');
-
           applytokendata(newTokens, valid.enrollments[0].studentId)
           await storeData('token_app', JSON.stringify(newTokens));
         }
@@ -164,6 +166,8 @@ export default function Home() {
           SetLoadText('Оновлюємо токени...');
           const data = await GetToken(login, password);
           if (!data) {
+            setTextAlert("Помилка завантаження даних");
+            setalerts(true);
             seterrors({ name: 'token error', status: true, label: 'Не вдалось отримати токени' });
             navigation.navigate('Stop');
             return;
@@ -275,6 +279,12 @@ export default function Home() {
         ))
       }
       <StatusBar style="auto" />
+
+      <BottomAlert
+        visible={alerts}
+        onHide={() => { }}
+        text={TextAlert} />
+
     </ScrollView >
 
   );
