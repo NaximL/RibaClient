@@ -158,7 +158,7 @@ export default function Home() {
 
       if (!valid) {
         const newTokens = await RefreshToken(token);
-        if (newTokens) {
+        if (newTokens===true) {
           SetLoadText('Оновлюємо токен...');
           applytokendata(newTokens, valid.enrollments[0].studentId)
           await storeData('token_app', JSON.stringify(newTokens));
@@ -174,7 +174,6 @@ export default function Home() {
             return;
           }
           await storeData('token_app', JSON.stringify(data));
-          console.log(valid)
           applytokendata(data, valid.enrollments[0].studentId)
         }
       } else {
