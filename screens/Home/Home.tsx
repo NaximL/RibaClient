@@ -40,7 +40,7 @@ import { RootStackParamList } from '../../router/router';
 import BottomAlert from '@screens/Message/components/BottomAlert';
 
 export default function Home() {
-  const { gstyles, Circle } = Gstyle();
+  const { gstyles } = Gstyle();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
 
   const [LoadText, SetLoadText] = useState('Оновлюємо дані...');
@@ -60,7 +60,6 @@ export default function Home() {
   const setLoad = useLoadingStore(state => state.setLoad);
   const load = useLoadingStore(state => state.load);
   const setLoadsd = useFetchStore(state => state.setLoads);
-  const Loadsd = useFetchStore(state => state.loads);
   const SetDiary = useDiaryStore(state => state.SetDiary);
   const Bal = useBalStore(state => state.bal);
   const setBal = useBalStore(state => state.setBal);
@@ -87,7 +86,7 @@ export default function Home() {
 
   const applytokendata = async (token: string, studentId: string) => {
     const date = new Date();
-    const mm:number = date.getMonth() + 1
+    const mm: number = date.getMonth() + 1
     const diary = await GetDiary(token, studentId, mm, 100);
     await storeData('diary', JSON.stringify(diary));
     SetDiary(diary);
@@ -164,7 +163,7 @@ export default function Home() {
           applytokendata(newTokens, valid.enrollments[0].studentId)
           await storeData('token_app', JSON.stringify(newTokens));
         }
-        else {
+        else if (newTokens === false) {
           SetLoadText('Оновлюємо токени...');
           const data = await GetToken(login, password);
           if (!data) {
@@ -175,10 +174,12 @@ export default function Home() {
             return;
           }
           await storeData('token_app', JSON.stringify(data));
+          console.log(valid)
           applytokendata(data, valid.enrollments[0].studentId)
         }
       } else {
         SetLoadText('Верифікуємо токен...');
+        console.log(valid)
         applytokendata(token, valid.enrollments[0].studentId)
       }
 
