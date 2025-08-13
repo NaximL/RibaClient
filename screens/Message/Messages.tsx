@@ -21,7 +21,7 @@ import { Gstyle } from "styles/gstyles";
 import ChoiceSend from "./components/ChoiceSend";
 
 
-const ChoiceChat = () => {
+const Messages = () => {
   const { gstyles, MessageTopicText } = Gstyle();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
@@ -141,7 +141,7 @@ const ChoiceChat = () => {
   );
 };
 
-export default ChoiceChat;
+export default Messages;
 
 const styles = StyleSheet.create({
   wrapper: {

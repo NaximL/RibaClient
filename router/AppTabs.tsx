@@ -10,7 +10,7 @@ import Profile from '../screens/Profile/Profile';
 import useLoadingStore from '../store/LoadStore';
 import HomeWork from '../screens/HomeWork/HomeWork';
 import Schedule from '../screens/Schedule/Schedule';
-import ChoiceChat from '@screens/Message/ChoiceChat';
+import Messages from '@screens/Message/Messages';
 // import Diary from '@screens/Diary/Diary';
 
 const Tab = createBottomTabNavigator();
@@ -122,7 +122,7 @@ function AppTabs() {
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="HomeWork" component={HomeWork} />
             <Tab.Screen name="Schedule" component={Schedule} />
-            <Tab.Screen name="Message" component={ChoiceChat} />
+            <Tab.Screen name="Message" component={Messages} />
             <Tab.Screen name="Profile" component={Profile} />
 
         </Tab.Navigator>

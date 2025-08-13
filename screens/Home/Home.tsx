@@ -158,7 +158,7 @@ export default function Home() {
 
       if (!valid) {
         const newTokens = await RefreshToken(token);
-        if (newTokens===true) {
+        if (newTokens === true) {
           SetLoadText('Оновлюємо токен...');
           applytokendata(newTokens, valid.enrollments[0].studentId)
           await storeData('token_app', JSON.stringify(newTokens));
@@ -178,7 +178,6 @@ export default function Home() {
         }
       } else {
         SetLoadText('Верифікуємо токен...');
-        console.log(valid)
         applytokendata(token, valid.enrollments[0].studentId)
       }
 
@@ -228,7 +227,11 @@ export default function Home() {
     if (ISPROD) {
       fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
         .then(res => res.json())
-        .then(data => data[0]?.status && navigation.navigate('Stop'))
+        .then(data => {
+          if (data[0]?.status) {
+            seterrors(data[0]); navigation.navigate('Stop')
+          }
+        })
         .catch(err => console.error('Mock API error:', err));
     }
 
@@ -259,11 +262,8 @@ export default function Home() {
   if (load) {
     return <View style={[gstyles.back, styles.center]}><ActivityIndicator size="large" color="#007aff" /></View>;
   }
-  /* <View style={{ alignItems: "flex-end",marginTop:20,marginRight:20 }}>
-        <TouchableOpacity onPress={() => { navigation.navigate("CreateMessage"); }} style={[styles.circle, { backgroundColor: Circle }]}>
-          <Ionicons name="settings-outline" size={20} color="#007aff" />
-        </TouchableOpacity>
-      </View> */
+
+
   return (
 
 

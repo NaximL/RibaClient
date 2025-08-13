@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Login from '../screens/UtilityScreens/Login';
 import Stop from '@screens/UtilityScreens/Error';
-import FullMessage from '@screens/Message/Chat';
+import FullMessage from '@screens/Message/Message';
 import AppTabs from './AppTabs';
 
 import { getData } from '@components/LocalStorage';
