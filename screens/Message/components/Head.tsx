@@ -62,9 +62,9 @@ const Head = ({ nav, modal, s }: any) => {
           <Ionicons name="ellipsis-vertical" size={20} color="#007aff" />
         </TouchableOpacity> */}
 
-        <TouchableOpacity onPress={() => { navigation.navigate("CreateMessage"); }} style={[styles.circle, { backgroundColor: Circle }]}>
+        {/* <TouchableOpacity onPress={() => { navigation.navigate("CreateMessage"); }} style={[styles.circle, { backgroundColor: Circle }]}>
           <Ionicons name="add" size={20} color="#007aff" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {open &&
           <BlurView intensity={15} tint="light" style={styles.dropdown}>

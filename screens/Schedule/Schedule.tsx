@@ -78,7 +78,7 @@ const Schedule = () => {
                 ) : (
                     <>
                         {Array.isArray(Le) && Le.map((day: ScheduleDay, index: number) => (
-                            <DayEl day={day} key={index} choiceDay={toggleDay} index={index} openDays={openDays} daysOfWeek={daysOfWeek}/>
+                            <DayEl day={day} key={index} choiceDay={toggleDay} index={index} openDays={openDays} daysOfWeek={daysOfWeek} />
                         ))}
                     </>
                 )}
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         textAlign: "center",
-        marginTop: 40,
+        marginTop: 8,
         color: "#aaa",
         fontSize: 16,
     },

@@ -21,7 +21,10 @@ export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   Register: undefined;
-  FullMessage: undefined;
+  FullMessage: {
+    item: any; 
+    status: number;
+  };
   CreateMessage: undefined;
   Stop: undefined;
   App: {

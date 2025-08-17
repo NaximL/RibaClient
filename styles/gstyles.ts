@@ -8,7 +8,7 @@ export const Gstyle = () => {
 
   useEffect(() => {
     if (Platform.OS === 'web') {
-      
+
       let metaThemeColor = document.querySelector("meta[name=theme-color]");
       if (!metaThemeColor) {
         metaThemeColor = document.createElement('meta');
@@ -60,6 +60,10 @@ export const Gstyle = () => {
   const ChatTitle = isDark ? '#ffffff' : '#222222';
   const Login = isDark ? '#1d1d26' : '#fff';
 
+  const MessageBuble = isDark ? '#2c2c2e' : '#e5e5ea';
+  const MessageBubleActive = isDark ? '#3390ec' : '#007aff';
+  const MessageBubleText = isDark ? '#fff' : '#000';
+  const MessageBubleTextActive = '#fff';
   return {
     gstyles,
     WidgetColorText,
@@ -72,5 +76,9 @@ export const Gstyle = () => {
     ChatTitle,
     Login,
     LoginText,
+    MessageBuble,
+    MessageBubleActive,
+    MessageBubleText,
+    MessageBubleTextActive
   };
 };

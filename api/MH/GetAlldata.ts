@@ -49,10 +49,11 @@ export async function GetAllData(token: string) {
   const endpoints = [
     JSON.parse(sch),
     fetchData("message", token),
+    fetchData("messagesendmes", token),
     fetchData("profile", token),
     fetchData("homework", token, date),
   ];
 
-  const [schedule, message, profile, homework] = await Promise.all(endpoints);
-  return [[], homework || [], schedule || [], profile || [], message || []];
+  const [schedule, message,messagesendmes, profile, homework] = await Promise.all(endpoints);
+  return [[], homework || [], schedule || [], profile || [], message || [],messagesendmes|| []];
 }

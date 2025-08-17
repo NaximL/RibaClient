@@ -38,6 +38,7 @@ import LoadWidget from './components/LoadWidget';
 import { Gstyle } from 'styles/gstyles';
 import { RootStackParamList } from '../../router/router';
 import BottomAlert from '@screens/Message/components/BottomAlert';
+import { useMessageSendStore } from '@store/SendMessageStore';
 
 export default function Home() {
   const { gstyles } = Gstyle();
@@ -65,18 +66,20 @@ export default function Home() {
   const setBal = useBalStore(state => state.setBal);
   const setProfile = useProfileStore(state => state.setProfile);
   const setMessage = useMessageStore(state => state.SetMessage);
+  const setMessageSend = useMessageSendStore(state => state.setMessageSend);
   const setHomeWork = useHomeWorkStore(state => state.SetHomeWork);
   const setLesions = useLesionStore(state => state.setLesions);
   const seterrors = UseErrorStore(state => state.setError);
 
   const applyData = async (MHDATA: any, haptic: boolean) => {
     SetLoadText('Застосовуємо дані...');
-    const [HomePage, HomeWork, Lesions, Profile, Messages] = MHDATA;
+    const [HomePage, HomeWork, Lesions, Profile, Messages,MessagesSend] = MHDATA;
     setBal(HomePage[14]);
     setMis(HomePage[15]);
     setPovidok(HomePage[10]);
     setProfile(Profile);
     setMessage(Messages.value);
+    setMessageSend(MessagesSend.value);
     setHomeWork(Array.isArray(HomeWork?.value) ? HomeWork.value : []);
     const lesionData = await GetLesion(Lesions);
     setLesionText(lesionData);

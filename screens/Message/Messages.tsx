@@ -19,15 +19,20 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect } from 'react';
 import { Gstyle } from "styles/gstyles";
 import ChoiceSend from "./components/ChoiceSend";
+import { useMessageSendStore } from "@store/SendMessageStore";
 
 
 const Messages = () => {
-  const { gstyles, MessageTopicText } = Gstyle();
+  const { gstyles, MessageTopicText, MessageBubleActive, MessageBuble, MessageBubleText, MessageBubleTextActive } = Gstyle();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const navigation = useNavigation<NavigationProp>();
 
   const Message = useMessageStore((state) => state.Message);
+  const MessageSend = useMessageSendStore((state) => state.MessageSend);
+
+
+  const [ActiveMod, setActiveMod] = useState<number>(0);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -52,7 +57,7 @@ const Messages = () => {
   );
 
 
-  
+
 
 
   const filteredMessages = Message.filter((msg) =>
@@ -60,6 +65,7 @@ const Messages = () => {
     msg.Siuntejas.toLowerCase().includes(searchQuery.toLowerCase())
   );
   const renderItem = ({ item, index }: any) => (
+
     <Animated.View
       style={{
         opacity: animValues[index] || 1,
@@ -75,11 +81,13 @@ const Messages = () => {
     >
       <TouchableOpacity
         style={[styles.messageContainer, gstyles.WidgetBack]}
-        onPress={() => navigation.replace("FullMessage", item)}
+        onPress={() =>
+          navigation.replace("FullMessage", { item: item, status: ActiveMod })
+        }
         activeOpacity={0.8}
       >
-        <Text style={[styles.sender, !item.ArPerskaite && styles.noreed]}>
-          {item.Siuntejas}
+        <Text style={[styles.sender, ActiveMod === 0 ? !item.ArPerskaite && styles.noreed : item.Perskaite === 0 && styles.noreed]}>
+          {ActiveMod === 0 ? item.Siuntejas : item.GavejoPavardeVardasTevavardis}
         </Text>
         <Text style={[styles.topic, { color: MessageTopicText }]} numberOfLines={1}>
           {item.Tema}
@@ -96,8 +104,14 @@ const Messages = () => {
       <View style={styles.headWrapper}>
         <Head modal={setModalVisible} nav={navigation} />
 
-        {/* <ChoiceSend/> */}
-
+        <View style={styles.bubblesWrapper}>
+          <TouchableOpacity onPress={() => setActiveMod(0)} style={[styles.bubble, { backgroundColor: ActiveMod === 0 ? MessageBubleActive : MessageBuble }]}>
+            <Text style={[styles.bubbleText, { color: ActiveMod === 0 ? MessageBubleTextActive : MessageBubleText }]}>Вхідні</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveMod(1)} style={[styles.bubble, { backgroundColor: ActiveMod === 1 ? MessageBubleActive : MessageBuble }]}>
+            <Text style={[styles.bubbleText, { color: ActiveMod === 1 ? MessageBubleTextActive : MessageBubleText }]}>Відправлені</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
 
@@ -128,7 +142,7 @@ const Messages = () => {
 
 
       <FlatList
-        data={Message}
+        data={ActiveMod === 0 ? Message : MessageSend}
         renderItem={renderItem}
         keyExtractor={(item) => item.Id.toString()}
         contentContainerStyle={styles.listContent}
@@ -137,7 +151,7 @@ const Messages = () => {
 
 
 
-    </View>
+    </View >
   );
 };
 
@@ -209,6 +223,30 @@ const styles = StyleSheet.create({
   },
 
 
+
+  bubblesWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 12,
+    gap: 8,
+  },
+
+  bubble: {
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 20,
+
+  },
+
+  bubbleText: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#fff',
+  },
+
+  bubbleTextActive: {
+    color: '#fff',
+  },
 
   modalContent: {
     flex: 1,

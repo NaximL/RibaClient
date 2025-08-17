@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router/router';
 import { Gstyle } from "styles/gstyles";
+import { GetMessageSend } from "@api/GetMessageSend";
 
 type FileLink = {
   name: string;
@@ -36,24 +37,39 @@ const FullMessage = () => {
   const route = useRoute();
 
 
-  const item = route.params as {
-    Id: number;
-    Tema: string;
-    Data: string;
-    Siuntejas: string;
-    Pareigos: string;
-    Gavejas: string;
-    Turinys: string;
+  const routePar = route.params as {
+    item: {
+      Id: number;
+      Tema: string;
+      Data: string;
+      Siuntejas: string;
+      Pareigos: string;
+      Gavejas: string;
+      GavejoPavardeVardasTevavardis:string;
+      Turinys: string;
+    };
+    status?: number;
   };
-
+  const item = routePar.item;
+  const status = routePar.status;
   useEffect(() => {
     (async () => {
       const tokens = await getData("tokens");
 
       if (!tokens) return
-      const msg = await GetMessage(tokens, item.Id);
-      setAttachments(msg.links || []);
-      setBody(msg.body || "");
+      if (status === 0) {
+        const msg = await GetMessage(tokens, item.Id);
+        console.log(msg)
+        setAttachments(msg.links || []);
+        setBody(msg.body || "");
+      }
+      else if (status === 1) {
+        const msg = await GetMessageSend(tokens, item.Id);
+        console.log(msg)
+        setAttachments(msg.links || []);
+        setBody(msg.body || "");
+      }
+
 
     })();
   }, [item.Id]);
@@ -76,8 +92,8 @@ const FullMessage = () => {
       <Text style={styles.date}>{new Date(item.Data).toLocaleString()}</Text>
 
       <View style={styles.section}>
-        <Text style={styles.label}>Від:</Text>
-        <Text style={[styles.value, { color: ChatText }]}>{item.Siuntejas}</Text>
+        <Text style={styles.label}>{status === 0 ? "Від" : "Кому"}:</Text>
+        <Text style={[styles.value, { color: ChatText }]}>{status=== 0 ?item.Siuntejas:item.GavejoPavardeVardasTevavardis}</Text>
       </View>
 
       <View style={styles.section}>
