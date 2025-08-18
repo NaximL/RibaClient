@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,39 +7,32 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
-  TextInput,
+  Animated,
 } from "react-native";
 import useMessageStore from "@store/MessageStore";
-import Head from "./components/Head";
-import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../router/router';
-import { useNavigation } from '@react-navigation/native';
-// import FullScreenModal from '@components/Modal'; 
-import { Animated } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useEffect } from 'react';
-import { Gstyle } from "styles/gstyles";
-import ChoiceSend from "./components/ChoiceSend";
 import { useMessageSendStore } from "@store/SendMessageStore";
-
+import Head from "./components/Head";
+import BottomMessageModal from "./CreateMessage";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../router/router";
+import { Gstyle } from "styles/gstyles";
 
 const Messages = () => {
-  const { gstyles, MessageTopicText, MessageBubleActive, MessageBuble, MessageBubleText, MessageBubleTextActive } = Gstyle();
+  const { gstyles, MessageTopicText } = Gstyle();
 
-  type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+  type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
 
   const Message = useMessageStore((state) => state.Message);
   const MessageSend = useMessageSendStore((state) => state.MessageSend);
 
-
   const [ActiveMod, setActiveMod] = useState<number>(0);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
+  // Анимация списка
   const [animValues, setAnimValues] = useState<Animated.Value[]>([]);
-
   useEffect(() => {
     setAnimValues(Message.map(() => new Animated.Value(0)));
   }, [Message]);
@@ -50,22 +44,18 @@ const Messages = () => {
         Animated.timing(anim, {
           toValue: 1,
           duration: 400 + index * 100,
-          useNativeDriver: Platform.OS !== 'web',
+          useNativeDriver: Platform.OS !== "web",
         }).start();
       });
     }, [animValues])
   );
 
+  const OpenCreateMessage = () => {
+    navigation.replace("CreateMessage");
+  };
 
 
-
-
-  const filteredMessages = Message.filter((msg) =>
-    msg.Tema.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    msg.Siuntejas.toLowerCase().includes(searchQuery.toLowerCase())
-  );
   const renderItem = ({ item, index }: any) => (
-
     <Animated.View
       style={{
         opacity: animValues[index] || 1,
@@ -86,7 +76,14 @@ const Messages = () => {
         }
         activeOpacity={0.8}
       >
-        <Text style={[styles.sender, ActiveMod === 0 ? !item.ArPerskaite && styles.noreed : item.Perskaite === 0 && styles.noreed]}>
+        <Text
+          style={[
+            styles.sender,
+            ActiveMod === 0
+              ? !item.ArPerskaite && styles.noreed
+              : item.Perskaite === 0 && styles.noreed,
+          ]}
+        >
           {ActiveMod === 0 ? item.Siuntejas : item.GavejoPavardeVardasTevavardis}
         </Text>
         <Text style={[styles.topic, { color: MessageTopicText }]} numberOfLines={1}>
@@ -101,45 +98,13 @@ const Messages = () => {
 
   return (
     <View style={[styles.wrapper, gstyles.back]}>
-      <View style={styles.headWrapper}>
-        <Head modal={setModalVisible} nav={navigation} />
+      <Head
+        setActiveMod={setActiveMod}
+        ActiveMod={ActiveMod}ƒ
+        onPress={OpenCreateMessage}
+      />
 
-        <View style={styles.bubblesWrapper}>
-          <TouchableOpacity onPress={() => setActiveMod(0)} style={[styles.bubble, { backgroundColor: ActiveMod === 0 ? MessageBubleActive : MessageBuble }]}>
-            <Text style={[styles.bubbleText, { color: ActiveMod === 0 ? MessageBubleTextActive : MessageBubleText }]}>Вхідні</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setActiveMod(1)} style={[styles.bubble, { backgroundColor: ActiveMod === 1 ? MessageBubleActive : MessageBuble }]}>
-            <Text style={[styles.bubbleText, { color: ActiveMod === 1 ? MessageBubleTextActive : MessageBubleText }]}>Відправлені</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-
-
-      {/* <FullScreenModal visible={modalVisible} onClose={() => setModalVisible(false)}>
-        <View style={styles.modalContent}>
-          <TextInput
-            placeholder="Пошук повідомлень..."
-            style={styles.searchInput}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            clearButtonMode="while-editing"
-          />
-          
-          {filteredMessages.length === 0 ? (
-            <Text style={styles.noResults}>Нічого не знайдено</Text>
-          ) : (
-            <FlatList
-              data={filteredMessages}
-              keyExtractor={(item) => item.Id.toString()}
-              renderItem={renderItem}
-              keyboardShouldPersistTaps="handled"
-            />
-          )}
-        </View>
-      </FullScreenModal> */}
-
-
+      
 
       <FlatList
         data={ActiveMod === 0 ? Message : MessageSend}
@@ -148,126 +113,25 @@ const Messages = () => {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
-
-
-
-    </View >
+    </View>
   );
 };
 
 export default Messages;
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-
-    paddingTop: Platform.OS === "ios" ? 64 : 32,
-
-  },
-
-  headWrapper: {
-    position: "absolute",
-    top: Platform.OS === "ios" ? 64 : 16,
-    left: 16,
-    right: 16,
-    zIndex: 99,
-  },
-
-  listContent: {
-    paddingTop: 96,
-    paddingHorizontal: 16,
-    paddingBottom: 100,
-  },
-
-  noreed: {
-    color: "red",
-  },
-
+  wrapper: { flex: 1, paddingTop: Platform.OS === "ios" ? 64 : 32 },
+  listContent: { paddingTop: 96, paddingHorizontal: 16, paddingBottom: 100 },
+  noreed: { color: "red" },
   messageContainer: {
-
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
     elevation: 4,
   },
-
-  sender: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#007aff",
-    marginBottom: 4,
-  },
-
-  topic: {
-    fontSize: 15,
-    fontWeight: "500",
-    color: "#1c1c1e",
-    marginBottom: 8,
-  },
-
-  meta: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-
-  receiver: {
-    fontSize: 13,
-    color: "#6e6e73",
-  },
-
-  date: {
-    fontSize: 13,
-    color: "#6e6e73",
-  },
-
-
-
-  bubblesWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 12,
-    gap: 8,
-  },
-
-  bubble: {
-    paddingVertical: 8,
-    paddingHorizontal: 18,
-    borderRadius: 20,
-
-  },
-
-  bubbleText: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#fff',
-  },
-
-  bubbleTextActive: {
-    color: '#fff',
-  },
-
-  modalContent: {
-    flex: 1,
-  },
-
-  searchInput: {
-    height: 48,
-    borderColor: "#007aff",
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    marginBottom: 12,
-    backgroundColor: "#fff",
-    color: "#222",
-  },
-
-  noResults: {
-    marginTop: 20,
-    textAlign: "center",
-    color: "#888",
-    fontSize: 16,
-  },
+  sender: { fontSize: 16, fontWeight: "600", color: "#007aff", marginBottom: 4 },
+  topic: { fontSize: 15, fontWeight: "500", color: "#1c1c1e", marginBottom: 8 },
+  meta: { flexDirection: "row", justifyContent: "space-between" },
+  date: { fontSize: 13, color: "#6e6e73" },
 });

@@ -1,97 +1,57 @@
-import React, { useState, useRef, useEffect } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-  LayoutAnimation,
-  UIManager,
-  Animated,
-} from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { RootStackParamList } from '../../../router/router';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
 import { Gstyle } from 'styles/gstyles';
 
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
+const Head = ({ setActiveMod, ActiveMod,onPress }: any) => {
+  const { isDark, MessageBubleActive, MessageBubleText, MessageBubleTextActive ,MessageBuble} = Gstyle();
 
+  const translateX = useRef(new Animated.Value(0)).current;
 
-const Head = ({ nav, modal, s }: any) => {
-  const { gstyles, Circle } = Gstyle();
-
-  const options = [
-    {
-      text: 'Прочитати всі',
-      play: () => { }
-    }];
-  const [open, setOpen] = useState(false);
-  const animations = useRef(options.map(() => new Animated.Value(0))).current;
-  type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
-  const navigation = useNavigation<NavigationProp>();
   useEffect(() => {
-    if (open) {
-      Animated.stagger(100,
-        animations.map(anim =>
-          Animated.timing(anim, {
-            toValue: 1,
-            duration: 250,
-            useNativeDriver: true,
-          })
-        )
-      ).start();
-    } else {
-      animations.forEach(anim => anim.setValue(0));
-    }
-  }, [open]);
-
-  const toggleDropdown = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setOpen((prev) => !prev);
-  };
+    Animated.spring(translateX, {
+      toValue: ActiveMod * 110,
+      useNativeDriver: true,
+      damping: 15,
+      stiffness: 150,
+    }).start();
+  }, [ActiveMod]);
 
   return (
-    <View style={styles.container}>
-      <View ></View>
+    <BlurView
+      intensity={40}
+      tint={isDark ? 'dark' : 'light'}
+      style={styles.container}
+    >
+      <View style={[styles.bubblesWrapper,{backgroundColor:MessageBuble}]}>
+        <Animated.View
+          style={[
+            styles.activeBg,
+            { backgroundColor: MessageBubleActive, transform: [{ translateX }] },
+          ]}
+        />
 
-      <View style={styles.rightGroup}>
-        {/* <TouchableOpacity style={[styles.circle, { backgroundColor: Circle }]} onPress={toggleDropdown}>
-          <Ionicons name="ellipsis-vertical" size={20} color="#007aff" />
-        </TouchableOpacity> */}
+        <TouchableOpacity onPress={() => setActiveMod(0)} style={styles.bubble}>
+          <Text style={[styles.bubbleText, { color: ActiveMod === 0 ? MessageBubleTextActive : MessageBubleText }]}>
+            Вхідні
+          </Text>
+        </TouchableOpacity>
 
-        {/* <TouchableOpacity onPress={() => { navigation.navigate("CreateMessage"); }} style={[styles.circle, { backgroundColor: Circle }]}>
-          <Ionicons name="add" size={20} color="#007aff" />
-        </TouchableOpacity> */}
-
-        {open &&
-          <BlurView intensity={15} tint="light" style={styles.dropdown}>
-            <View style={styles.dropdownContent}>
-              {options.map((option, index) => {
-                const opacity = animations[index];
-                const translateY = opacity.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [10, 0],
-                });
-
-                return (
-                  <Animated.View
-                    key={index}
-                    style={[styles.item, { opacity, transform: [{ translateY }] }]}
-                  >
-                    <TouchableOpacity onPress={() => { option.play(); setOpen(false); }}>
-                      <Animated.Text style={styles.text}>{option.text}</Animated.Text>
-                    </TouchableOpacity>
-                  </Animated.View>
-                );
-              })}
-            </View>
-          </BlurView>
-        }
+        <TouchableOpacity onPress={() => setActiveMod(1)} style={styles.bubble}>
+          <Text style={[styles.bubbleText, { color: ActiveMod === 1 ? MessageBubleTextActive : MessageBubleText }]}>
+            Відправлені
+          </Text>
+        </TouchableOpacity>
       </View>
-    </View>
+
+      <TouchableOpacity onPress={onPress} style={styles.createBtn}>
+        <Ionicons name="create-outline" size={18} color={MessageBubleTextActive} />
+        <Text style={[styles.bubbleText, { color: MessageBubleTextActive, marginLeft: 6 }]}>
+          Створити
+        </Text>
+      </TouchableOpacity>
+    </BlurView>
   );
 };
 
@@ -99,57 +59,58 @@ export default Head;
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
+    top: 10,
+    left: 0,
+    right: 0,
+    height: 60,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    height: 56,
-
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    borderRadius: 16,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    zIndex: 99,
   },
-  circle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  bubblesWrapper: {
+    marginLeft:5,
 
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    flexDirection: 'row',
+    position: 'relative',
+    
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  bubble: {
+    width: 110,
+    paddingVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 6,
-    marginLeft: 8,
+    zIndex: 2,
   },
-  rightGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'relative',
-    zIndex: 999,
-  },
-  dropdown: {
-    position: 'absolute',
-    top: 50,
-    right: 0,
-    width: 160,
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 10,
-  },
-  dropdownContent: {
-    backgroundColor: 'rgba(255,255,255,0.85)',
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  item: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-  },
-  text: {
-    fontSize: 16,
-    color: '#000000',
+  bubbleText: {
+    fontSize: 15,
     fontWeight: '500',
+  },
+  activeBg: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 110,
+    height: '100%',
+    borderRadius: 20,
+    zIndex: 0,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+  },
+  createBtn: {
+    marginRight:5,
+    backgroundColor: 'rgb(0,122,255)',
+    flexDirection: 'row',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

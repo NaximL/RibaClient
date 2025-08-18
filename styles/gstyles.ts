@@ -64,7 +64,9 @@ export const Gstyle = () => {
   const MessageBubleActive = isDark ? '#3390ec' : '#007aff';
   const MessageBubleText = isDark ? '#fff' : '#000';
   const MessageBubleTextActive = '#fff';
+  
   return {
+    isDark,
     gstyles,
     WidgetColorText,
     Circle,
