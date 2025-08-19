@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Gstyle } from 'styles/gstyles';
 
 type Option = {
   label: string;
@@ -29,10 +30,21 @@ const SelectModal: React.FC<SelectModalProps> = ({
   onSelect,
   onClose,
 }) => {
+  const { isDark } = Gstyle();
+
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPressOut={onClose}>
-        <View style={styles.modalContent}>
+      <TouchableOpacity
+        style={styles.modalOverlay}
+        activeOpacity={1}
+        onPressOut={onClose}
+      >
+        <View
+          style={[
+            styles.modalContent,
+            { backgroundColor: isDark ? '#1c1c1e' : '#fff' },
+          ]}
+        >
           <FlatList
             data={options}
             keyExtractor={(item) => item.value}
@@ -40,14 +52,31 @@ const SelectModal: React.FC<SelectModalProps> = ({
               const isSelected = selectedValue === item.value;
               return (
                 <TouchableOpacity
-                  style={[styles.option, isSelected && styles.optionSelected]}
+                  style={[
+                    styles.option,
+                    { borderBottomColor: isDark ? '#333' : '#f2f2f7' },
+                    isSelected && {
+                      backgroundColor: isDark ? '#2a2a2e' : '#f2f8ff',
+                    },
+                  ]}
                   onPress={() => onSelect(item)}
                 >
-                  <Text style={[styles.optionText, isSelected && styles.optionTextSelected]}>
+                  <Text
+                    style={[
+                      styles.optionText,
+                      { color: isDark ? '#f5f5f5' : '#222' },
+                      isSelected && { color: '#007aff', fontWeight: '600' },
+                    ]}
+                  >
                     {item.label}
                   </Text>
                   {isSelected && (
-                    <Ionicons name="checkmark" size={18} color="#007aff" style={{ marginLeft: 8 }} />
+                    <Ionicons
+                      name="checkmark"
+                      size={18}
+                      color="#007aff"
+                      style={{ marginLeft: 8 }}
+                    />
                   )}
                 </TouchableOpacity>
               );
@@ -69,8 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    maxHeight:500,
-    backgroundColor: '#fff',
+    maxHeight: 500,
     borderRadius: 18,
     width: 300,
     paddingVertical: 8,
@@ -86,18 +114,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f7',
-  },
-  optionSelected: {
-    backgroundColor: '#f2f8ff',
   },
   optionText: {
     fontSize: 16,
-    color: '#222',
     flex: 1,
-  },
-  optionTextSelected: {
-    color: '#007aff',
-    fontWeight: '600',
   },
 });

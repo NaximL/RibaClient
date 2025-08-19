@@ -73,6 +73,7 @@ export default function TelegramInit() {
     };
 
     document.body.appendChild(script);
+    console.log = originalLog
   }, []);
 
   return null;

@@ -17,6 +17,8 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../router/router";
 import { Gstyle } from "styles/gstyles";
+import FullScreenModal from "@components/Modal";
+import CreateMessageScreen from "./CreateMessage";
 
 const Messages = () => {
   const { gstyles, MessageTopicText } = Gstyle();
@@ -31,7 +33,7 @@ const Messages = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Анимация списка
+
   const [animValues, setAnimValues] = useState<Animated.Value[]>([]);
   useEffect(() => {
     setAnimValues(Message.map(() => new Animated.Value(0)));
@@ -51,7 +53,7 @@ const Messages = () => {
   );
 
   const OpenCreateMessage = () => {
-    navigation.replace("CreateMessage");
+    setModalVisible(true);
   };
 
 
@@ -100,11 +102,19 @@ const Messages = () => {
     <View style={[styles.wrapper, gstyles.back]}>
       <Head
         setActiveMod={setActiveMod}
-        ActiveMod={ActiveMod}ƒ
+        ActiveMod={ActiveMod}
         onPress={OpenCreateMessage}
       />
 
-      
+
+      <FullScreenModal
+        close={true}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      >
+        <CreateMessageScreen onClose={() => setModalVisible(false)} />
+      </FullScreenModal>
+
 
       <FlatList
         data={ActiveMod === 0 ? Message : MessageSend}

@@ -5,10 +5,11 @@ import { Gstyle } from 'styles/gstyles';
 type FullScreenModalProps = {
   visible: boolean;
   onClose: () => void;
+  close?: boolean;
   children: React.ReactNode;
 };
 
-export default function FullScreenModal({ visible, onClose, children }: FullScreenModalProps) {
+export default function FullScreenModal({ visible, onClose, close, children }: FullScreenModalProps) {
   const { gstyles } = Gstyle();
   return (
     <Modal
@@ -21,9 +22,11 @@ export default function FullScreenModal({ visible, onClose, children }: FullScre
           <ScrollView contentContainerStyle={styles.scrollContent}>
             {children}
           </ScrollView>
-          <Pressable style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeText}>Закрити</Text>
-          </Pressable>
+          {!close &&
+            <Pressable style={styles.closeButton} onPress={onClose}>
+              <Text style={styles.closeText}>Закрити</Text>
+            </Pressable>
+          }
         </View>
       </View>
     </Modal>

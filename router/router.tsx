@@ -8,7 +8,7 @@ import FullMessage from '@screens/Message/Message';
 import AppTabs from './AppTabs';
 
 import { getData } from '@components/LocalStorage';
-import CreateMessage from '@screens/Message/CreateMessage';
+// import CreateMessage from '@screens/Message/CreateMessage';
 import Diary from '@screens/Diary/Diary';
 
 
@@ -57,7 +57,7 @@ export default function Router() {
         <Stack.Screen name="Stop" component={Stop} />
         <Stack.Screen name="Diary" component={Diary} />
 
-        <Stack.Screen name="CreateMessage" component={CreateMessage} />
+        {/* <Stack.Screen name="CreateMessage" component={CreateMessage} /> */}
         <Stack.Screen name="FullMessage" component={FullMessage} />
       </Stack.Navigator>
     </NavigationContainer>
