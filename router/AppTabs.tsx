@@ -90,7 +90,6 @@ function AppTabs() {
                             intensity={30}
 
                             style={{
-                                transform: [{ scale: opacity }],
                                 flex: 1,
                                 backgroundColor: 'rgba(255, 255, 255, 0.15)',
                             }}
@@ -104,7 +103,7 @@ function AppTabs() {
                     left: 0,
                     right: 0,
                     marginHorizontal: 16,
-                    bottom: Platform.OS === 'ios' ? 32 : 16,
+                    bottom: 32,
                     borderRadius: 24,
                     height: 64,
                     borderTopWidth: 0,

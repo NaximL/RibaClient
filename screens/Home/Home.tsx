@@ -18,7 +18,7 @@ import useDiaryStore from '@store/DiaryStore';
 
 // Config and API
 import { ISPROD } from 'config/config';
-import { getData, storeData } from '@components/LocalStorage';
+import { getData, removeData, storeData } from '@components/LocalStorage';
 import { CheckToken } from '@api/CheckToken';
 import { GetLesion } from '@api/GetLesion';
 import { GetAllData } from '@api/GetAlldata';
@@ -73,7 +73,7 @@ export default function Home() {
 
   const applyData = async (MHDATA: any, haptic: boolean) => {
     SetLoadText('Застосовуємо дані...');
-    const [HomePage, HomeWork, Lesions, Profile, Messages,MessagesSend] = MHDATA;
+    const [HomePage, HomeWork, Lesions, Profile, Messages, MessagesSend] = MHDATA;
     setBal(HomePage[14]);
     setMis(HomePage[15]);
     setPovidok(HomePage[10]);
@@ -243,7 +243,6 @@ export default function Home() {
       const password = await getData('password');
       if (!login || !password) return;
 
-      console.time("load")
       await Promise.all([
         checkAndApplyCache(),
         validateSessionAndFetch(login, password),
@@ -296,7 +295,7 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { flex: 1, paddingVertical: 50, paddingBottom: 100 },
+  wrapper: { paddingTop: Platform.OS === 'ios' ? 100 : 0, flex: 1, paddingVertical: 50, paddingBottom: 100 },
   container: { alignItems: 'center', justifyContent: 'center' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   circle: {

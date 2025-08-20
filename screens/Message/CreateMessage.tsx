@@ -61,9 +61,7 @@ const CreateMessageScreen = ({ onClose }: Props) => {
 
         if (!subject.trim()) { alert('Введіть тему'); return; }
         if (!body.trim()) { alert('Введіть текст повідомлення'); return; }
-        console.log(typeSelected)
-        console.log(selected)
-        
+
         
         if (typeSelected.label != 'start' && selected.label != 'Обрати...' && typeSelected.label != 'Обрати...') {
             Animated.sequence([

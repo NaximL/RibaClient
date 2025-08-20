@@ -59,13 +59,11 @@ const FullMessage = () => {
       if (!tokens) return
       if (status === 0) {
         const msg = await GetMessage(tokens, item.Id);
-        console.log(msg)
         setAttachments(msg.links || []);
         setBody(msg.body || "");
       }
       else if (status === 1) {
         const msg = await GetMessageSend(tokens, item.Id);
-        console.log(msg)
         setAttachments(msg.links || []);
         setBody(msg.body || "");
       }

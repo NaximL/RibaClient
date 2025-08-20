@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Animated } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, Animated, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { Gstyle } from 'styles/gstyles';
@@ -60,7 +60,7 @@ export default Head;
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: 10,
+    top: Platform.OS === 'ios' ? 50 : 10,
     left: 0,
     right: 0,
     height: 60,

@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 
 export const Gstyle = () => {
   const isDark: boolean = useColorScheme() === 'dark';
-
   const backgroundColor = isDark ? '#1a1a1f' : '#f7f7fa';
 
   useEffect(() => {
