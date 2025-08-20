@@ -295,7 +295,7 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { paddingTop: Platform.OS === 'ios' ? 100 : 0, flex: 1, paddingVertical: 50, paddingBottom: 100 },
+  wrapper: { paddingTop: Platform.OS === 'ios' ? 100 : 50, flex: 1, paddingVertical: 50, paddingBottom: 100 },
   container: { alignItems: 'center', justifyContent: 'center' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   circle: {
