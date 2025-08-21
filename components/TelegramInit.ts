@@ -65,7 +65,7 @@ export default function TelegramInit() {
       }
       tg.ready();
       tg.expand();
-
+      console.log = originalLog
       if (!tg.isExpanded) {
         tg.expand();
         console.log('🖥️ Telegram WebApp expanded to fullscreen');
@@ -73,7 +73,7 @@ export default function TelegramInit() {
     };
 
     document.body.appendChild(script);
-    console.log = originalLog
+
   }, []);
 
   return null;
