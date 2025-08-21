@@ -11,6 +11,7 @@ import useLoadingStore from '../store/LoadStore';
 import HomeWork from '../screens/HomeWork/HomeWork';
 import Schedule from '../screens/Schedule/Schedule';
 import Messages from '@screens/Message/Messages';
+import { isPWA } from '@components/isPWA';
 // import Diary from '@screens/Diary/Diary';
 
 const Tab = createBottomTabNavigator();
@@ -103,7 +104,7 @@ function AppTabs() {
                     left: 0,
                     right: 0,
                     marginHorizontal: 16,
-                    bottom: 32,
+                    bottom: isPWA() ? 32 : 16,
                     borderRadius: 24,
                     height: 64,
                     borderTopWidth: 0,

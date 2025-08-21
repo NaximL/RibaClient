@@ -40,6 +40,9 @@ import { RootStackParamList } from '../../router/router';
 import BottomAlert from '@screens/Message/components/BottomAlert';
 import { useMessageSendStore } from '@store/SendMessageStore';
 
+
+
+
 export default function Home() {
   const { gstyles } = Gstyle();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
@@ -295,7 +298,7 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { paddingTop: Platform.OS === 'ios' ? 100 : 50, flex: 1, paddingVertical: 50, paddingBottom: 100 },
+  wrapper: { paddingTop: Platform.OS === 'ios' ? 100 :50, flex: 1, paddingVertical: 50, paddingBottom: 100 },
   container: { alignItems: 'center', justifyContent: 'center' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   circle: {
