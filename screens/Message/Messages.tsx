@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
@@ -18,21 +17,23 @@ import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../router/router";
 import { Gstyle } from "styles/gstyles";
 import FullScreenModal from "@components/Modal";
-import CreateMessageScreen from "./CreateMessage";
-
+import CreateMessageScreen from './CreateMessage';
+import BottomAlert from "./components/BottomAlert";
 const Messages = () => {
-  const { gstyles, MessageTopicText } = Gstyle();
-
+  const { gstyles, MessageTopicText, isDark } = Gstyle();
+  const overlayRef = useRef(null);
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
 
+
   const Message = useMessageStore((state) => state.Message);
   const MessageSend = useMessageSendStore((state) => state.MessageSend);
+  const [AlertVal, setAlertVal] = useState(false);
+  const [TextAlert, setTextAlert] = useState('');
 
   const [ActiveMod, setActiveMod] = useState<number>(0);
 
   const [modalVisible, setModalVisible] = useState(false);
-
 
   const [animValues, setAnimValues] = useState<Animated.Value[]>([]);
   useEffect(() => {
@@ -55,7 +56,6 @@ const Messages = () => {
   const OpenCreateMessage = () => {
     setModalVisible(true);
   };
-
 
   const renderItem = ({ item, index }: any) => (
     <Animated.View
@@ -112,9 +112,18 @@ const Messages = () => {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
       >
-        <CreateMessageScreen onClose={() => setModalVisible(false)} />
+        <CreateMessageScreen
+          onClose={() => setModalVisible(false)}
+          setAlertVal={setAlertVal}
+          setTextAlert={setTextAlert}
+        />
       </FullScreenModal>
 
+      <BottomAlert
+        visible={AlertVal}
+        text={TextAlert}
+        onHide={() => setAlertVal(false)}
+      />
 
       <FlatList
         data={ActiveMod === 0 ? Message : MessageSend}

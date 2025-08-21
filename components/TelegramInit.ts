@@ -42,15 +42,6 @@ export default function TelegramInit() {
   useEffect(() => {
     if (Platform.OS !== 'web') return;
 
-    const originalLog = console.log.bind(console);
-
-    console.log = function (...args) {
-      if (typeof args[0] === 'string' && args[0].includes('[Telegram.WebView]')) {
-        return;
-      }
-      originalLog(...args);
-    };
-
     const script = document.createElement('script');
     script.src = 'https://telegram.org/js/telegram-web-app.js';
     script.async = true;
@@ -70,7 +61,6 @@ export default function TelegramInit() {
         tg.expand();
         console.log('🖥️ Telegram WebApp expanded to fullscreen');
       }
-      console.log = originalLog
     };
 
     document.body.appendChild(script);
