@@ -22,14 +22,26 @@ export default function Profile() {
   const navigation = useNavigation<NavigationProp>();
   const [login, setLogin] = React.useState<string | null>(null);
   const [anim] = React.useState(new Animated.Value(0));
+
   let pazinichi = 0;
+
   const Pazinich = () => {
     pazinichi++;
+
     if (pazinichi === 3) {
       pazinichi = 0;
-      alert("Pazinich")
+
+      const secrets = [
+        "Тралалелотралала",
+        "Пазинич",
+        "Вовченко!(БУ)",
+        "✨ Магія кліку ✨"
+      ];
+
+      const randomIndex = Math.floor(Math.random() * secrets.length);
+      alert(secrets[randomIndex]);
     }
-  }
+  };
 
   useFocusEffect(
     useCallback(() => {

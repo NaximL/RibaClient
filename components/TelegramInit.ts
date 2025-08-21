@@ -63,18 +63,19 @@ export default function TelegramInit() {
       else if (tg.colorScheme === 'dark') {
         tg.setHeaderColor('#1a1a1f');
       }
+
       tg.ready();
       tg.expand();
-      console.log = originalLog
       if (!tg.isExpanded) {
         tg.expand();
         console.log('🖥️ Telegram WebApp expanded to fullscreen');
       }
+      console.log = originalLog
     };
 
     document.body.appendChild(script);
 
   }, []);
-
+  
   return null;
 }

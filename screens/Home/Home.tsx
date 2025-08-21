@@ -180,6 +180,8 @@ export default function Home() {
             return;
           }
           await storeData('token_app', JSON.stringify(data));
+          console.log(valid)
+          console.log(data)
           applytokendata(data, valid.enrollments[0].studentId)
         }
       } else {
@@ -245,12 +247,15 @@ export default function Home() {
       const login = await getData('login');
       const password = await getData('password');
       if (!login || !password) return;
+      
       console.time("load")
+
       await Promise.all([
         checkAndApplyCache(),
         validateSessionAndFetch(login, password),
         handleTokenLogic(login, password),
       ]);
+      
       console.timeEnd("load")
 
     };
