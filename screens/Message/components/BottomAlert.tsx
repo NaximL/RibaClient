@@ -12,16 +12,16 @@ type Props = {
 const BottomAlert: React.FC<Props> = ({ text, visible, onHide }) => {
   const slideAnim = useRef(new Animated.Value(100)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
-  const { gstyles, WidgetColorText, isDark } = Gstyle();
+  const { WidgetColorText, isDark } = Gstyle();
 
   useEffect(() => {
     if (visible) {
-      // Поява з easing
+      
       Animated.parallel([
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: 400,
-          easing: Easing.out(Easing.ease), // ⬅️ плавний виїзд
+          easing: Easing.out(Easing.ease), 
           useNativeDriver: true,
         }),
         Animated.timing(opacityAnim, {

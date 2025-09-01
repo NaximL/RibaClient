@@ -12,7 +12,7 @@ const Head = ({ setActiveMod, ActiveMod,onPress }: any) => {
   useEffect(() => {
     Animated.spring(translateX, {
       toValue: ActiveMod * 110,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== "web" ,
       damping: 15,
       stiffness: 150,
     }).start();

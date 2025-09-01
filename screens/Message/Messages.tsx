@@ -21,7 +21,6 @@ import CreateMessageScreen from './CreateMessage';
 import BottomAlert from "./components/BottomAlert";
 const Messages = () => {
   const { gstyles, MessageTopicText, isDark } = Gstyle();
-  const overlayRef = useRef(null);
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
 

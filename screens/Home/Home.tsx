@@ -237,7 +237,8 @@ export default function Home() {
         .then(res => res.json())
         .then(data => {
           if (data[0]?.status) {
-            seterrors(data[0]); navigation.navigate('Stop')
+            seterrors(data[0]); 
+            navigation.navigate('Stop')
           }
         })
         .catch(err => console.error('Mock API error:', err));
@@ -247,7 +248,7 @@ export default function Home() {
       const login = await getData('login');
       const password = await getData('password');
       if (!login || !password) return;
-      
+
       console.time("load")
 
       await Promise.all([
@@ -255,7 +256,7 @@ export default function Home() {
         validateSessionAndFetch(login, password),
         handleTokenLogic(login, password),
       ]);
-      
+
       console.timeEnd("load")
 
     };
@@ -294,8 +295,9 @@ export default function Home() {
 
       <BottomAlert
         visible={alerts}
-        onHide={() => { }}
-        text={TextAlert} />
+        onHide={() => { setalerts(false) }}
+        text={TextAlert}
+      />
 
     </ScrollView >
 
