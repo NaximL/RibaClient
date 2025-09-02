@@ -18,7 +18,7 @@ import useDiaryStore from '@store/DiaryStore';
 
 // Config and API
 import { ISPROD } from 'config/config';
-import { getData, removeData, storeData } from '@components/LocalStorage';
+import { getData, storeData } from '@components/LocalStorage';
 import { CheckToken } from '@api/CheckToken';
 import { GetLesion } from '@api/GetLesion';
 import { GetAllData } from '@api/GetAlldata';
@@ -180,11 +180,12 @@ export default function Home() {
             return;
           }
           await storeData('token_app', JSON.stringify(data));
-          console.log(valid)
-          console.log(data)
-          applytokendata(data, valid.enrollments[0].studentId)
+
+          const valids = await ValidToken(token);
+          applytokendata(data, valids.enrollments[0].studentId)
         }
-      } else {
+      }
+      else {
         SetLoadText('Верифікуємо токен...');
         applytokendata(token, valid.enrollments[0].studentId)
       }
@@ -237,7 +238,7 @@ export default function Home() {
         .then(res => res.json())
         .then(data => {
           if (data[0]?.status) {
-            seterrors(data[0]); 
+            seterrors(data[0]);
             navigation.navigate('Stop')
           }
         })

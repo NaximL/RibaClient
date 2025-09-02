@@ -11,7 +11,7 @@ import {
 import useMessageStore from "@store/MessageStore";
 import { useMessageSendStore } from "@store/SendMessageStore";
 import Head from "./components/Head";
-import BottomMessageModal from "./CreateMessage";
+
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../router/router";

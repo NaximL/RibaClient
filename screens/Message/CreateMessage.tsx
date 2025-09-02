@@ -10,20 +10,14 @@ import {
     Animated,
     ActivityIndicator,
     ScrollView,
-    Easing,
-    Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
 import SelectModal from './components/SelectModal';
 import { SendMessage } from '@api/SendMessage';
 import { getData } from '@components/LocalStorage';
 import { Gstyle } from 'styles/gstyles';
-import BottomAlert from './components/BottomAlert';
 import { GetHuman } from '@api/GetHuman';
-import { BlurView } from 'expo-blur';
 
-const { height, width } = Dimensions.get('window');
 
 type Props = {
     onClose: () => void;
@@ -43,7 +37,9 @@ const CreateMessageScreen = ({ onClose, setAlertVal, setTextAlert }: Props) => {
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
     const [selected, setSelected] = useState(options[0]);
+
     const [modalVisible, setModalVisible] = useState(false);
+    
     const [HumanList, setHumanList] = useState([{ label: 'start', value: 'start' }]);
     const [typeSelected, setTypeSelected] = useState(HumanList[0]);
     const [typeModalVisible, setTypeModalVisible] = useState(false);
@@ -119,6 +115,7 @@ const CreateMessageScreen = ({ onClose, setAlertVal, setTextAlert }: Props) => {
         >
             <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
                 <Text style={[styles.title, { color: WidgetColorText }]}>Нове повідомлення</Text>
+
                 <SelectField label={selected.label} onPress={() => setModalVisible(true)} />
                 <SelectModal visible={modalVisible} options={options} selectedValue={selected.value} onSelect={ChoiceHuman} onClose={() => setModalVisible(false)} />
                 {selected.label !== 'Обрати...' && (
@@ -198,7 +195,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 14,
         fontSize: 15,
-        marginBottom: 10,
+        marginBottom:10,
         borderWidth: 1,
         minHeight: 44,
     },
@@ -334,6 +331,5 @@ const styles = StyleSheet.create({
         backgroundColor: '#007aff',
         marginBottom: 8,
         opacity: 0.8,
-        // Можно добавить анимацию мигания, если нужно
     },
 });
