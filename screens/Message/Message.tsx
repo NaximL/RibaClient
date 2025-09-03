@@ -46,7 +46,28 @@ const FullMessage = () => {
     })();
   }, [item.Id]);
 
-  
+function autoLinkify(html: string) {
+  if (!html) return "";
+
+  return html.replace(
+    /(https?:\/\/[^\s<]+)/g,
+    (match, url, offset, full) => {
+      
+      const before = full.slice(0, offset);
+      const after = full.slice(offset + match.length);
+
+      
+      const isInsideLink =
+        before.lastIndexOf("<a") > before.lastIndexOf("</a>");
+
+      if (isInsideLink) {
+        return match; 
+      }
+
+      return `<a href="${match}">${match}</a>`;
+    }
+  );
+}
 
   return (
     <ScrollView contentContainerStyle={[gstyles.back, styles.container]}>
@@ -73,7 +94,10 @@ const FullMessage = () => {
         {body ? (
           <RenderHTML
             contentWidth={width - 40}
-            source={{ html: body }}
+            source={{ html: autoLinkify(body) }}
+            defaultTextProps={{
+              selectable: true,
+            }}
             baseStyle={{ ...styles.html, color: ChatText }}
           />
         ) : (
