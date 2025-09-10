@@ -39,6 +39,7 @@ import { Gstyle } from 'styles/gstyles';
 import { RootStackParamList } from '../../router/router';
 import BottomAlert from '@screens/Message/components/BottomAlert';
 import { useMessageSendStore } from '@store/SendMessageStore';
+import useUrokStore from '@store/UrokStore';
 
 
 
@@ -73,6 +74,8 @@ export default function Home() {
   const setHomeWork = useHomeWorkStore(state => state.SetHomeWork);
   const setLesions = useLesionStore(state => state.setLesions);
   const seterrors = UseErrorStore(state => state.setError);
+  const setUrok = useUrokStore(state => state.SetUrok);
+
 
   const applyData = async (MHDATA: any, haptic: boolean) => {
     SetLoadText('Застосовуємо дані...');
@@ -84,7 +87,7 @@ export default function Home() {
     setMessage(Messages.value);
     setMessageSend(MessagesSend.value);
     setHomeWork(Array.isArray(HomeWork?.value) ? HomeWork.value : []);
-    const lesionData = await GetLesion(Lesions);
+    const lesionData = await GetLesion(Lesions, setUrok);
     setLesionText(lesionData);
     setLesions(Lesions);
     if (haptic) await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);

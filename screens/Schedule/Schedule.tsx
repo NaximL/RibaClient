@@ -8,6 +8,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { Gstyle } from "styles/gstyles";
 import DayEl from "./components/DayEl";
+import useUrokStore from "@store/UrokStore";
 
 const daysOfWeek = [
     "Понеділок",
@@ -25,10 +26,10 @@ export interface Lesson {
 export type ScheduleDay = Lesson[];
 
 const Schedule = () => {
-    const { gstyles } = Gstyle();
+    const { gstyles, WidgetColorText } = Gstyle();
 
     const [openDays, setOpenDays] = useState<{ [key: number]: boolean }>({});
-    const setLesions = useLesionStore((state) => state.setLesions);
+    const Urok = useUrokStore((state) => state.Urok);
     const Lesion = useLesionStore((state) => state.lesion);
     const [Le, setLe] = useState<ScheduleDay[]>([])
     const [anim] = useState(useRef(new Animated.Value(0)).current);
@@ -54,6 +55,10 @@ const Schedule = () => {
         }));
     };
     useEffect(() => {
+        const today = new Date();
+        const dayIndex = today.getDay()-1;
+        dayIndex && toggleDay(dayIndex);
+        
 
         let d = Lesion;
         d.pop();
@@ -80,7 +85,7 @@ const Schedule = () => {
                 ) : (
                     <>
                         {Array.isArray(Le) && Le.map((day: ScheduleDay, index: number) => (
-                            <DayEl day={day} key={index} choiceDay={toggleDay} index={index} openDays={openDays} daysOfWeek={daysOfWeek} />
+                            <DayEl les={Urok ? JSON.parse(Urok).d === index ? Urok : null : null} day={day} key={index} choiceDay={toggleDay} index={index} openDays={openDays} daysOfWeek={daysOfWeek} />
                         ))}
                     </>
                 )}

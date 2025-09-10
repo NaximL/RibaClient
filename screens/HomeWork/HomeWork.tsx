@@ -80,7 +80,7 @@ export default function HomeWork() {
                 <FullScreenModal onClose={() => SetSelect(null)} visible={!!Select}>
                     <Text style={[styles.label, { color: WidgetColorText, fontSize: 30 }]}>{Select?.Dalykas ?? ''}</Text>
                     <Text style={[styles.label, { color: WidgetColorText }]}>{Select?.PamokosData ? `Задано: ${formatDate(Select.PamokosData)}` : ''}</Text>
-                    <Text style={[styles.label, { color: WidgetColorText }]}>{Select?.AtliktiIki ? `Кінцева дата здачі: ${formatDate(Select.AtliktiIki)}` : ''}</Text>
+                    <Text style={[styles.label, { color: WidgetColorText }]}>{Select?.AtliktiIki ? `Дата здачі: ${formatDate(Select.AtliktiIki)}` : ''}</Text>
                     <Text style={{ color: WidgetColorText, fontSize: 15, marginTop: 30 }}>
                         {Select?.UzduotiesAprasymas
                             ? containsHTML(Select.UzduotiesAprasymas)

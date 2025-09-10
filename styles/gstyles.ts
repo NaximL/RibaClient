@@ -37,6 +37,12 @@ export const Gstyle = () => {
     WidgetBack: {
       backgroundColor: isDark ? '#1C1C1E' : '#fff',
     },
+    ScheduleBack: {
+      backgroundColor: isDark ? '#2c2c30ff' : '#e5e5ea',
+    },
+    ScheduleBackMini: {
+      backgroundColor: isDark ? '#2c2c30ff' : '#f2f2f7',
+    },
     LoadingBack: {
       backgroundColor: isDark ? 'rgba(150, 150, 150, 0.1)' : '#fff',
     },
@@ -63,7 +69,7 @@ export const Gstyle = () => {
   const MessageBubleActive = isDark ? '#3390ec' : '#007aff';
   const MessageBubleText = isDark ? '#fff' : '#000';
   const MessageBubleTextActive = '#fff';
-  
+
   return {
     isDark,
     gstyles,
