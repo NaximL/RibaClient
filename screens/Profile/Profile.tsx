@@ -67,7 +67,13 @@ export default function Profile() {
   }, []);
   const logout = async () => {
     await removeData('login');
+    await removeData('password');
     await removeData('tokens');
+    await removeData('schedulenum');
+    await removeData('schedule');
+    await removeData('profile');
+    await removeData('token_app');
+    await removeData('check');
     navigation.replace('Login');
   };
 
