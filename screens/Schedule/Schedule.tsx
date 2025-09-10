@@ -56,6 +56,8 @@ const Schedule = () => {
     useEffect(() => {
 
         let d = Lesion;
+        d.pop();
+        d.pop();
         setLe(d)
         Animated.timing(anim, {
             toValue: 1,

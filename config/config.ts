@@ -6,4 +6,4 @@ export const VERSION:string =`v1.1.2 ${ISPROD ? '' : 'dev'}`;
 
 //https://fatsharkserv.online
 //http://192.168.31.162
-export const SERVER_URL:string = ISPROD ? "https://fatsharkserv.online" : 'http://192.168.31.162';
+export const SERVER_URL:string = ISPROD ? "https://fatsharkserv.online" : 'http://172.20.10.7';

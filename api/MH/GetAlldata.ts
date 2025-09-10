@@ -44,6 +44,7 @@ export async function GetAllData(token: string) {
     await storeData('schedule', JSON.stringify(sc));
   }
 
+
   const sch = await getData('schedule')
   if (!sch) return
   const endpoints = [
@@ -54,6 +55,6 @@ export async function GetAllData(token: string) {
     fetchData("homework", token, date),
   ];
 
-  const [schedule, message,messagesendmes, profile, homework] = await Promise.all(endpoints);
-  return [[], homework || [], schedule || [], profile || [], message || [],messagesendmes|| []];
+  const [schedule, message, messagesendmes, profile, homework] = await Promise.all(endpoints);
+  return [[], homework || [], schedule || [], profile || [], message || [], messagesendmes || []];
 }
