@@ -260,13 +260,13 @@ export default function Home() {
         validateSessionAndFetch(login, password),
         handleTokenLogic(login, password),
       ]);
-
+      
       console.timeEnd("load")
 
     };
     fetchData();
   }, []);
-
+  
   const menu = [
     { image: BooksEmoji, lable: 'Урок зараз', data: Lesion || '...' },
     { image: MailEmoji, lable: 'Повідомлення', data: Povidok || '...' },

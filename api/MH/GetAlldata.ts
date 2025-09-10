@@ -27,7 +27,7 @@ export async function GetAllData(token: string) {
 
   const yyyy = dateObj.getFullYear();
   const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-  const dd = String(dateObj.getDate()-1).padStart(2, '0');
+  const dd = String(dateObj.getDate() - 1).padStart(2, '0');
   const date = `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
 
   const numd = await getData('schedulenum')
@@ -44,14 +44,21 @@ export async function GetAllData(token: string) {
     await storeData('schedule', JSON.stringify(sc));
   }
 
+  const profiles = await getData('profile')
+  if (!profiles) {
+    const d = await fetchData("profile", token);
+    await storeData('profile', JSON.stringify(d));
+  }
+
 
   const sch = await getData('schedule')
-  if (!sch) return
+  const prof = await getData('profile')
+  if (!sch||!prof) return
   const endpoints = [
     JSON.parse(sch),
     fetchData("message", token),
     fetchData("messagesendmes", token),
-    fetchData("profile", token),
+    JSON.parse(prof),
     fetchData("homework", token, date),
   ];
 

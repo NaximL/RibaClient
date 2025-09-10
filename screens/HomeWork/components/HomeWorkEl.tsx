@@ -33,6 +33,11 @@ const HomeWorkEl = ({ item, cardAnim, index, SetSitemect }: any) => {
                         source={{ html: item.UzduotiesAprasymas }}
                         baseStyle={{ ...styles.value, color: WidgetColorText }}
                         ignoredDomTags={['o:p']}
+                        tagsStyles={{
+                            span: {
+                                color:"black",
+                            },
+                        }}
                     />
                 ) : (
                     <Text style={[styles.value, { color: WidgetColorText }]}>{item.UzduotiesAprasymas ?? '...'}</Text>

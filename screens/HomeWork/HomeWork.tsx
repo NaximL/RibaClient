@@ -59,8 +59,6 @@ export default function HomeWork() {
         }).start();
         const d = rem(HomeWork, 'UzduotiesAprasymas');
         SetList(d);
-        console.log(HomeWork)
-
     }, [HomeWork]);
 
     const containsHTML = (str: string) => typeof str === 'string' && /<\/?[a-z][\s\S]*>/i.test(str);
@@ -89,6 +87,11 @@ export default function HomeWork() {
                                     source={{ html: Select.UzduotiesAprasymas }}
                                     baseStyle={{ ...styles.value, color: WidgetColorText }}
                                     ignoredDomTags={['o:p']}
+                                    tagsStyles={{
+                                        span: {
+                                            color: "black",
+                                        },
+                                    }}
                                 />
                                 : Select.UzduotiesAprasymas
                             : '...'}
