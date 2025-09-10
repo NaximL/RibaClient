@@ -35,7 +35,11 @@ const HomeWorkEl = ({ item, cardAnim, index, SetSitemect }: any) => {
                         ignoredDomTags={['o:p']}
                         tagsStyles={{
                             span: {
-                                color:"black",
+                                borderRadius: 4,
+                                paddingHorizontal: 4,
+                                paddingVertical: 2,
+                                backgroundColor: 'white',
+                                color: "black",
                             },
                         }}
                     />

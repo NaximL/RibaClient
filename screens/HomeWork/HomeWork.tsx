@@ -89,6 +89,10 @@ export default function HomeWork() {
                                     ignoredDomTags={['o:p']}
                                     tagsStyles={{
                                         span: {
+                                            borderRadius: 4,
+                                            paddingHorizontal: 4,
+                                            paddingVertical: 2,
+                                            backgroundColor: 'white',
                                             color: "black",
                                         },
                                     }}
