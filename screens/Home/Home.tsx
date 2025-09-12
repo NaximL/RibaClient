@@ -47,7 +47,6 @@ import useUrokStore from '@store/UrokStore';
 export default function Home() {
   const { gstyles } = Gstyle();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
-
   const [LoadText, SetLoadText] = useState('Оновлюємо дані...');
   const [Loads, setLoads] = useState(true);
   const [Lesion, setLesionText] = useState('');
@@ -93,17 +92,10 @@ export default function Home() {
     if (haptic) await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
 
-  const applytokendata = async (token: string, studentId: string) => {
-    const date = new Date();
-    const mm: number = date.getMonth() + 1
-    const diary = await GetDiary(token, studentId, mm, 100);
-    await storeData('diary', JSON.stringify(diary));
-    SetDiary(diary);
-  };
-
 
   const loadAnim = useRef(new Animated.Value(Loads ? 1 : 0)).current;
   const [showLoad, setShowLoad] = useState<boolean>(Loads);
+
 
 
   useEffect(() => {
@@ -145,71 +137,22 @@ export default function Home() {
     }
   };
 
-  const handleTokenLogic = async (login: string, password: string) => {
-
-    const tokensRaw = await getData('token_app');
-
-    if (!tokensRaw) {
-      SetLoadText('Отримуємо токен...');
-      const data = await GetToken(login, password);
-      if (!data) {
-        setTextAlert("Помилка завантаження даних");
-        setalerts(true)
-        seterrors({ name: 'token error', status: true, label: 'Не вдалось отримати токени' });
-        navigation.navigate('Stop');
-        return;
-      }
-      await storeData('token_app', JSON.stringify(data));
-    } else {
-      const token = JSON.parse(tokensRaw);
-      SetLoadText('Перевіряємо токен...');
-      const valid = await ValidToken(token);
-
-      if (!valid) {
-        const newTokens = await RefreshToken(token);
-        if (newTokens === true) {
-          SetLoadText('Оновлюємо токен...');
-          applytokendata(newTokens, valid.enrollments[0].studentId)
-          await storeData('token_app', JSON.stringify(newTokens));
-        }
-        else if (newTokens === false) {
-          SetLoadText('Оновлюємо токени...');
-          const data = await GetToken(login, password);
-          if (!data) {
-            setTextAlert("Помилка завантаження даних");
-            setalerts(true);
-            seterrors({ name: 'token error', status: true, label: 'Не вдалось отримати токени' });
-            navigation.navigate('Stop');
-            return;
-          }
-          await storeData('token_app', JSON.stringify(data));
-
-          const valids = await ValidToken(token);
-          applytokendata(data, valids.enrollments[0].studentId)
-        }
-      }
-      else {
-        SetLoadText('Верифікуємо токен...');
-        applytokendata(token, valid.enrollments[0].studentId)
-      }
-
-    }
-  };
 
   const validateSessionAndFetch = async (login: string, password: string) => {
-
     const tokens = await getData('tokens');
     if (!tokens) return;
+    
 
     SetLoadText('Перевіряємо сесію...');
     const page = await CheckToken(tokens);
-
     if (!page.status) {
       SetLoadText('Оновлюємо сесію...');
       const data = await Logins(login, password);
       await storeData('tokens', JSON.stringify(data.tokens));
       return validateSessionAndFetch(login, password);
     }
+    
+    
 
     SetLoadText('Валідуємо сесію...');
     const data = await GetAllData(tokens);
@@ -223,6 +166,7 @@ export default function Home() {
       setLoad(false);
       await storeData('check', JSON.stringify(data));
     }
+    
 
   };
 
@@ -236,6 +180,7 @@ export default function Home() {
   );
 
   useEffect(() => {
+
     if (ISPROD) {
       fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
         .then(res => res.json())
@@ -258,15 +203,14 @@ export default function Home() {
       await Promise.all([
         checkAndApplyCache(),
         validateSessionAndFetch(login, password),
-        handleTokenLogic(login, password),
       ]);
-      
+
       console.timeEnd("load")
 
     };
     fetchData();
   }, []);
-  
+
   const menu = [
     { image: BooksEmoji, lable: 'Урок зараз', data: Lesion || '...' },
     { image: MailEmoji, lable: 'Повідомлення', data: Povidok || '...' },

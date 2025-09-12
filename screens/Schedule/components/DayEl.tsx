@@ -1,6 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Lesson, ScheduleDay } from "../Schedule";
-import { GetLesion } from "@api/GetLesion";
 import { Gstyle } from "styles/gstyles";
 
 type Schedule = {
@@ -19,7 +18,7 @@ const DayEl = ({ day, index, choiceDay, openDays, daysOfWeek, les }: Schedule) =
 
     const animHeight = useRef(new Animated.Value(0)).current;
     const animOpacity = useRef(new Animated.Value(0)).current;
-
+    
     useEffect(() => {
         if (openDays[index]) {
             Animated.parallel([
@@ -69,14 +68,14 @@ const DayEl = ({ day, index, choiceDay, openDays, daysOfWeek, les }: Schedule) =
                 </Text>
             </TouchableOpacity>
 
-            {/* Анимация раскрытия */}
+
             <Animated.View
                 style={{
                     overflow: "hidden",
                     opacity: animOpacity,
                     maxHeight: animHeight.interpolate({
                         inputRange: [0, 1],
-                        outputRange: [0, 600], // максимум высоты блока
+                        outputRange: [0, 600],
                     }),
                 }}
             >

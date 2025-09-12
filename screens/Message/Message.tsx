@@ -46,28 +46,28 @@ const FullMessage = () => {
     })();
   }, [item.Id]);
 
-function autoLinkify(html: string) {
-  if (!html) return "";
+  function autoLinkify(html: string) {
+    if (!html) return "";
 
-  return html.replace(
-    /(https?:\/\/[^\s<]+)/g,
-    (match, url, offset, full) => {
-      
-      const before = full.slice(0, offset);
-      const after = full.slice(offset + match.length);
+    return html.replace(
+      /(https?:\/\/[^\s<]+)/g,
+      (match, url, offset, full) => {
 
-      
-      const isInsideLink =
-        before.lastIndexOf("<a") > before.lastIndexOf("</a>");
+        const before = full.slice(0, offset);
+        const after = full.slice(offset + match.length);
 
-      if (isInsideLink) {
-        return match; 
+
+        const isInsideLink =
+          before.lastIndexOf("<a") > before.lastIndexOf("</a>");
+
+        if (isInsideLink) {
+          return match;
+        }
+
+        return `<a href="${match}">${match}</a>`;
       }
-
-      return `<a href="${match}">${match}</a>`;
-    }
-  );
-}
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={[gstyles.back, styles.container]}>
@@ -99,6 +99,15 @@ function autoLinkify(html: string) {
               selectable: true,
             }}
             baseStyle={{ ...styles.html, color: ChatText }}
+            tagsStyles={{
+              span: {
+                borderRadius: 4,
+                paddingHorizontal: 4,
+                paddingVertical: 2,
+                backgroundColor: 'white',
+                color: "black",
+              },
+            }}
           />
         ) : (
           <ActivityIndicator size="large" color="#007aff" style={{ marginTop: 40 }} />

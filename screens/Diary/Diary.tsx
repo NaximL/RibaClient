@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import {
     View,
     Text,
@@ -17,12 +17,20 @@ import { uk } from "date-fns/locale";
 import { Ionicons } from '@expo/vector-icons';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router/router';
+import { getData, storeData } from "@components/LocalStorage";
+import { GetToken } from "api/MH_APP/GetToken";
+import { ValidToken } from "api/MH_APP/ValidToken";
+import { RefreshToken } from "api/MH_APP/RefreshToken";
+import { GetDiary } from "api/MH_APP/GetDiary";
+import UseErrorStore from "@store/Error";
 
 const systemicGradeTypeMap: Record<string, string> = {
     Notebook: "Зошит",
     Oral: "Усна відповідь",
     Test: "Тест",
     Homework: "Домашнє завдання",
+    "SubjectGrade": "Предметна оцінка",
+
     "Additional test": "Додатковий тест",
     "Controlwork": "Контрольна робота",
     "PracticalWork": "Практична робота",
@@ -31,7 +39,6 @@ const systemicGradeTypeMap: Record<string, string> = {
     "ProjectWork": "Проєктна робота",
     "CreativeWork": "Творча робота",
     "ClassWork": "Класна робота",
-    "SubjectGrade": "Предметна оцінка",
     "Moduletest": "Модульна контрольна",
     "Summativeassessment": "Підсумкове оцінювання",
     "Semesterassessment": "Семестрове оцінювання",
@@ -39,10 +46,6 @@ const systemicGradeTypeMap: Record<string, string> = {
     "Thematicassessment": "Тематичне оцінювання",
     "Diagnosticwork": "Діагностична робота",
     Behavior: "Поведінка",
-    "Attendance": "Н-ка",
-    "Lesson activity": "Активність на уроці",
-    "Classroom participation": "Участь у класі",
-    "Educational visit": "Навчальний візит",
     Other: "Інше",
     undefined: "Немає",
     null: "Немає",
@@ -70,13 +73,72 @@ function groupByDate(data: any[]) {
 }
 
 const Diary = () => {
+    const [Diaty, SetDiary] = useState<any[]>([]);
+    const seterrors = UseErrorStore(state => state.setError);
+
+    const applytokendata = async (token: string, studentId: string) => {
+        const date = new Date();
+        const mm: number = date.getMonth() + 1
+        const diary = await GetDiary(token, studentId, mm, 100);
+        await storeData('diary', JSON.stringify(diary));
+        SetDiary(diary);
+    };
+
+    const handleTokenLogic = async (login: string, password: string) => {
+
+        const tokensRaw = await getData('token_app');
+
+        if (!tokensRaw) {
+
+            const data = await GetToken(login, password);
+            await storeData('token_app', JSON.stringify(data));
+        } else {
+            const token = JSON.parse(tokensRaw);
+            const valid = await ValidToken(token);
+            if (!valid) {
+                const newTokens = await RefreshToken(token);
+                if (newTokens) {
+                    applytokendata(newTokens, valid.enrollments[0].studentId)
+                    await storeData('token_app', JSON.stringify(newTokens));
+                }
+                else if (!newTokens) {
+                    const data = await GetToken(login, password);
+                    if (!data) {
+                        seterrors({ name: 'token error', status: true, label: 'Не вдалось отримати токени' });
+                        navigation.navigate('Stop');
+                        return;
+                    }
+                    await storeData('token_app', JSON.stringify(data));
+                    const valids = await ValidToken(token);
+                    applytokendata(data, valids.enrollments[0].studentId)
+                }
+            }
+            else {
+
+                applytokendata(token, valid.enrollments[0].studentId)
+            }
+
+        }
+    };
 
     type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
     const navigation = useNavigation<NavigationProp>();
     const { gstyles, WidgetColorText } = Gstyle();
-    const diaryList = useDiaryStore((state) => state.Diary);
-    const sections = groupByDate(diaryList);
-    console.log(diaryList)
+
+    const p = async () => {
+        const login = await getData('login');
+        const password = await getData('password');
+        if (!login || !password) return;
+
+        console.time("token")
+        await handleTokenLogic(login, password);
+        console.timeEnd("token");
+    }
+    useEffect(() => {
+        p();
+    }, []);
+    const sections = groupByDate(Diaty);
+
 
     const anim = useRef(new Animated.Value(0)).current;
 
@@ -106,9 +168,9 @@ const Diary = () => {
 
         const subject = item.subjectMatter ?? "-";
         const gradeColorDark: Record<string, string> = {
-            "Н": "#FF3B30",      // Пропуск
-            "Н/О": "#FF9500",    // Не оцінено (об'єктивно)
-            "Н/А": "#A0A0A0",    // Не оцінено (відсутній)
+            "Н": "#FF3B30",
+            "Н/О": "#FF9500",
+            "Н/А": "#A0A0A0",
             "0": "#FF9500",
             "1": "#FFCC00",
             "2": "#FFD233",
