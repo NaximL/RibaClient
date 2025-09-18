@@ -40,6 +40,8 @@ import { RootStackParamList } from '../../router/router';
 import BottomAlert from '@screens/Message/components/BottomAlert';
 import { useMessageSendStore } from '@store/SendMessageStore';
 import useUrokStore from '@store/UrokStore';
+import useDateStore from '@store/DateStore';
+
 
 
 
@@ -74,6 +76,7 @@ export default function Home() {
   const setLesions = useLesionStore(state => state.setLesions);
   const seterrors = UseErrorStore(state => state.setError);
   const setUrok = useUrokStore(state => state.SetUrok);
+  const setDate = useDateStore(state => state.setDate);
 
 
   const applyData = async (MHDATA: any, haptic: boolean) => {
@@ -141,7 +144,7 @@ export default function Home() {
   const validateSessionAndFetch = async (login: string, password: string) => {
     const tokens = await getData('tokens');
     if (!tokens) return;
-    
+
 
     SetLoadText('Перевіряємо сесію...');
     const page = await CheckToken(tokens);
@@ -151,11 +154,11 @@ export default function Home() {
       await storeData('tokens', JSON.stringify(data.tokens));
       return validateSessionAndFetch(login, password);
     }
-    
-    
+
+
 
     SetLoadText('Валідуємо сесію...');
-    const data = await GetAllData(tokens);
+    const data = await GetAllData(tokens, setDate);
     if (data) {
       data[0] = page.status;
 
@@ -166,16 +169,22 @@ export default function Home() {
       setLoad(false);
       await storeData('check', JSON.stringify(data));
     }
-    
+
 
   };
 
+  const d = async (Lesions:Array<any>) =>{
+      const lesionData = await GetLesion(Lesions, setUrok);
+      setLesionText(lesionData);
+  }
+  
   useFocusEffect(
     useCallback(() => {
       cardAnim.forEach((anim, i) => {
         anim.setValue(0);
         Animated.timing(anim, { toValue: 1, duration: 400 + i * 120, useNativeDriver: Platform.OS !== 'web' }).start();
       });
+      
     }, [])
   );
 

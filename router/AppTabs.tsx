@@ -72,7 +72,7 @@ function AppTabs() {
                     if (route.name === 'Diary') iconName = focused ? 'stats-chart' : 'stats-chart-outline';
 
 
-                    return <Ionicons style={{ top: 10 }} name={iconName} size={30} color={color} />;
+                    return <Ionicons style={{top:10}} name={iconName} size={30} color={color} />;
                 },
                 tabBarActiveTintColor: '#007aff',
                 tabBarInactiveTintColor: '#b0b3b8',
@@ -84,6 +84,7 @@ function AppTabs() {
                             borderRadius: 24,
                             overflow: 'hidden',
                             opacity: opacity,
+
                         }}
                     >
                         <BlurView

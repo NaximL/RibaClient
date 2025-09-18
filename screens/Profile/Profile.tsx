@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Animated, Platform, Image } from 'react-native'
 import useBalStore from '../../store/BalStore';
 import useProfileStore from '../../store/ProfileStore';
-import { getData, removeData } from '../../components/LocalStorage';
+import { getData, removeData, storeData } from '../../components/LocalStorage';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
@@ -10,6 +10,8 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router/router';
 import { VERSION } from '../../config/config';
 import { Gstyle } from 'styles/gstyles';
+import { fetchData } from '@api/GetAlldata';
+import useLesionStore from '@store/LesionStore';
 
 
 
@@ -19,6 +21,9 @@ export default function Profile() {
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const Profile = useProfileStore((state) => state.Prof);
   const Bal = useBalStore((state) => state.bal);
+  const setLesions = useLesionStore((state) => state.setLesions);
+
+
   const navigation = useNavigation<NavigationProp>();
   const [login, setLogin] = React.useState<string | null>(null);
   const [anim] = React.useState(new Animated.Value(0));
@@ -75,6 +80,23 @@ export default function Profile() {
     await removeData('token_app');
     await removeData('check');
     navigation.replace('Login');
+  };
+
+
+  const update = async () => {
+    const token = await getData("tokens");
+    if (!token) return;
+    try {
+      const sc = await fetchData("schedule", token);
+      await storeData('schedulenum', JSON.stringify(sc));
+      alert("Розклад оновлено")
+      setLesions(sc)
+      navigation.replace("App", { screen: "Schedule" });
+    }
+    catch (error) {
+      alert(`Помилка:${error}`)
+    }
+
   };
 
 
@@ -181,9 +203,14 @@ export default function Profile() {
         </View>
 
 
-        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 50 }]} onPress={logout}>
+        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 20 }]} onPress={update}>
+          <Text style={styles.OnlineText}>Оновити розклад</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 10 }]} onPress={logout}>
           <Text style={styles.logoutText}>Вийти</Text>
         </TouchableOpacity>
+
         <TouchableOpacity onPress={Pazinich}>
           <Text style={styles.versionText}>{VERSION}</Text>
         </TouchableOpacity>
@@ -311,4 +338,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   logoutText: { color: '#d21919', fontSize: 16, fontWeight: '600' },
+  OnlineText: { color: '#007aff', fontSize: 16, fontWeight: '600' },
+
 });

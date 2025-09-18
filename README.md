@@ -14,7 +14,7 @@ Alternative client for the electronic diary “My School”.
 - [React Native](https://reactnative.dev/)
 - [Expo](https://expo.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
-- [Zustand](https://github.com/pmndrs/zustand) – state management
+- [Zustand](https://github.com/pmndrs/zustand)
 
 ## 📁 Project Structure
 

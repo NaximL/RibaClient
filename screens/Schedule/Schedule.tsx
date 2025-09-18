@@ -56,9 +56,11 @@ const Schedule = () => {
     };
     useEffect(() => {
         const today = new Date();
-        const dayIndex = today.getDay()-1;
+        const dayIndex = today.getDay() - 1;
+
+
         dayIndex && toggleDay(dayIndex);
-        
+
 
         let d = Lesion;
         d.pop();

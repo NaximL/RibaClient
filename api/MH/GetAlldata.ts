@@ -1,7 +1,8 @@
 import { getData, storeData } from "@components/LocalStorage";
 import { SERVER_URL, UPDATE_SCHEDULE } from "../../config/config";
+import useDateStore from "@store/DateStore";
 
-async function fetchData(endpoint: string, token: string, date?: string) {
+export async function fetchData(endpoint: string, token: string, date?: string) {
   try {
     const res = await fetch(`${SERVER_URL}/api/${endpoint}`, {
       method: "POST",
@@ -21,14 +22,16 @@ async function fetchData(endpoint: string, token: string, date?: string) {
   }
 }
 
-export async function GetAllData(token: string) {
+export async function GetAllData(token: string,setDate:(Date:Date)=>void) {
+
   const dateObj = new Date();
   dateObj.setDate(dateObj.getDate() + 1);
-
+  setDate(dateObj);
   const yyyy = dateObj.getFullYear();
   const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
   const dd = String(dateObj.getDate() - 1).padStart(2, '0');
   const date = `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
+
 
   const numd = await getData('schedulenum')
   if (!numd) {
@@ -51,9 +54,10 @@ export async function GetAllData(token: string) {
   }
 
 
+
   const sch = await getData('schedule')
   const prof = await getData('profile')
-  if (!sch||!prof) return
+  if (!sch || !prof) return
   const endpoints = [
     JSON.parse(sch),
     fetchData("message", token),
