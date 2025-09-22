@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { Platform, Animated } from 'react-native';
+import { Platform, Animated, View } from 'react-native';
 import { BlurView } from 'expo-blur';
 import * as Font from 'expo-font';
 
@@ -12,15 +12,17 @@ import HomeWork from '../screens/HomeWork/HomeWork';
 import Schedule from '../screens/Schedule/Schedule';
 import Messages from '@screens/Message/Messages';
 import { isPWA } from '@components/isPWA';
-// import Diary from '@screens/Diary/Diary';
+import { Gstyle } from 'styles/gstyles';
 
 const Tab = createBottomTabNavigator();
+
+
+const IsWeb = Platform.OS == 'web';
 
 function AppTabs() {
     const load = useLoadingStore((state) => state.load);
     const setLoad = useLoadingStore((state) => state.setLoad);
-
-
+    const { gstyles } = Gstyle();
     const tabAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -29,7 +31,7 @@ function AppTabs() {
                 await Font.loadAsync(Ionicons.font);
                 setLoad(false);
             } catch (error) {
-                console.error("Помилка завантаження іконок:", error);
+                console.error('Помилка завантаження іконок:', error);
             }
         };
 
@@ -37,8 +39,6 @@ function AppTabs() {
     }, []);
 
     useEffect(() => {
-
-
         Animated.timing(tabAnim, {
             toValue: load ? 0 : 1,
             duration: 500,
@@ -56,7 +56,6 @@ function AppTabs() {
         outputRange: [0, 1],
     });
 
-
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -64,44 +63,57 @@ function AppTabs() {
                 tabBarIcon: ({ color, focused }) => {
                     let iconName: keyof typeof Ionicons.glyphMap = 'home-outline';
 
-                    if (route.name === 'Home') iconName = focused ? 'sparkles' : 'sparkles-outline';
+                    if (route.name === 'Home') iconName = focused ? 'home' : 'home-outline';
                     if (route.name === 'HomeWork') iconName = focused ? 'document-text' : 'document-text-outline';
                     if (route.name === 'Schedule') iconName = focused ? 'calendar' : 'calendar-outline';
                     if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
                     if (route.name === 'Message') iconName = focused ? 'chatbubble' : 'chatbubble-outline';
                     if (route.name === 'Diary') iconName = focused ? 'stats-chart' : 'stats-chart-outline';
 
-
-                    return <Ionicons style={{top:10}} name={iconName} size={30} color={color} />;
+                    return <Ionicons style={{ top: 10 }} name={iconName} size={30} color={color} />;
                 },
                 tabBarActiveTintColor: '#007aff',
                 tabBarInactiveTintColor: '#b0b3b8',
                 tabBarShowLabel: false,
                 tabBarBackground: () => (
-                    <Animated.View
-                        style={{
-                            flex: 1,
-                            borderRadius: 24,
-                            overflow: 'hidden',
-                            opacity: opacity,
-
-                        }}
-                    >
-                        <BlurView
-                            tint="light"
-                            intensity={30}
-
+                    IsWeb ? (
+                        <View
+                            style={gstyles.blur}
+                        >
+                            <Animated.View
+                                style={{
+                                    flex: 1,
+                                    borderRadius: 24,
+                                    overflow: 'hidden',
+                                    opacity: opacity,
+                                }}
+                            />
+                        </View>
+                    ) : (
+                        <Animated.View
                             style={{
                                 flex: 1,
-                                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                                borderRadius: 24,
+                                overflow: 'hidden',
+                                opacity: opacity,
                             }}
-                        />
-                    </Animated.View>
+                        >
+                            <BlurView
+                                tint="light"
+                                intensity={30}
+                                style={{
+                                    flex: 1,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                                }}
+                            >
+                            </BlurView>
+                        </Animated.View>
+                    )
                 ),
 
                 tabBarStyle: {
                     position: 'absolute',
-                    alignContent: "center",
+                    alignContent: 'center',
                     left: 0,
                     right: 0,
                     marginHorizontal: 16,
@@ -125,8 +137,7 @@ function AppTabs() {
             <Tab.Screen name="Schedule" component={Schedule} />
             <Tab.Screen name="Message" component={Messages} />
             <Tab.Screen name="Profile" component={Profile} />
-
-        </Tab.Navigator>
+        </Tab.Navigator >
     );
 }
 

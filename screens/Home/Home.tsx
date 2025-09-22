@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { View, Animated, ScrollView, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import { View, Animated, ScrollView, ActivityIndicator, StyleSheet, Platform, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -41,6 +41,7 @@ import BottomAlert from '@screens/Message/components/BottomAlert';
 import { useMessageSendStore } from '@store/SendMessageStore';
 import useUrokStore from '@store/UrokStore';
 import useDateStore from '@store/DateStore';
+
 
 
 
@@ -173,18 +174,18 @@ export default function Home() {
 
   };
 
-  const d = async (Lesions:Array<any>) =>{
-      const lesionData = await GetLesion(Lesions, setUrok);
-      setLesionText(lesionData);
+  const d = async (Lesions: Array<any>) => {
+    const lesionData = await GetLesion(Lesions, setUrok);
+    setLesionText(lesionData);
   }
-  
+
   useFocusEffect(
     useCallback(() => {
       cardAnim.forEach((anim, i) => {
         anim.setValue(0);
         Animated.timing(anim, { toValue: 1, duration: 400 + i * 120, useNativeDriver: Platform.OS !== 'web' }).start();
       });
-      
+
     }, [])
   );
 
@@ -234,7 +235,6 @@ export default function Home() {
 
   return (
 
-
     <ScrollView style={[styles.wrapper, gstyles.back]} contentContainerStyle={styles.container} >
       {showLoad && (
         <Animated.View style={{ transform: [{ translateY: loadTranslateY }], opacity: loadOpacity }}>
@@ -258,11 +258,18 @@ export default function Home() {
 
     </ScrollView >
 
+
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: { paddingTop: Platform.OS === 'ios' ? 100 : 50, flex: 1, paddingVertical: 50, paddingBottom: 100 },
+  wrapper: {
+    paddingTop: Platform.OS === 'ios' ? 100 : 50,
+    flex: 1,
+    paddingVertical: 50,
+
+    paddingBottom: 100
+  },
   container: { alignItems: 'center', justifyContent: 'center' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   circle: {

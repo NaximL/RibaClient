@@ -88,7 +88,7 @@ export default function Profile() {
     if (!token) return;
     try {
       const sc = await fetchData("schedule", token);
-      await storeData('schedulenum', JSON.stringify(sc));
+      await storeData('schedule', JSON.stringify(sc));
       alert("Розклад оновлено")
       setLesions(sc)
       navigation.replace("App", { screen: "Schedule" });

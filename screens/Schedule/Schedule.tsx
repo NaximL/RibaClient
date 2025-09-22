@@ -9,6 +9,7 @@ import { useCallback } from 'react';
 import { Gstyle } from "styles/gstyles";
 import DayEl from "./components/DayEl";
 import useUrokStore from "@store/UrokStore";
+import { da } from "date-fns/locale";
 
 const daysOfWeek = [
     "Понеділок",
@@ -57,15 +58,10 @@ const Schedule = () => {
     useEffect(() => {
         const today = new Date();
         const dayIndex = today.getDay() - 1;
-
-
+        
         dayIndex && toggleDay(dayIndex);
-
-
-        let d = Lesion;
-        d.pop();
-        d.pop();
-        setLe(d)
+        const p = Lesion.filter((day) => day.length > 0);
+        setLe(p)
         Animated.timing(anim, {
             toValue: 1,
             duration: 500,

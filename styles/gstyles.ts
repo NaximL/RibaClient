@@ -52,6 +52,14 @@ export const Gstyle = () => {
       alignItems: 'center',
       justifyContent: 'center',
     },
+    blur: {
+      flex: 1,
+      borderRadius: 24,
+      backgroundColor: "rgba(255,255,255,0.3)",
+      // @ts-ignore 
+      backdropFilter: "blur(8px)",
+      WebkitBackdropFilter: "blur(8px)",
+    },
   });
 
   const Circle = isDark ? '#33333a' : 'rgba(255,255,255,0.9)';

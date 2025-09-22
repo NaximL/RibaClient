@@ -8,6 +8,7 @@ import {
   Platform,
   TouchableOpacity,
   useColorScheme,
+  ActivityIndicator,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import useDiaryStore from "@store/DiaryStore";
@@ -77,14 +78,18 @@ function groupByDate(data: any[]) {
 
 const Diary = () => {
   const [Diaty, SetDiary] = useState<any[]>([]);
+  const [Load, SetLoad] = useState(true);
+
   const seterrors = UseErrorStore((state) => state.setError);
 
   const applytokendata = async (token: string, studentId: string) => {
     const date = new Date();
     const mm: number = date.getMonth() + 1;
-    const diary = await GetDiary(token, studentId, mm, 100);
-    await storeData("diary", JSON.stringify(diary));
-    SetDiary(diary);
+    await GetDiary(token, studentId, mm, 100).then(async (diary) => {
+      await storeData("diary", JSON.stringify(diary));
+      SetDiary(diary);
+      SetLoad(false);
+    })
   };
 
   const handleTokenLogic = async (login: string, password: string) => {
@@ -100,7 +105,8 @@ const Diary = () => {
       if (!valid) {
         const newTokens = await RefreshToken(token);
         if (newTokens) {
-          applytokendata(newTokens, valid.enrollments[0].studentId);
+          const validsd = await ValidToken(newTokens);
+          applytokendata(newTokens, validsd.enrollments[0].studentId);
           await storeData("token_app", JSON.stringify(newTokens));
         } else {
           const data = await GetToken(login, password);
@@ -221,6 +227,7 @@ const Diary = () => {
     };
 
     return (
+
       <Animated.View
         key={index}
         style={[
@@ -270,6 +277,8 @@ const Diary = () => {
           </Text>
         </View>
       </Animated.View >
+
+
     );
   };
 
@@ -311,14 +320,22 @@ const Diary = () => {
         <Text style={styles.backText}>Назад</Text>
       </TouchableOpacity>
 
-      <SectionList
-        sections={sections}
-        keyExtractor={(item, index) => item.lessonCreatedOn + index}
-        renderItem={renderItem}
-        renderSectionHeader={renderSectionHeader}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-      />
+
+      {
+        Load && Diaty.length === 0 ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#007aff" />
+          </View>
+        ) : <SectionList
+          sections={sections}
+          keyExtractor={(item, index) => item.lessonCreatedOn + index}
+          renderItem={renderItem}
+          renderSectionHeader={renderSectionHeader}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
+      }
+
     </View>
   );
 };
