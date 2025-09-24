@@ -71,13 +71,16 @@ const FullMessage = () => {
 
   return (
     <ScrollView contentContainerStyle={[gstyles.back, styles.container]}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.replace("App", { screen: "Message" })}
-      >
-        <Ionicons name="arrow-back" size={24} color="#007aff" />
-        <Text style={styles.backText}>Назад</Text>
-      </TouchableOpacity>
+
+      {Platform.OS !== "ios" &&
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.navigate("App", { screen: "Message" })}
+        >
+          <Ionicons name="arrow-back" size={24} color="#007aff" />
+          <Text style={styles.backText}>Назад</Text>
+        </TouchableOpacity>
+      }
 
       <Text style={[styles.title, { color: ChatTitle }]}>{item.Tema}</Text>
       <Text style={styles.date}>{new Date(item.Data).toLocaleString()}</Text>
@@ -137,7 +140,7 @@ const FullMessage = () => {
 export default FullMessage;
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, padding: 20, paddingTop: Platform.OS === "ios" ? 64 : 32 },
+  container: { flexGrow: 1, padding: 20, paddingTop: Platform.OS === "ios" ? 32 : 32 },
   backButton: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
   backText: { color: "#007aff", fontSize: 16, marginLeft: 6 },
   title: { fontSize: 24, fontWeight: "700", marginBottom: 6 },

@@ -42,6 +42,8 @@ const Head = () => {
     const { SetHomeWork } = useHomeWorkStore();
 
     const [showPicker, setShowPicker] = useState(false);
+    const [showPickerAndroid, setShowPickerAndroid] = useState(false);
+
 
     const fetchHomework = async (date: Date) => {
         setDate(date);
@@ -53,33 +55,53 @@ const Head = () => {
         if (po?.value) SetHomeWork(po.value);
     };
 
-    const onChange = (e: any) => {
+    const onChange = (e: any,Dates?:Date) => {
+
         const newDate =
             Platform.OS === "web" ? new Date(e.target.value) : new Date(e.nativeEvent.timestamp);
-        fetchHomework(newDate);
+        Dates ? fetchHomework(Dates) : fetchHomework(newDate);
         setShowPicker(false);
+        setShowPickerAndroid(false);
     };
 
     return (
-        <BlurView
-            intensity={40}
-            tint={isDark ? "dark" : "light"}
+        <View
             style={styles.container}
         >
+            <BlurView
+                intensity={40}
+                tint={isDark ? "dark" : "light"}
+                style={StyleSheet.absoluteFill}
+            />
+            {showPickerAndroid && (
+                <DateTimePicker
+                    value={Dates}
+                    mode="date"
+                    display={"spinner"}
+                    onChange={onChange}
+                />
+            )}
+
             {Platform.OS === "web" ? (
                 <TouchableOpacity onPress={() => setShowPicker(true)}>
                     <Text style={[styles.dateText, { color: MessageBubleText }]}>
                         {formatDate(Dates)}
                     </Text>
                 </TouchableOpacity>
-            ) : (
+            ) : Platform.OS === "ios" ? (
                 <DateTimePicker
                     value={Dates}
                     mode="date"
                     display="compact"
                     onChange={onChange}
                 />
-            )}
+            ) :
+                <TouchableOpacity onPress={() => setShowPickerAndroid(true)}>
+                    <Text style={[styles.dateText, { color: MessageBubleText }]}>
+                        {formatDate(Dates)}
+                    </Text>
+                </TouchableOpacity>
+            }
 
             {showPicker && Platform.OS !== "web" && (
                 <FullScreenModal onClose={() => setShowPicker(false)} visible>
@@ -114,7 +136,7 @@ const Head = () => {
                     </View>
                 </Modal>
             )}
-        </BlurView>
+        </View>
     );
 };
 
@@ -123,10 +145,9 @@ export default Head;
 const styles = StyleSheet.create({
     container: {
         position: "absolute",
-        top: Platform.OS === "ios" ? 50 : 10,
+        top: Platform.OS === "ios" || Platform.OS === "android" ? 50 : 10,
         left: 15,
         right: 15,
-        borderRadius: 18,
         overflow: "hidden",
         paddingHorizontal: 14,
         paddingVertical: 10,
@@ -135,7 +156,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         gap: 11,
-        backgroundColor: "rgba(255,255,255,0.2)",
     },
     dateText: {
         fontSize: 18,

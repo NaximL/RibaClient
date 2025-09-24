@@ -312,13 +312,16 @@ const Diary = () => {
 
   return (
     <View style={[styles.container, gstyles.back]}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.replace("App", { screen: "Home" })}
-      >
-        <Ionicons name="arrow-back" size={24} color="#007aff" />
-        <Text style={styles.backText}>Назад</Text>
-      </TouchableOpacity>
+      {Platform.OS !== "ios" &&
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.replace("App", { screen: "Home" })}
+        >
+          <Ionicons name="arrow-back" size={24} color="#007aff" />
+          <Text style={styles.backText}>Назад</Text>
+        </TouchableOpacity>
+      }
+
 
 
       {
@@ -345,7 +348,7 @@ export default Diary;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === "ios" ? 64 : 32,
+    paddingTop:  Platform.OS === "android" ? 50 : 32,
   },
   listContent: {
     paddingHorizontal: 18,
@@ -373,11 +376,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     padding: 16,
     backgroundColor:
-      Platform.OS === "android" ? "rgba(255,255,255,0.9)" : "transparent",
+      Platform.OS === "android" ? "" : "transparent",
     shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 10,
-    elevation: 2,
+    
   },
   cardContent: {
     flexDirection: "row",

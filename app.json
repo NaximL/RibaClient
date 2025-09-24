@@ -14,7 +14,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.maixm.fastshark"
+      "bundleIdentifier": "com.maixm.fastshark",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -42,7 +45,8 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/f04a5084-27eb-4053-9b97-e8a020671b68"
+      "enabled": true,
+      "fallbackToCacheTimeout": 0
     }
   }
 }

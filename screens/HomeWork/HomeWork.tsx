@@ -16,6 +16,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Gstyle } from "styles/gstyles";
 import HomeWorkEl from "./components/HomeWorkEl";
 import Head from "./components/Head";
+import { getData } from "@components/LocalStorage";
 
 interface HomeworkItem {
     Id: string;
@@ -43,7 +44,7 @@ export default function HomeWork() {
     const [List, SetList] = useState<HomeworkItem[]>([]);
     const [Select, SetSelect] = useState<HomeworkItem | null>(null);
     const { width } = useWindowDimensions();
-    const { HomeWork } = useHomeWorkStore();
+    const { HomeWork, SetHomeWork } = useHomeWorkStore();
 
     const [cardAnim] = useState(new Animated.Value(0));
 
@@ -57,15 +58,25 @@ export default function HomeWork() {
             }).start();
         }, [cardAnim])
     );
+    const update = async () => {
+        const MHDATA: any = await getData("check");
+        if (!MHDATA) return;
+        const [HomePage, HomeWork, Lesions, Profile, Messages, MessagesSend] = JSON.parse(MHDATA);
+        SetHomeWork(HomeWork.value);
+    }
 
     useEffect(() => {
+        SetList(rem(HomeWork, "UzduotiesAprasymas"));
+    }, [HomeWork]);
+    useEffect(() => {
+        // update();
         Animated.timing(cardAnim, {
             toValue: 1,
             duration: 900,
             useNativeDriver: Platform.OS !== "web",
         }).start();
         SetList(rem(HomeWork, "UzduotiesAprasymas"));
-    }, [HomeWork]);
+    }, []);
 
     const containsHTML = (str: string) =>
         typeof str === "string" && /<\/?[a-z][\s\S]*>/i.test(str);
@@ -95,7 +106,7 @@ export default function HomeWork() {
     return (
         <>
             <View style={[styles.container, gstyles.back]}>
-                {/* Модалка с деталями */}
+
                 <FullScreenModal onClose={() => SetSelect(null)} visible={!!Select}>
                     <Text style={[styles.label, { color: WidgetColorText, fontSize: 30 }]}>
                         {Select?.Dalykas ?? ""}

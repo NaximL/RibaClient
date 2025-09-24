@@ -18,7 +18,7 @@ const DayEl = ({ day, index, choiceDay, openDays, daysOfWeek, les }: Schedule) =
 
     const animHeight = useRef(new Animated.Value(0)).current;
     const animOpacity = useRef(new Animated.Value(0)).current;
-    
+
     useEffect(() => {
         if (openDays[index]) {
             Animated.parallel([
@@ -86,7 +86,7 @@ const DayEl = ({ day, index, choiceDay, openDays, daysOfWeek, les }: Schedule) =
                             style={[styles.card, gstyles.ScheduleBackMini]}
                         >
                             <View style={styles.cardHeader}>
-                                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                                <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
                                     <Text
                                         style={[
                                             styles.lessonTitle,
@@ -103,7 +103,7 @@ const DayEl = ({ day, index, choiceDay, openDays, daysOfWeek, les }: Schedule) =
                                     <Text
                                         style={[
                                             styles.lessonTitle,
-                                            { color: WidgetColorText },
+                                            { color: WidgetColorText, flexShrink: 1, flexWrap: "wrap" },
                                         ]}
                                     >
                                         {urok.urok}
@@ -119,11 +119,12 @@ const DayEl = ({ day, index, choiceDay, openDays, daysOfWeek, les }: Schedule) =
     );
 };
 export default DayEl
+
 const styles = StyleSheet.create({
     daySection: {
         marginBottom: 18,
         borderRadius: 18,
-
+        
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.07,
@@ -179,6 +180,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "500",
         color: "#222",
+        flexShrink: 1,
+        flexWrap: "wrap",
     },
     timeValue: {
         fontSize: 15,

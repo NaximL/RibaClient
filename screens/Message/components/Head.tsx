@@ -1,45 +1,67 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Animated, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { Gstyle } from 'styles/gstyles';
 
-const Head = ({ setActiveMod, ActiveMod,onPress }: any) => {
-  const { isDark, MessageBubleActive, MessageBubleText, MessageBubleTextActive ,MessageBuble} = Gstyle();
+const Head = ({ setActiveMod, ActiveMod, onPress }: { setActiveMod: (mod: number) => void; ActiveMod: number; onPress: () => void }) => {
+  const { isDark, MessageBubleActive, MessageBubleText, MessageBubleTextActive, MessageBuble } = Gstyle();
+  
+  const width = useMemo(() => {
+    if (Platform.OS === "android") {
+      return 100;
+    } else {
+      return 110;
+    }
+  }, []);
 
-  const translateX = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
+  const FontSize = useMemo(() => {
+    if (Platform.OS === "android") {
+      return 14;
+    } else {
+      return 15;
+    }
+  }, []);
+
+  const translateX = useRef(new Animated.Value(ActiveMod * width)).current;
+
+  const setActive = (mod: number) => {
+    setActiveMod(mod);
     Animated.spring(translateX, {
-      toValue: ActiveMod * 110,
-      useNativeDriver: Platform.OS !== "web" ,
+      toValue: mod * width,
+      useNativeDriver: true,
       damping: 15,
       stiffness: 150,
     }).start();
-  }, [ActiveMod]);
+  };
 
   return (
-    <BlurView
-      intensity={40}
-      tint={isDark ? 'dark' : 'light'}
+    <View
       style={styles.container}
     >
-      <View style={[styles.bubblesWrapper,{backgroundColor:MessageBuble}]}>
+
+      <BlurView
+        intensity={40}
+        style={StyleSheet.absoluteFill}
+        tint={isDark ? "dark" : 'light'}
+      />
+      <View style={[styles.bubblesWrapper, { backgroundColor: MessageBuble }]}>
         <Animated.View
           style={[
             styles.activeBg,
-            { backgroundColor: MessageBubleActive, transform: [{ translateX }] },
+            { backgroundColor: MessageBubleActive, transform: [{ translateX: translateX }], width:width },
           ]}
         />
 
-        <TouchableOpacity onPress={() => setActiveMod(0)} style={styles.bubble}>
-          <Text style={[styles.bubbleText, { color: ActiveMod === 0 ? MessageBubleTextActive : MessageBubleText }]}>
+        <TouchableOpacity onPress={() => setActive(0)} style={[styles.bubble, { width:width }]}>
+          <Text style={[styles.bubbleText, { fontSize: FontSize, color: ActiveMod === 0 ? MessageBubleTextActive : MessageBubleText }]}>
             Вхідні
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setActiveMod(1)} style={styles.bubble}>
-          <Text style={[styles.bubbleText, { color: ActiveMod === 1 ? MessageBubleTextActive : MessageBubleText }]}>
+        <TouchableOpacity onPress={() => setActive(1)} style={[styles.bubble, { width:width }]}>
+          <Text style={[styles.bubbleText, { fontSize: FontSize, color: ActiveMod === 1 ? MessageBubleTextActive : MessageBubleText }]}>
             Відправлені
           </Text>
         </TouchableOpacity>
@@ -47,11 +69,11 @@ const Head = ({ setActiveMod, ActiveMod,onPress }: any) => {
 
       <TouchableOpacity onPress={onPress} style={styles.createBtn}>
         <Ionicons name="create-outline" size={18} color={MessageBubleTextActive} />
-        <Text style={[styles.bubbleText, { color: MessageBubleTextActive, marginLeft: 6 }]}>
+        <Text style={[styles.bubbleText, {fontSize: FontSize, color: MessageBubleTextActive, marginLeft: 6 }]}>
           Створити
         </Text>
       </TouchableOpacity>
-    </BlurView>
+    </View>
   );
 };
 
@@ -60,7 +82,7 @@ export default Head;
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 50 : 10,
+    top: Platform.OS === "ios" || Platform.OS === "android" ? 50 : 10,
     left: 0,
     right: 0,
     height: 60,
@@ -70,20 +92,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: 'rgba(255,255,255,0.1)',
     zIndex: 99,
   },
   bubblesWrapper: {
-    marginLeft:5,
 
+    
     flexDirection: 'row',
     position: 'relative',
-    
+
     borderRadius: 20,
     overflow: 'hidden',
   },
   bubble: {
-    width: 110,
+    
     paddingVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -97,14 +118,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: 110,
+    width: 100,
     height: '100%',
     borderRadius: 20,
     zIndex: 0,
     backgroundColor: 'rgba(255,255,255,0.25)',
   },
   createBtn: {
-    marginRight:5,
+    
     backgroundColor: 'rgb(0,122,255)',
     flexDirection: 'row',
     paddingVertical: 8,

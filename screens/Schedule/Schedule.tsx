@@ -31,10 +31,16 @@ const Schedule = () => {
 
     const [openDays, setOpenDays] = useState<{ [key: number]: boolean }>({});
     const Urok = useUrokStore((state) => state.Urok);
-    const Lesion = useLesionStore((state) => state.lesion);
+    const { lesion, setLesions } = useLesionStore((state) => state);
+
     const [Le, setLe] = useState<ScheduleDay[]>([])
     const [anim] = useState(useRef(new Animated.Value(0)).current);
 
+    const update = async () => {
+        const schedule: any = await getData("schedule");
+        if (!schedule) return;
+        setLesions(schedule);
+    }
 
     useFocusEffect(
         useCallback(() => {
@@ -58,9 +64,9 @@ const Schedule = () => {
     useEffect(() => {
         const today = new Date();
         const dayIndex = today.getDay() - 1;
-        
+        update();
         dayIndex && toggleDay(dayIndex);
-        const p = Lesion.filter((day) => day.length > 0);
+        const p = lesion.filter((day) => day.length > 0);
         setLe(p)
         Animated.timing(anim, {
             toValue: 1,
@@ -73,12 +79,13 @@ const Schedule = () => {
         <ScrollView style={[styles.container, gstyles.back]} showsVerticalScrollIndicator={false}>
             <Animated.View style={{
                 opacity: anim,
+                paddingBottom: Platform.OS === "android" ? 200 : 150,
                 transform: [
                     { scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
                     { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [40, 0] }) }
                 ]
             }}>
-                {Lesion.length === 0 || Lesion[0].length === 0 ? (
+                {lesion.length === 0 || lesion[0].length === 0 ? (
                     <Text style={styles.emptyText}>На даний момент уроків немає.</Text>
                 ) : (
                     <>
@@ -97,6 +104,8 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         paddingVertical: 50,
+        
+        paddingTop: Platform.OS === "ios" || Platform.OS === "android" ? 80 : 16,
     },
     emptyText: {
         textAlign: "center",

@@ -19,13 +19,14 @@ import { Gstyle } from "styles/gstyles";
 import FullScreenModal from "@components/Modal";
 import CreateMessageScreen from './CreateMessage';
 import BottomAlert from "./components/BottomAlert";
+import { getData } from "@components/LocalStorage";
 const Messages = () => {
   const { gstyles, MessageTopicText, isDark } = Gstyle();
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
 
 
-  const Message = useMessageStore((state) => state.Message);
+  const { Message, SetMessage } = useMessageStore((state) => state);
   const MessageSend = useMessageSendStore((state) => state.MessageSend);
   const [AlertVal, setAlertVal] = useState(false);
   const [TextAlert, setTextAlert] = useState('');
@@ -35,12 +36,17 @@ const Messages = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [animValues, setAnimValues] = useState<Animated.Value[]>([]);
-  useEffect(() => {
-    setAnimValues(Message.map(() => new Animated.Value(0)));
-  }, [Message]);
 
+  
+  const update = async () => {
+    const MHDATA: any = await getData("check");
+    if (!MHDATA) return;
+    const [HomePage, HomeWork, Lesions, Profile, Messages, MessagesSend] = JSON.parse(MHDATA);
+    SetMessage(Messages.value);
+  }
   useFocusEffect(
     useCallback(() => {
+
       animValues.forEach((anim, index) => {
         anim.setValue(0);
         Animated.timing(anim, {
@@ -56,6 +62,10 @@ const Messages = () => {
     setModalVisible(true);
   };
 
+  useEffect(() => {
+    setAnimValues(Message.map(() => new Animated.Value(0)));
+    update();
+  }, []);
   const renderItem = ({ item, index }: any) => (
     <Animated.View
       style={{
@@ -73,7 +83,7 @@ const Messages = () => {
       <TouchableOpacity
         style={[styles.messageContainer, gstyles.WidgetBack]}
         onPress={() =>
-          navigation.replace("FullMessage", { item: item, status: ActiveMod })
+          navigation.navigate("FullMessage", { item: item, status: ActiveMod })
         }
         activeOpacity={0.8}
       >

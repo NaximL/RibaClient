@@ -197,7 +197,7 @@ export default function Home() {
         .then(data => {
           if (data[0]?.status) {
             seterrors(data[0]);
-            navigation.navigate('Stop')
+            navigation.replace('Stop')
           }
         })
         .catch(err => console.error('Mock API error:', err));
@@ -226,51 +226,43 @@ export default function Home() {
     { image: MailEmoji, lable: 'Повідомлення', data: Povidok || '...' },
     { image: AnalitikEmoji, lable: 'Середній бал', data: Bal || '...', source: "Diary" },
     { image: MedalEmoji, lable: 'Місце в класі', data: mis ? `${mis} з 32` : '...' },
-  ];
 
-  if (load) {
-    return <View style={[gstyles.back, styles.center]}><ActivityIndicator size="large" color="#007aff" /></View>;
-  }
+  ];
 
 
   return (
-
-    <ScrollView style={[styles.wrapper, gstyles.back]} contentContainerStyle={styles.container} >
+    <ScrollView
+      style={[styles.wrapper, gstyles.back]}
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    >
       {showLoad && (
         <Animated.View style={{ transform: [{ translateY: loadTranslateY }], opacity: loadOpacity }}>
           <LoadWidget text={LoadText} />
         </Animated.View>
-      )
-      }
+      )}
 
-      {
-        menu.map((item, index) => (
-          <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
-        ))
-      }
+      {menu.map((item, index) => (
+        <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
+      ))}
+
       <StatusBar style="auto" />
-
-      <BottomAlert
-        visible={alerts}
-        onHide={() => { setalerts(false) }}
-        text={TextAlert}
-      />
-
-    </ScrollView >
-
+      <BottomAlert visible={alerts} onHide={() => setalerts(false)} text={TextAlert} />
+    </ScrollView>
 
   );
 }
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingTop: Platform.OS === 'ios' ? 100 : 50,
+    paddingTop: Platform.OS === 'ios' ? 100 : 80,
     flex: 1,
-    paddingVertical: 50,
-
-    paddingBottom: 100
+    backgroundColor: 'transparent',
   },
-  container: { alignItems: 'center', justifyContent: 'center' },
+  container: {
+    alignItems: 'center',
+    paddingBottom: Platform.OS === "android" ? 200 : 100,
+  },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   circle: {
     width: 44,

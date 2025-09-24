@@ -1,19 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer,LinkingOptions,NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, ActivityIndicator } from 'react-native';
 
-// Screens
+
 import Login from '../screens/UtilityScreens/Login';
 import Stop from '@screens/UtilityScreens/Error';
 import FullMessage from '@screens/Message/Message';
 import Diary from '@screens/Diary/Diary';
 import AppTabs from './AppTabs';
 
-// Utils
+
 import { getData } from '@components/LocalStorage';
 
-// Types
+
+
+const linking: LinkingOptions<RootStackParamList> = {
+  prefixes: ['http://localhost:8081', 'https://fastshark.xyz'],
+  config: {
+    screens: {
+      Login: 'login',
+      App: {
+        screens: {
+          Home: '',
+          HomeWork: 'homework',
+          Schedule: 'schedule',
+          Message: 'messages',
+          Profile: 'profile',
+        } as Record<keyof AppTabParamList, string>, 
+      },
+      FullMessage: 'message/:id',
+      Diary: 'diary',
+      Stop: 'stop',
+    },
+  },
+};
+
+
 export type AppTabParamList = {
   Home: undefined;
   Message: undefined;
@@ -26,9 +49,7 @@ export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   Register: undefined;
-  App: {
-    screen?: keyof AppTabParamList;
-  };
+  App: NavigatorScreenParams<AppTabParamList>; 
   FullMessage: {
     item: any;
     status: number;
@@ -40,7 +61,7 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// Loading component
+
 const LoadingScreen = () => (
   <View style={{ 
     flex: 1, 
@@ -52,7 +73,7 @@ const LoadingScreen = () => (
   </View>
 );
 
-// Screen options configuration
+
 const screenOptions = {
   headerShown: false,
   gestureEnabled: true,
@@ -95,42 +116,42 @@ export default function Router() {
     initializeApp();
   }, []);
 
-  // Show loading screen while checking authentication
+  
   if (isLoading || !initialScreen) {
     return <LoadingScreen />;
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking} fallback={<LoadingScreen />}>
       <Stack.Navigator
         screenOptions={screenOptions}
         initialRouteName={initialScreen}
       >
-        {/* Auth Screens */}
+        
         <Stack.Group>
           <Stack.Screen 
             name="Login" 
             component={Login}
             options={{
               ...screenOptions,
-              gestureEnabled: false, // Disable swipe back on login
+              gestureEnabled: false, 
             }}
           />
         </Stack.Group>
 
-        {/* Main App */}
+        
         <Stack.Group>
           <Stack.Screen 
             name="App" 
             component={AppTabs}
             options={{
               ...screenOptions,
-              gestureEnabled: false, // Disable swipe back on main app
+              gestureEnabled: false, 
             }}
           />
         </Stack.Group>
 
-        {/* Modal Screens */}
+        
         <Stack.Group screenOptions={modalScreenOptions}>
           <Stack.Screen 
             name="FullMessage" 
@@ -151,7 +172,7 @@ export default function Router() {
           />
         </Stack.Group>
 
-        {/* Utility Screens */}
+        
         <Stack.Group>
           <Stack.Screen 
             name="Stop" 
@@ -163,14 +184,8 @@ export default function Router() {
           />
         </Stack.Group>
 
-        {/* Future Screens */}
-        {/* 
-        <Stack.Screen 
-          name="CreateMessage" 
-          component={CreateMessage}
-          options={modalScreenOptions}
-        /> 
-        */}
+
+
       </Stack.Navigator>
     </NavigationContainer>
   );

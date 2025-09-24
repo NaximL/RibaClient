@@ -19,7 +19,7 @@ export default function Profile() {
   const { gstyles, ProfilText, WidgetColorText, ProfilTextValue, ProfilCircle } = Gstyle();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
-  const Profile = useProfileStore((state) => state.Prof);
+  const { Prof, setProfile} = useProfileStore();
   const Bal = useBalStore((state) => state.bal);
   const setLesions = useLesionStore((state) => state.setLesions);
 
@@ -61,8 +61,14 @@ export default function Profile() {
     }, [])
   );
 
+  const updates = async () => {
+    const profile: any = await getData("profile");
+    if (!profile) return;
+    setProfile(JSON.parse(profile));
+  }
 
   useEffect(() => {
+    updates();
     Animated.timing(anim, {
       toValue: 1,
       duration: 500,
@@ -79,7 +85,7 @@ export default function Profile() {
     await removeData('profile');
     await removeData('token_app');
     await removeData('check');
-    navigation.replace('Login');
+    navigation.navigate('Login');
   };
 
 
@@ -148,7 +154,7 @@ export default function Profile() {
         styles.flex1,
         gstyles.back,
         {
-          paddingVertical: Platform.OS === 'ios' ? 50 : 0,
+          paddingVertical: Platform.OS === 'ios' || Platform.OS === 'android' ? 50 : 0,
         },
       ]}
       contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 }]}
@@ -156,6 +162,7 @@ export default function Profile() {
       <Animated.View
         style={{
           opacity: anim,
+          paddingBottom: 100,
           transform: [
             { scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
             { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [40, 0] }) },
@@ -166,8 +173,8 @@ export default function Profile() {
           <View style={styles.avatar}>
             <Image style={styles.avatarIcon} source={require("@emoji/Student.png")} />
           </View>
-          <Text style={[styles.profileName, { color: ProfilText }]}>{Profile.entext[9]}</Text>
-          <Text style={styles.profileInfo}>{` ${Profile.entext[25]} • ${Profile.entext[10]} `}</Text>
+          <Text style={[styles.profileName, { color: ProfilText }]}>{Prof.entext[9]}</Text>
+          <Text style={styles.profileInfo}>{` ${Prof.entext[25]} • ${Prof.entext[10]} `}</Text>
         </View>
 
         <View style={[styles.card, gstyles.WidgetBack]}>

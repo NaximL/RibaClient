@@ -5,7 +5,8 @@ import {
   Animated,
   Image,
   TouchableOpacity,
-  ImageSourcePropType
+  ImageSourcePropType,
+  Platform
 } from 'react-native';
 import { RootStackParamList } from '../../../router/router';
 import { useNavigation } from '@react-navigation/native';
@@ -55,7 +56,7 @@ const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim, load }) => {
         style={{ width: '100%', alignItems: 'center' }}
         onPress={() => {
           if (item.source && typeof item.source === 'string') {
-            navigation.replace(item.source as any);
+            navigation.navigate(item.source as any);
           }
         }}
       >
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   value: {
-    fontSize: 32,
+    fontSize: Platform.OS === 'android' ? 30 : 32,
     fontWeight: '700',
     letterSpacing: 0.5,
   }
