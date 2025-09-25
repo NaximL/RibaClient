@@ -84,7 +84,9 @@ function AppTabs() {
           zIndex: 1,
         },
       })}
+      
     >
+      
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="HomeWork" component={HomeWork} />
       <Tab.Screen name="Schedule" component={Schedule} />

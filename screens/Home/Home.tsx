@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { View, Animated, ScrollView, ActivityIndicator, StyleSheet, Platform, Text } from 'react-native';
+import { View, Animated, ScrollView, ActivityIndicator, StyleSheet, Platform, Text, RefreshControl } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 // Stores
 import useLoadingStore from '@store/LoadStore';
 import useBalStore from '@store/BalStore';
@@ -62,6 +62,7 @@ export default function Home() {
     useRef(new Animated.Value(0)).current,
   ]);
 
+  const [refresh, setrefresh] = useState(false);
   const [alerts, setalerts] = useState(false);
   const [TextAlert, setTextAlert] = useState('');
   const setLoad = useLoadingStore(state => state.setLoad);
@@ -188,6 +189,29 @@ export default function Home() {
 
     }, [])
   );
+  const fetchData = async (check: boolean) => {
+    const login = await getData('login');
+    const password = await getData('password');
+    if (!login || !password) return;
+
+    console.time("load")
+
+    await Promise.all([
+      check && checkAndApplyCache(),
+      validateSessionAndFetch(login, password),
+    ]);
+
+    console.timeEnd("load")
+
+  };
+
+  const dwf = async () => {
+    setLoads(true);
+    setLoadsd(false);
+    setLoad(true);
+    await fetchData(false);
+    setrefresh(false);
+  }
 
   useEffect(() => {
 
@@ -203,22 +227,8 @@ export default function Home() {
         .catch(err => console.error('Mock API error:', err));
     }
 
-    const fetchData = async () => {
-      const login = await getData('login');
-      const password = await getData('password');
-      if (!login || !password) return;
 
-      console.time("load")
-
-      await Promise.all([
-        checkAndApplyCache(),
-        validateSessionAndFetch(login, password),
-      ]);
-
-      console.timeEnd("load")
-
-    };
-    fetchData();
+    fetchData(true);
   }, []);
 
   const menu = [
@@ -231,31 +241,38 @@ export default function Home() {
 
 
   return (
-    <ScrollView
-      style={[styles.wrapper, gstyles.back]}
-      contentContainerStyle={styles.container}
-      showsVerticalScrollIndicator={false}
-    >
-      {showLoad && (
-        <Animated.View style={{ transform: [{ translateY: loadTranslateY }], opacity: loadOpacity }}>
-          <LoadWidget text={LoadText} />
-        </Animated.View>
-      )}
+    <SafeAreaView style={[{ flex: 1, }, gstyles.back]}>
+      <ScrollView
+        style={[styles.wrapper, gstyles.back]}
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refresh}
+            onRefresh={() => dwf()}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+      >
+        {showLoad && (
+          <Animated.View style={{ transform: [{ translateY: loadTranslateY }], opacity: loadOpacity }}>
+            <LoadWidget text={LoadText} />
+          </Animated.View>
+        )}
 
-      {menu.map((item, index) => (
-        <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
-      ))}
+        {menu.map((item, index) => (
+          <Widget load={Loads} key={index} item={item} index={index} cardAnim={cardAnim} />
+        ))}
 
-      <StatusBar style="auto" />
-      <BottomAlert visible={alerts} onHide={() => setalerts(false)} text={TextAlert} />
-    </ScrollView>
-
+        <StatusBar style="auto" />
+        <BottomAlert visible={alerts} onHide={() => setalerts(false)} text={TextAlert} />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingTop: Platform.OS === 'ios' ? 100 : 80,
+    paddingTop: Platform.OS === 'ios' ? 50 : 20,
     flex: 1,
     backgroundColor: 'transparent',
   },

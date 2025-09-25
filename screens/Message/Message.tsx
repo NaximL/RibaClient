@@ -140,7 +140,7 @@ const FullMessage = () => {
 export default FullMessage;
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, padding: 20, paddingTop: Platform.OS === "ios" ? 32 : 32 },
+  container: { flexGrow: 1, padding: 20, paddingTop: Platform.OS === "ios" ? 32 : Platform.OS === "android" ? 50 : 32 },
   backButton: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
   backText: { color: "#007aff", fontSize: 16, marginLeft: 6 },
   title: { fontSize: 24, fontWeight: "700", marginBottom: 6 },

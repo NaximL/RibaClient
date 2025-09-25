@@ -56,7 +56,7 @@ const DayEl = ({ day, index, choiceDay, openDays, daysOfWeek, les }: Schedule) =
                 style={[
                     styles.dayHeader,
                     gstyles.WidgetBack,
-                    openDays[index] && gstyles.ScheduleBack,
+                    openDays[index] && [gstyles.ScheduleBack, styles.dayHeaderActive],
                 ]}
                 activeOpacity={0.85}
             >
@@ -142,7 +142,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#f2f2f7",
     },
     dayHeaderActive: {
-        backgroundColor: "#e5e5ea",
+        borderTopLeftRadius: 18,
+        borderTopRightRadius: 18,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
     },
     dayTitle: {
         fontSize: 19,

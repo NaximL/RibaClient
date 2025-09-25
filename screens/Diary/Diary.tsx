@@ -175,7 +175,9 @@ const Diary = () => {
           ? "Н/О"
           : item.grade === "noEvaluation"
             ? "Н/А"
-            : item.grade ?? "-";
+            : item.grade === "credited"
+              ? "Зараховано"
+              : item.grade ?? "-";
 
     const subject = item.subjectMatter ?? "-";
 
@@ -348,7 +350,7 @@ export default Diary;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop:  Platform.OS === "android" ? 50 : 32,
+    paddingTop: Platform.OS === "android" ? 50 : 32,
   },
   listContent: {
     paddingHorizontal: 18,
@@ -380,7 +382,7 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 10,
-    
+
   },
   cardContent: {
     flexDirection: "row",
