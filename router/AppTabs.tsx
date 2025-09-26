@@ -28,13 +28,20 @@ function AppTabs() {
     }).start();
   }, []);
 
-  const translateY = tabAnim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] });
   const opacity = tabAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        tabBarLabel: (() => {
+          if (route.name === 'Home') return 'Головна';
+          if (route.name === 'HomeWork') return 'Завдання';
+          if (route.name === 'Schedule') return 'Розклад';
+          if (route.name === 'Profile') return 'Профіль';
+          if (route.name === 'Message') return 'Повідомлення';
+          return route.name;
+        })(),
         tabBarIcon: ({ color, focused }) => {
           let iconName: keyof typeof Ionicons.glyphMap = 'home-outline';
           if (route.name === 'Home') iconName = focused ? 'home' : 'home-outline';
@@ -42,51 +49,34 @@ function AppTabs() {
           if (route.name === 'Schedule') iconName = focused ? 'calendar' : 'calendar-outline';
           if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
           if (route.name === 'Message') iconName = focused ? 'chatbubble' : 'chatbubble-outline';
-          return <Ionicons style={{ top: 10 }} name={iconName} size={30} color={color} />;
+          return <Ionicons name={iconName} size={24} color={color} />;
         },
         tabBarActiveTintColor: '#007aff',
         tabBarInactiveTintColor: '#b0b3b8',
-        tabBarShowLabel: false,
+
         tabBarBackground: () =>
           IsWeb ? (
             <View style={[gstyles.blur, { backgroundColor: isDark ? 'rgba(77,77,86,0.5)' : 'rgba(255,255,255,0.3)' }]}>
-              <Animated.View style={{ flex: 1, borderRadius: 24, overflow: 'hidden', opacity }} />
+              <Animated.View style={{ flex: 1, overflow: 'hidden', opacity }} />
             </View>
           ) : (
-            <Animated.View style={[{ flex: 1, borderRadius: 24, overflow: 'hidden', opacity }]}>
-
-
-
+            <Animated.View style={[{ flex: 1, overflow: 'hidden', opacity }]}>
               {Platform.OS === 'ios' ?
                 <BlurView tint={isDark ? 'dark' : 'light'} intensity={30} style={[{ backgroundColor: 'rgba(255, 255, 255, 0.18)' }, StyleSheet.absoluteFill]} />
                 :
-                <View style={[StyleSheet.absoluteFill, { borderRadius: 24, backgroundColor: isDark ? '#343438' : 'rgba(255,255,255,1)' }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: isDark ? '#343438' : 'rgba(255,255,255,1)' }]} />
               }
-
             </Animated.View>
           ),
         tabBarStyle: {
           position: 'absolute',
-          left: 0,
-          right: 0,
-          marginHorizontal: 16,
-          bottom: isPWA() ? 32 : 16,
-          borderRadius: 24,
-          height: 64,
-          borderTopWidth: 0,
-          backgroundColor: 'transparent',
-          shadowColor: '#000',
-          shadowOpacity: 0.08,
-          shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 12,
-          transform: [{ translateY }],
-          elevation: 3,
-          zIndex: 1,
+          bottom:-1,
+          height: isPWA() ? 83 : IsWeb ? null : 83,
+          borderTopColor: isDark ? '#1c1c1e' : '#e4e4e6',
         },
       })}
-      
     >
-      
+
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="HomeWork" component={HomeWork} />
       <Tab.Screen name="Schedule" component={Schedule} />

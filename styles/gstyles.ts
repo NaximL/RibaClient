@@ -54,7 +54,6 @@ export const Gstyle = () => {
     },
     blur: {
       flex: 1,
-      borderRadius: 24,
       // @ts-ignore 
       backdropFilter: "blur(8px)",
       WebkitBackdropFilter: "blur(8px)",

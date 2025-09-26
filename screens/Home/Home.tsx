@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { View, Animated, ScrollView, ActivityIndicator, StyleSheet, Platform, Text, RefreshControl } from 'react-native';
+import { Animated, ScrollView, StyleSheet, Platform, RefreshControl } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -23,10 +23,6 @@ import { CheckToken } from '@api/CheckToken';
 import { GetLesion } from '@api/GetLesion';
 import { GetAllData } from '@api/GetAlldata';
 import { Logins } from '@api/Login';
-import { GetToken } from '../../api/MH_APP/GetToken';
-import { ValidToken } from '../../api/MH_APP/ValidToken';
-import { RefreshToken } from '../../api/MH_APP/RefreshToken';
-import { GetDiary } from '../../api/MH_APP/GetDiary';
 
 // UI
 import BooksEmoji from '@emoji/Books.png';
@@ -63,10 +59,7 @@ export default function Home() {
   ]);
 
   const [refresh, setrefresh] = useState(false);
-  const [alerts, setalerts] = useState(false);
-  const [TextAlert, setTextAlert] = useState('');
   const setLoad = useLoadingStore(state => state.setLoad);
-  const load = useLoadingStore(state => state.load);
   const setLoadsd = useFetchStore(state => state.setLoads);
   const SetDiary = useDiaryStore(state => state.SetDiary);
   const Bal = useBalStore(state => state.bal);
@@ -75,7 +68,7 @@ export default function Home() {
   const setMessage = useMessageStore(state => state.SetMessage);
   const setMessageSend = useMessageSendStore(state => state.setMessageSend);
   const setHomeWork = useHomeWorkStore(state => state.SetHomeWork);
-  const setLesions = useLesionStore(state => state.setLesions);
+  const {lesion,setLesions} = useLesionStore();
   const seterrors = UseErrorStore(state => state.setError);
   const setUrok = useUrokStore(state => state.SetUrok);
   const setDate = useDateStore(state => state.setDate);
@@ -175,13 +168,14 @@ export default function Home() {
 
   };
 
-  const d = async (Lesions: Array<any>) => {
-    const lesionData = await GetLesion(Lesions, setUrok);
+  const UpdateSchudle = async () => {
+    const lesionData = await GetLesion(lesion, setUrok);
     setLesionText(lesionData);
   }
 
   useFocusEffect(
     useCallback(() => {
+      UpdateSchudle()
       cardAnim.forEach((anim, i) => {
         anim.setValue(0);
         Animated.timing(anim, { toValue: 1, duration: 400 + i * 120, useNativeDriver: Platform.OS !== 'web' }).start();
@@ -241,7 +235,7 @@ export default function Home() {
 
 
   return (
-    <SafeAreaView style={[{ flex: 1, }, gstyles.back]}>
+    <SafeAreaView style={[{ flex: 1 }, gstyles.back]}>
       <ScrollView
         style={[styles.wrapper, gstyles.back]}
         contentContainerStyle={styles.container}
@@ -264,7 +258,6 @@ export default function Home() {
         ))}
 
         <StatusBar style="auto" />
-        <BottomAlert visible={alerts} onHide={() => setalerts(false)} text={TextAlert} />
       </ScrollView>
     </SafeAreaView>
   );

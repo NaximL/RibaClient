@@ -1,6 +1,6 @@
 import { getData, storeData } from "@components/LocalStorage";
 import { SERVER_URL, UPDATE_SCHEDULE } from "../../config/config";
-import useDateStore from "@store/DateStore";
+
 
 export async function fetchData(endpoint: string, token: string, date?: string) {
   try {

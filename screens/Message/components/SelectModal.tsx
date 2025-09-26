@@ -48,13 +48,18 @@ const SelectModal: React.FC<SelectModalProps> = ({
           <FlatList
             data={options}
             keyExtractor={(item) => item.value}
-            renderItem={({ item }) => {
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => {
               const isSelected = selectedValue === item.value;
+              const isLast = index === options.length - 1;
               return (
                 <TouchableOpacity
                   style={[
+
                     styles.option,
                     { borderBottomColor: isDark ? '#333' : '#f2f2f7' },
+                    index === 0 && { borderTopLeftRadius: 18, borderTopRightRadius: 18 },
+                    isLast && { borderBottomLeftRadius: 18, borderBottomRightRadius: 18 },
                     isSelected && {
                       backgroundColor: isDark ? '#2a2a2e' : '#f2f8ff',
                     },
@@ -83,8 +88,8 @@ const SelectModal: React.FC<SelectModalProps> = ({
             }}
           />
         </View>
-      </TouchableOpacity>
-    </Modal>
+      </TouchableOpacity >
+    </Modal >
   );
 };
 
@@ -101,7 +106,7 @@ const styles = StyleSheet.create({
     maxHeight: 500,
     borderRadius: 18,
     width: 300,
-    paddingVertical: 8,
+    // paddingVertical: 8,
     elevation: 3,
     shadowColor: '#000',
     shadowOpacity: 0.12,

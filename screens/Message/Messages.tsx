@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Platform,
   Animated,
+  ActivityIndicator,
 } from "react-native";
 import useMessageStore from "@store/MessageStore";
 import { useMessageSendStore } from "@store/SendMessageStore";
@@ -20,8 +21,9 @@ import FullScreenModal from "@components/Modal";
 import CreateMessageScreen from './CreateMessage';
 import BottomAlert from "./components/BottomAlert";
 import { getData } from "@components/LocalStorage";
+import { fetchData } from "@api/GetAlldata";
 const Messages = () => {
-  const { gstyles, MessageTopicText, isDark } = Gstyle();
+  const { gstyles, MessageTopicText } = Gstyle();
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
 
@@ -31,13 +33,15 @@ const Messages = () => {
   const [AlertVal, setAlertVal] = useState(false);
   const [TextAlert, setTextAlert] = useState('');
 
+  const [Load, SetLoad] = useState<boolean>(true);
+
   const [ActiveMod, setActiveMod] = useState<number>(0);
 
   const [modalVisible, setModalVisible] = useState(false);
 
   const [animValues, setAnimValues] = useState<Animated.Value[]>([]);
 
-  
+
   const update = async () => {
     const MHDATA: any = await getData("check");
     if (!MHDATA) return;
@@ -62,7 +66,19 @@ const Messages = () => {
     setModalVisible(true);
   };
 
+  const getMessages = async () => {
+    console.time("Message")
+    const tokens = await getData("tokens")
+    if (!tokens) return;
+
+    const messages = await fetchData("message", tokens)
+    SetMessage(messages.value)
+    setAnimValues(Message.map(() => new Animated.Value(0)));
+    SetLoad(false)
+    console.timeEnd("Message")
+  }
   useEffect(() => {
+    // getMessages();
     setAnimValues(Message.map(() => new Animated.Value(0)));
     update();
   }, []);
@@ -133,14 +149,21 @@ const Messages = () => {
         text={TextAlert}
         onHide={() => setAlertVal(false)}
       />
+      {/* {
+        Load ?
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#007aff" />
+          </View>
+          : */}
+          <FlatList
+            data={ActiveMod === 0 ? Message : MessageSend}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.Id.toString()}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+          />
+      {/* } */}
 
-      <FlatList
-        data={ActiveMod === 0 ? Message : MessageSend}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.Id.toString()}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-      />
     </View>
   );
 };
