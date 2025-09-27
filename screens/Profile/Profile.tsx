@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Animated, Platform, Image } from 'react-native'
 import useBalStore from '../../store/BalStore';
 import useProfileStore from '../../store/ProfileStore';
@@ -19,8 +19,8 @@ export default function Profile() {
   const { gstyles, ProfilText, WidgetColorText, ProfilTextValue, ProfilCircle } = Gstyle();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
-  const { Prof, setProfile} = useProfileStore();
-  const Bal = useBalStore((state) => state.bal);
+  const { Prof, setProfile } = useProfileStore();
+  const [Bal, setBal] = useState<string>("0.00")
   const setLesions = useLesionStore((state) => state.setLesions);
 
 
@@ -61,14 +61,28 @@ export default function Profile() {
     }, [])
   );
 
-  const updates = async () => {
-    const profile: any = await getData("profile");
-    if (!profile) return;
-    setProfile(JSON.parse(profile));
+
+
+  const SetupProfile = async () => {
+    const profile = await getData("profile");
+    const homepage = await getData("homepage");
+    if (!homepage) return;
+    const bal = JSON.parse(homepage)[14];
+    setBal(bal);
+    if (!profile) {
+      const tokens = await getData("tokens");
+      if (!tokens) return
+      const new_profile = await fetchData("profile", tokens);
+      await storeData("profile", JSON.stringify(new_profile))
+      setProfile(new_profile)
+    }
+    else {
+      setProfile(JSON.parse(profile));
+    }
   }
 
   useEffect(() => {
-    updates();
+    SetupProfile()
     Animated.timing(anim, {
       toValue: 1,
       duration: 500,

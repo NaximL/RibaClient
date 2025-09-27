@@ -39,7 +39,7 @@ function AppTabs() {
           if (route.name === 'HomeWork') return 'Завдання';
           if (route.name === 'Schedule') return 'Розклад';
           if (route.name === 'Profile') return 'Профіль';
-          if (route.name === 'Message') return 'Повідомлення';
+          if (route.name === 'Message') return 'Листи';
           return route.name;
         })(),
         tabBarIcon: ({ color, focused }) => {
@@ -48,7 +48,7 @@ function AppTabs() {
           if (route.name === 'HomeWork') iconName = focused ? 'document-text' : 'document-text-outline';
           if (route.name === 'Schedule') iconName = focused ? 'calendar' : 'calendar-outline';
           if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
-          if (route.name === 'Message') iconName = focused ? 'chatbubble' : 'chatbubble-outline';
+          if (route.name === 'Message') iconName = focused ? 'mail' : 'mail-outline';
           return <Ionicons name={iconName} size={24} color={color} />;
         },
         tabBarActiveTintColor: '#007aff',

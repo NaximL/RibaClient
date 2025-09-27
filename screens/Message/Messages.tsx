@@ -22,14 +22,15 @@ import CreateMessageScreen from './CreateMessage';
 import BottomAlert from "./components/BottomAlert";
 import { getData } from "@components/LocalStorage";
 import { fetchData } from "@api/GetAlldata";
+import LoadWidget from "@screens/Home/components/LoadWidget";
 const Messages = () => {
   const { gstyles, MessageTopicText } = Gstyle();
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
 
 
-  const { Message, SetMessage } = useMessageStore((state) => state);
-  const MessageSend = useMessageSendStore((state) => state.MessageSend);
+  const { Message, SetMessage } = useMessageStore();
+  const {MessageSend} = useMessageSendStore();
   const [AlertVal, setAlertVal] = useState(false);
   const [TextAlert, setTextAlert] = useState('');
 
@@ -42,12 +43,6 @@ const Messages = () => {
   const [animValues, setAnimValues] = useState<Animated.Value[]>([]);
 
 
-  const update = async () => {
-    const MHDATA: any = await getData("check");
-    if (!MHDATA) return;
-    const [HomePage, HomeWork, Lesions, Profile, Messages, MessagesSend] = JSON.parse(MHDATA);
-    SetMessage(Messages.value);
-  }
   useFocusEffect(
     useCallback(() => {
 
@@ -77,10 +72,9 @@ const Messages = () => {
     SetLoad(false)
     console.timeEnd("Message")
   }
+
   useEffect(() => {
-    // getMessages();
-    setAnimValues(Message.map(() => new Animated.Value(0)));
-    update();
+    getMessages();
   }, []);
   const renderItem = ({ item, index }: any) => (
     <Animated.View
@@ -144,17 +138,18 @@ const Messages = () => {
         />
       </FullScreenModal>
 
+
       <BottomAlert
         visible={AlertVal}
         text={TextAlert}
         onHide={() => setAlertVal(false)}
       />
-      {/* {
+      {
         Load ?
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#007aff" />
           </View>
-          : */}
+          :
           <FlatList
             data={ActiveMod === 0 ? Message : MessageSend}
             renderItem={renderItem}
@@ -162,7 +157,7 @@ const Messages = () => {
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
           />
-      {/* } */}
+      }
 
     </View>
   );
@@ -172,7 +167,7 @@ export default Messages;
 
 const styles = StyleSheet.create({
   wrapper: { flex: 1, paddingTop: Platform.OS === "ios" ? 64 : 32 },
-  listContent: { paddingTop: 96, paddingHorizontal: 16, paddingBottom: 100 },
+  listContent: { paddingTop: 50, paddingHorizontal: 16, paddingBottom: 100 },
   noreed: { color: "red" },
   messageContainer: {
     borderRadius: 16,

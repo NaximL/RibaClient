@@ -55,7 +55,7 @@ const Head = () => {
         if (po?.value) SetHomeWork(po.value);
     };
 
-    const onChange = (e: any,Dates?:Date) => {
+    const onChange = (e: any, Dates?: Date) => {
 
         const newDate =
             Platform.OS === "web" ? new Date(e.target.value) : new Date(e.nativeEvent.timestamp);
@@ -71,7 +71,7 @@ const Head = () => {
             <BlurView
                 intensity={40}
                 tint={isDark ? "dark" : "light"}
-                style={StyleSheet.absoluteFill}
+                style={[StyleSheet.absoluteFill,{borderRadius:15}]}
             />
             {showPickerAndroid && (
                 <DateTimePicker

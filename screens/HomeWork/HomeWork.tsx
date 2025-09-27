@@ -8,6 +8,7 @@ import {
     View,
     Animated,
     Platform,
+    ActivityIndicator,
 } from "react-native";
 import RenderHTML from "react-native-render-html";
 import FullScreenModal from "../../components/Modal";
@@ -17,6 +18,9 @@ import { Gstyle } from "styles/gstyles";
 import HomeWorkEl from "./components/HomeWorkEl";
 import Head from "./components/Head";
 import { getData } from "@components/LocalStorage";
+import { fetchData } from "@api/GetAlldata";
+import { setDate } from "date-fns";
+import useDateStore from "@store/DateStore";
 
 interface HomeworkItem {
     Id: string;
@@ -42,8 +46,12 @@ export default function HomeWork() {
     };
 
     const [List, SetList] = useState<HomeworkItem[]>([]);
+    const [Load, SetLoad] = useState<boolean>(true);
+
     const [Select, SetSelect] = useState<HomeworkItem | null>(null);
     const { width } = useWindowDimensions();
+    const { setDate } = useDateStore();
+
     const { HomeWork, SetHomeWork } = useHomeWorkStore();
 
     const [cardAnim] = useState(new Animated.Value(0));
@@ -58,18 +66,33 @@ export default function HomeWork() {
             }).start();
         }, [cardAnim])
     );
-    const update = async () => {
-        const MHDATA: any = await getData("check");
-        if (!MHDATA) return;
-        const [HomePage, HomeWork, Lesions, Profile, Messages, MessagesSend] = JSON.parse(MHDATA);
+
+    const getHomeWork = async () => {
+        console.time("HomeWork")
+        const tokens = await getData("tokens")
+        if (!tokens) return;
+        const dateObj = new Date();
+        dateObj.setDate(dateObj.getDate() + 1);
+        setDate(dateObj);
+        const yyyy = dateObj.getFullYear();
+        const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const dd = String(dateObj.getDate() - 1).padStart(2, '0');
+        const date = `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
+
+        const HomeWork = await fetchData("homework", tokens, date)
         SetHomeWork(HomeWork.value);
+        SetLoad(false);
+        console.timeEnd("HomeWork")
     }
 
     useEffect(() => {
         SetList(rem(HomeWork, "UzduotiesAprasymas"));
     }, [HomeWork]);
+
+
+
     useEffect(() => {
-        // update();
+        getHomeWork();
         Animated.timing(cardAnim, {
             toValue: 1,
             duration: 900,
@@ -143,46 +166,53 @@ export default function HomeWork() {
                 </FullScreenModal>
                 <Head />
 
-                <FlatList
-                    data={List}
-                    keyExtractor={(item) => item.Id.toString()}
-                    renderItem={({ item, index }) => (
-                        <HomeWorkEl
-                            item={item}
-                            index={index}
-                            cardAnim={cardAnim}
-                            SetSitemect={SetSelect}
-                        />
-                    )}
 
-                    ListEmptyComponent={
-                        <Animated.View
-                            style={{
-                                opacity: cardAnim,
-                                transform: [
-                                    {
-                                        scale: cardAnim.interpolate({
-                                            inputRange: [0, 1],
-                                            outputRange: [0.95, 1],
-                                        }),
-                                    },
-                                    {
-                                        translateY: cardAnim.interpolate({
-                                            inputRange: [0, 1],
-                                            outputRange: [30, 0],
-                                        }),
-                                    },
-                                ],
-                            }}
-                        >
-                            <Text style={styles.emptyText}>
-                                Наразі немає домашнього завдання
-                            </Text>
-                        </Animated.View>
-                    }
-                    contentContainerStyle={styles.contentContainer}
-                    showsVerticalScrollIndicator={false}
-                />
+                {Load ?
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator size="large" color="#007aff" />
+                    </View> :
+                    <FlatList
+                        data={List}
+                        keyExtractor={(item) => item.Id.toString()}
+                        renderItem={({ item, index }) => (
+                            <HomeWorkEl
+                                item={item}
+                                index={index}
+                                cardAnim={cardAnim}
+                                SetSitemect={SetSelect}
+                            />
+                        )}
+
+                        ListEmptyComponent={
+                            <Animated.View
+                                style={{
+                                    opacity: cardAnim,
+                                    transform: [
+                                        {
+                                            scale: cardAnim.interpolate({
+                                                inputRange: [0, 1],
+                                                outputRange: [0.95, 1],
+                                            }),
+                                        },
+                                        {
+                                            translateY: cardAnim.interpolate({
+                                                inputRange: [0, 1],
+                                                outputRange: [30, 0],
+                                            }),
+                                        },
+                                    ],
+                                }}
+                            >
+                                <Text style={styles.emptyText}>
+                                    Наразі немає домашнього завдання
+                                </Text>
+                            </Animated.View>
+                        }
+                        contentContainerStyle={styles.contentContainer}
+                        showsVerticalScrollIndicator={false}
+                    />
+                }
+
             </View>
             <StatusBar style="dark" />
         </>

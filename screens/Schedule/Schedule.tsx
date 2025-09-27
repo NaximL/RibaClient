@@ -27,7 +27,7 @@ export interface Lesson {
 export type ScheduleDay = Lesson[];
 
 const Schedule = () => {
-    const { gstyles, WidgetColorText } = Gstyle();
+    const { gstyles } = Gstyle();
 
     const [openDays, setOpenDays] = useState<{ [key: number]: boolean }>({});
     const Urok = useUrokStore((state) => state.Urok);
@@ -39,7 +39,7 @@ const Schedule = () => {
     const update = async () => {
         const schedule: any = await getData("schedule");
         if (!schedule) return;
-        setLesions(schedule);
+        setLesions(JSON.parse(schedule));
     }
 
     useFocusEffect(
@@ -61,10 +61,13 @@ const Schedule = () => {
             [index]: !prev[index],
         }));
     };
+
+    useEffect(() => {
+        update()
+    }, [])
     useEffect(() => {
         const today = new Date();
         const dayIndex = today.getDay() - 1;
-        update();
         dayIndex && toggleDay(dayIndex);
         const p = lesion.filter((day) => day.length > 0);
         setLe(p)
@@ -73,7 +76,7 @@ const Schedule = () => {
             duration: 500,
             useNativeDriver: Platform.OS !== 'web',
         }).start();
-    }, [])
+    }, [lesion])
 
     return (
         <ScrollView style={[styles.container, gstyles.back]} showsVerticalScrollIndicator={false}>
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         paddingVertical: 50,
-        
+
         paddingTop: Platform.OS === "ios" || Platform.OS === "android" ? 80 : 16,
     },
     emptyText: {

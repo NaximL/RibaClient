@@ -1,19 +1,29 @@
+import { BlurView } from 'expo-blur';
 import {
-    View,
-    Text,
-    ActivityIndicator,
-    StyleSheet
+  View,
+  Text,
+  ActivityIndicator,
+  StyleSheet
 } from 'react-native';
 import { Gstyle } from 'styles/gstyles';
 
-const LoadWidget = ({text="Оновлення…"}:{text?:string}) => {
-    const { gstyles, LoginText } = Gstyle();
-    return (
+const LoadWidget = ({ text = "Оновлення…", independent = false }: { text?: string, independent: boolean }) => {
+  const { gstyles, LoginText, isDark } = Gstyle();
+  return (
+    <>
+      {independent ?
+        <BlurView intensity={60} tint={isDark ? "dark" : "light"} style={[gstyles.LoadingBack, styles.LargeLoad]}>
+          < ActivityIndicator size="small" color="#007aff" />
+          <Text style={[styles.LargeLoadText, { color: LoginText }]} >{text}</Text>
+        </BlurView >
+        :
         <View style={[gstyles.LoadingBack, styles.LargeLoad]}>
-            <ActivityIndicator size="small" color="#007aff" />
-            <Text style={[styles.LargeLoadText, { color: LoginText }]} >{text}</Text>
+          <ActivityIndicator size="small" color="#007aff" />
+          <Text style={[styles.LargeLoadText, { color: LoginText }]} >{text}</Text>
         </View>
-    );
+      }
+    </>
+  );
 }
 
 export default LoadWidget;

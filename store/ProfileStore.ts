@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type Profile = {
+export type Profile = {
   entext: Array<any>;
   teach: Array<any>;
 };

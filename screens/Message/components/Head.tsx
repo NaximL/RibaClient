@@ -3,10 +3,16 @@ import { View, TouchableOpacity, Text, StyleSheet, Animated, Platform } from 're
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { Gstyle } from 'styles/gstyles';
+import { getData } from '@components/LocalStorage';
+import { fetchData } from '@api/GetAlldata';
+import useMessageStore from '@store/MessageStore';
+import { useMessageSendStore } from '@store/SendMessageStore';
 
 const Head = ({ setActiveMod, ActiveMod, onPress }: { setActiveMod: (mod: number) => void; ActiveMod: number; onPress: () => void }) => {
   const { isDark, MessageBubleActive, MessageBubleText, MessageBubleTextActive, MessageBuble } = Gstyle();
-  
+  const { SetMessage } = useMessageStore();
+  const { setMessageSend } = useMessageSendStore();
+
   const width = useMemo(() => {
     if (Platform.OS === "android") {
       return 100;
@@ -24,9 +30,23 @@ const Head = ({ setActiveMod, ActiveMod, onPress }: { setActiveMod: (mod: number
     }
   }, []);
 
+
+
   const translateX = useRef(new Animated.Value(ActiveMod * width)).current;
 
-  const setActive = (mod: number) => {
+  const setActive = async (mod: number) => {
+    const tokens = await getData("tokens");
+    if (!tokens) return
+
+    if (mod === 0) {
+      const messages = await fetchData("message", tokens);
+      SetMessage(messages.value)
+    }
+    else {
+      const messages = await fetchData("messagesendmes", tokens);
+      setMessageSend(messages.value)
+    }
+
     setActiveMod(mod);
     Animated.spring(translateX, {
       toValue: mod * width,
@@ -50,17 +70,17 @@ const Head = ({ setActiveMod, ActiveMod, onPress }: { setActiveMod: (mod: number
         <Animated.View
           style={[
             styles.activeBg,
-            { backgroundColor: MessageBubleActive, transform: [{ translateX: translateX }], width:width },
+            { backgroundColor: MessageBubleActive, transform: [{ translateX: translateX }], width: width },
           ]}
         />
 
-        <TouchableOpacity onPress={() => setActive(0)} style={[styles.bubble, { width:width }]}>
+        <TouchableOpacity onPress={() => setActive(0)} style={[styles.bubble, { width: width }]}>
           <Text style={[styles.bubbleText, { fontSize: FontSize, color: ActiveMod === 0 ? MessageBubleTextActive : MessageBubleText }]}>
             Вхідні
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setActive(1)} style={[styles.bubble, { width:width }]}>
+        <TouchableOpacity onPress={() => setActive(1)} style={[styles.bubble, { width: width }]}>
           <Text style={[styles.bubbleText, { fontSize: FontSize, color: ActiveMod === 1 ? MessageBubleTextActive : MessageBubleText }]}>
             Відправлені
           </Text>
@@ -69,7 +89,7 @@ const Head = ({ setActiveMod, ActiveMod, onPress }: { setActiveMod: (mod: number
 
       <TouchableOpacity onPress={onPress} style={styles.createBtn}>
         <Ionicons name="create-outline" size={18} color={MessageBubleTextActive} />
-        <Text style={[styles.bubbleText, {fontSize: FontSize, color: MessageBubleTextActive, marginLeft: 6 }]}>
+        <Text style={[styles.bubbleText, { fontSize: FontSize, color: MessageBubleTextActive, marginLeft: 6 }]}>
           Створити
         </Text>
       </TouchableOpacity>
@@ -96,7 +116,7 @@ const styles = StyleSheet.create({
   },
   bubblesWrapper: {
 
-    
+
     flexDirection: 'row',
     position: 'relative',
 
@@ -104,7 +124,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   bubble: {
-    
+
     paddingVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -125,7 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.25)',
   },
   createBtn: {
-    
+
     backgroundColor: 'rgb(0,122,255)',
     flexDirection: 'row',
     paddingVertical: 8,

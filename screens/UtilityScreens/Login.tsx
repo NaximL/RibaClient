@@ -21,6 +21,7 @@ import { ISPROD } from 'config/config';
 import UseErrorStore from '@store/Error';
 import { Logins } from '@api/Login';
 import { Gstyle } from 'styles/gstyles';
+import { fetchData } from '@api/GetAlldata';
 
 
 
@@ -62,8 +63,11 @@ const Login = () => {
 
       if (data.sts) {
         await storeData("tokens", JSON.stringify(data.tokens));
-        storeData("login", logins);
-        storeData("password", password);
+        await storeData("login", logins);
+        await storeData("password", password);
+        console.log(data.tokens)
+        const sc = await fetchData("schedule", JSON.stringify(data.tokens));
+        await storeData('schedule', JSON.stringify(sc));
         alert('Ви успішно увійшли!');
         navigation.replace('App', { screen: 'Home' });
       }
