@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Animated, Platform, Image } from 'react-native'
-import useBalStore from '../../store/BalStore';
 import useProfileStore from '../../store/ProfileStore';
 import { getData, removeData, storeData } from '../../components/LocalStorage';
 import { useNavigation } from '@react-navigation/native';
@@ -12,6 +11,7 @@ import { VERSION } from '../../config/config';
 import { Gstyle } from 'styles/gstyles';
 import { fetchData } from '@api/GetAlldata';
 import useLesionStore from '@store/LesionStore';
+import FullScreenModal from '@components/Modal';
 
 
 
@@ -22,7 +22,7 @@ export default function Profile() {
   const { Prof, setProfile } = useProfileStore();
   const [Bal, setBal] = useState<string>("0.00")
   const setLesions = useLesionStore((state) => state.setLesions);
-
+  const [modalVisible, setModalVisible] = useState(false);
 
   const navigation = useNavigation<NavigationProp>();
   const [login, setLogin] = React.useState<string | null>(null);
@@ -37,6 +37,7 @@ export default function Profile() {
       pazinichi = 0;
 
       const secrets = [
+        "homyak",
         "Тралалелотралала",
         "Пазинич",
         "Вовченко Б/У",
@@ -44,7 +45,12 @@ export default function Profile() {
       ];
 
       const randomIndex = Math.floor(Math.random() * secrets.length);
-      alert(secrets[randomIndex]);
+      if (secrets[randomIndex] === "homyak") {
+        setModalVisible(true)
+      }
+      else {
+        alert(secrets[randomIndex]);
+      }
     }
   };
 
@@ -192,17 +198,23 @@ export default function Profile() {
         </View>
 
         <View style={[styles.card, gstyles.WidgetBack]}>
-
           <Text style={[styles.cardTitle, { color: WidgetColorText }]}>Логін</Text>
           <View style={styles.row}>
             <Text style={[styles.cardTitle, { color: ProfilTextValue }]}>{login}</Text>
-
           </View>
-
-
-
-
         </View>
+
+
+        <FullScreenModal
+          close={false}
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+        >
+          <Image
+            source={require("../../assets/image/homyak.jpeg")}
+            style={{ width: 300, height: 300,borderRadius:15 }}
+          />
+        </FullScreenModal>
 
         <View style={[styles.scoreBlock, gstyles.WidgetBack]}>
           <View style={[styles.scoreCircle, { backgroundColor: ProfilCircle }]}>

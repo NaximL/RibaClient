@@ -9,6 +9,7 @@
       "@screens/*": ["screens/*"],
       "@assets/*": ["assets/*"],
       "@emoji/*": ["assets/emoji/*"],
+      "@img/*": ["assets/image/*"],
       "@store/*": ["store/*"]
     }
   }
