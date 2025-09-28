@@ -28,6 +28,7 @@ import LoadWidget from './components/LoadWidget';
 import { Gstyle } from 'styles/gstyles';
 import { RootStackParamList } from '../../router/router';
 import useUrokStore from '@store/UrokStore';
+import useProfileStore from '@store/ProfileStore';
 
 
 type ApplyDataType = {
@@ -48,9 +49,9 @@ export default function Home() {
   const { setLoad } = useLoadingStore()
 
 
-  
-  
-  
+
+
+  const { setProfile } = useProfileStore();
   const [Lesion, setLesionText] = useState('');
   const [mis, setMis] = useState<number | null>(null);
   const [Povidok, setPovidok] = useState<number | null>(null);
@@ -138,15 +139,14 @@ export default function Home() {
     SetLoadText('Зчитуємо дані з кешу...');
     const HomePage = await getData('homepage');
     const Schedule = await getData('schedule');
-
+    const Profile = await getData('profile');
+    Profile && setProfile(JSON.parse(Profile))
     if (!Schedule || !HomePage) return;
-
     await applyData({
       HomePage: JSON.parse(HomePage),
       Schedule: JSON.parse(Schedule),
       Haptic: false
     });
-
   };
 
   const ApplyServerData = async (login: string, password: string) => {

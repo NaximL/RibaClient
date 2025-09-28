@@ -100,7 +100,7 @@ export default function Profile() {
     await removeData('login');
     await removeData('password');
     await removeData('tokens');
-    await removeData('schedulenum');
+    await removeData('homepage');
     await removeData('schedule');
     await removeData('profile');
     await removeData('token_app');

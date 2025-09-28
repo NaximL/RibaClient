@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer, LinkingOptions, NavigatorScreenParams, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, ActivityIndicator } from 'react-native';
 
@@ -10,34 +10,9 @@ import FullMessage from '@screens/Message/Message';
 import Diary from '@screens/Diary/Diary';
 import AppTabs from './AppTabs';
 
-
 import { getData } from '@components/LocalStorage';
-import { StackNavigationProp } from '@react-navigation/stack';
 
-
-
-const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: ['http://localhost:8081', 'https://fastshark.xyz'],
-  config: {
-    screens: {
-      Login: 'login',
-      App: {
-        screens: {
-          Home: '',
-          HomeWork: 'homework',
-          Schedule: 'schedule',
-          Message: 'messages',
-          Profile: 'profile',
-        } as Record<keyof AppTabParamList, string>,
-      },
-      FullMessage: 'message/:id',
-      Diary: 'diary',
-      Stop: 'stop',
-    },
-  },
-};
-
-
+// Types
 export type AppTabParamList = {
   Home: undefined;
   Message: undefined;
@@ -50,7 +25,9 @@ export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   Register: undefined;
-  App: NavigatorScreenParams<AppTabParamList>;
+  App: {
+    screen?: keyof AppTabParamList;
+  };
   FullMessage: {
     item: any;
     status: number;
@@ -74,7 +51,6 @@ const LoadingScreen = () => (
   </View>
 );
 
-
 const screenOptions = {
   headerShown: false,
   gestureEnabled: true,
@@ -85,8 +61,10 @@ const modalScreenOptions = {
   ...screenOptions,
   presentation: 'modal' as const,
   animation: 'slide_from_bottom' as const,
-}; export default function Router() {
-  const [initialScreen, setInitialScreen] = useState<"App" | "Login" | null>(null);
+};
+
+export default function Router() {
+  const [initialScreen, setInitialScreen] = useState<'Login' | 'App' | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -95,16 +73,17 @@ const modalScreenOptions = {
         setIsLoading(true);
 
         const [login, tokens] = await Promise.all([
-          getData("login"),
-          getData("tokens"),
+          getData('login'),
+          getData('tokens')
         ]);
 
         const isAuthenticated = Boolean(login && tokens);
+        setInitialScreen(isAuthenticated ? 'App' : 'Login');
 
-        setInitialScreen(isAuthenticated ? "App" : "Login");
       } catch (error) {
-        console.error("Помилка ініціалізації:", error);
-        setInitialScreen("Login");
+        console.error('Помилка ініціалізації:', error);
+        setInitialScreen('Login');
+
       } finally {
         setIsLoading(false);
       }
@@ -113,41 +92,73 @@ const modalScreenOptions = {
     initializeApp();
   }, []);
 
+  
   if (isLoading || !initialScreen) {
     return <LoadingScreen />;
   }
 
   return (
-    <NavigationContainer linking={initialScreen === "Login" ? undefined : linking} fallback={<LoadingScreen />}>
+    <NavigationContainer>
       <Stack.Navigator
         screenOptions={screenOptions}
-        initialRouteName={initialScreen} 
+        initialRouteName={initialScreen}
       >
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ gestureEnabled: false }}
-        />
-        <Stack.Screen
-          name="App"
-          component={AppTabs}
-          options={{ gestureEnabled: false }}
-        />
-        <Stack.Screen
-          name="FullMessage"
-          component={FullMessage}
-          options={{ title: "Повідомлення", ...modalScreenOptions }}
-        />
-        <Stack.Screen
-          name="Diary"
-          component={Diary}
-          options={{ title: "Щоденник", ...modalScreenOptions }}
-        />
-        <Stack.Screen
-          name="Stop"
-          component={Stop}
-          options={{ gestureEnabled: false }}
-        />
+        
+        <Stack.Group>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              ...screenOptions,
+              gestureEnabled: false,
+            }}
+          />
+        </Stack.Group>
+
+        
+        <Stack.Group>
+          <Stack.Screen
+            name="App"
+            component={AppTabs}
+            options={{
+              ...screenOptions,
+              gestureEnabled: false, 
+            }}
+          />
+        </Stack.Group>
+
+      
+        <Stack.Group screenOptions={modalScreenOptions}>
+          <Stack.Screen
+            name="FullMessage"
+            component={FullMessage}
+            options={{
+              ...modalScreenOptions,
+              title: 'Повідомлення',
+            }}
+          />
+
+          <Stack.Screen
+            name="Diary"
+            component={Diary}
+            options={{
+              ...modalScreenOptions,
+              title: 'Щоденник',
+            }}
+          />
+        </Stack.Group>
+
+        
+        <Stack.Group>
+          <Stack.Screen
+            name="Stop"
+            component={Stop}
+            options={{
+              ...screenOptions,
+              gestureEnabled: false,
+            }}
+          />
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );

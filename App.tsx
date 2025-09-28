@@ -1,7 +1,6 @@
 import TelegramInit from "@components/TelegramInit";
 import Router from "./router/router";
 import { ISPROD } from "config/config";
-import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Platform } from "react-native";
 import { Analytics } from "@vercel/analytics/react"
 
@@ -11,7 +10,7 @@ export default function App() {
     <>
       {Platform.OS === "web" &&
         <>
-          <SpeedInsights />
+          {/* <SpeedInsights /> */}
           <Analytics/>
         </>
       }
