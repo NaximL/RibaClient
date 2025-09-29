@@ -152,6 +152,9 @@ export default function HomeWork() {
                                     source={{ html: Select.UzduotiesAprasymas }}
                                     baseStyle={{ ...styles.value, color: WidgetColorText }}
                                     ignoredDomTags={["o:p"]}
+                                    defaultTextProps={{
+                                        selectable: true,
+                                    }}
                                     tagsStyles={tagsStyles}
                                 />
                             ) : (
