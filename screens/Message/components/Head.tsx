@@ -8,7 +8,13 @@ import { fetchData } from '@api/GetAlldata';
 import useMessageStore from '@store/MessageStore';
 import { useMessageSendStore } from '@store/SendMessageStore';
 
-const Head = ({ setActiveMod, ActiveMod, onPress }: { setActiveMod: (mod: number) => void; ActiveMod: number; onPress: () => void }) => {
+type Props = {
+  setActiveMod: (mod: number) => void;
+  ActiveMod: number; onPress: () => void;
+  SetLoad: (Load: boolean) => void;
+}
+
+const Head = ({ setActiveMod, ActiveMod, onPress, SetLoad }: Props) => {
   const { isDark, MessageBubleActive, MessageBubleText, MessageBubleTextActive, MessageBuble } = Gstyle();
   const { SetMessage } = useMessageStore();
   const { setMessageSend } = useMessageSendStore();
@@ -39,12 +45,16 @@ const Head = ({ setActiveMod, ActiveMod, onPress }: { setActiveMod: (mod: number
     if (!tokens) return
 
     if (mod === 0) {
+      SetLoad(true)
       const messages = await fetchData("message", tokens);
       SetMessage(messages.value)
+      SetLoad(false)
     }
     else {
+      SetLoad(true)
       const messages = await fetchData("messagesendmes", tokens);
       setMessageSend(messages.value)
+      SetLoad(false)
     }
 
     setActiveMod(mod);

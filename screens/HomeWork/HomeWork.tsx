@@ -9,6 +9,8 @@ import {
     Animated,
     Platform,
     ActivityIndicator,
+    Linking,
+    TouchableOpacity,
 } from "react-native";
 import RenderHTML from "react-native-render-html";
 import FullScreenModal from "../../components/Modal";
@@ -28,10 +30,11 @@ interface HomeworkItem {
     MokytojoVardasPavarde?: string;
     AtliktiIki?: string;
     PamokosData?: string;
+    Failai: Array<any> | null;
     UzduotiesAprasymas?: string;
-    [key: string]: string | undefined;
+    [key: string]: string | Array<any> | null | undefined;
 }
-
+type FileLink = { Id: string; Pavadinimas: string };
 export default function HomeWork() {
     const { gstyles, WidgetColorText } = Gstyle();
 
@@ -47,6 +50,7 @@ export default function HomeWork() {
 
     const [List, SetList] = useState<HomeworkItem[]>([]);
     const [Load, SetLoad] = useState<boolean>(true);
+    const [attachments, setAttachments] = useState<FileLink[]>([]);
 
     const [Select, SetSelect] = useState<HomeworkItem | null>(null);
     const { width } = useWindowDimensions();
@@ -80,6 +84,7 @@ export default function HomeWork() {
         const date = `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
 
         const HomeWork = await fetchData("homework", tokens, date)
+        // Failai
         SetHomeWork(HomeWork.value);
         SetLoad(false);
         console.timeEnd("HomeWork")
@@ -165,6 +170,22 @@ export default function HomeWork() {
                         ) : (
                             <Text style={{ color: WidgetColorText }}>...</Text>
                         )}
+                        {Select?.Failai && Select.Failai.length > 0 && (
+                            <View style={styles.section}>
+                                <Text style={[styles.label, { color: WidgetColorText }]}>Додані файли:</Text>
+                                {Select.Failai.map((file, i) => (
+                                    <TouchableOpacity
+                                        key={i}
+                                        onPress={() => Linking.openURL(`https://app.moiashkola.ua/Pamoka/Siustis/${file.Id}`)}
+                                        activeOpacity={0.7}
+                                    >
+                                        <Text style={styles.fileName} numberOfLines={1}>
+                                            {file.Pavadinimas}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>)}
+
                     </View>
                 </FullScreenModal>
                 <Head />
@@ -255,4 +276,6 @@ const styles = StyleSheet.create({
         color: "#aaa",
         fontSize: 16,
     },
+    fileName: { color: "#007aff", textDecorationLine: "underline", fontSize: 15, marginVertical: 4 },
+    section: { marginTop: 24 },
 });

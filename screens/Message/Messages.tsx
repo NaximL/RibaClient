@@ -30,7 +30,7 @@ const Messages = () => {
 
 
   const { Message, SetMessage } = useMessageStore();
-  const {MessageSend} = useMessageSendStore();
+  const { MessageSend } = useMessageSendStore();
   const [AlertVal, setAlertVal] = useState(false);
   const [TextAlert, setTextAlert] = useState('');
 
@@ -123,6 +123,7 @@ const Messages = () => {
         setActiveMod={setActiveMod}
         ActiveMod={ActiveMod}
         onPress={OpenCreateMessage}
+        SetLoad={SetLoad}
       />
 
 

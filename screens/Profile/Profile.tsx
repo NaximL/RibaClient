@@ -38,10 +38,6 @@ export default function Profile() {
 
       const secrets = [
         "homyak",
-        "Тралалелотралала",
-        "Пазинич",
-        "Вовченко Б/У",
-        "✨ Магія кліку ✨"
       ];
 
       const randomIndex = Math.floor(Math.random() * secrets.length);
