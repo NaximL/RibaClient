@@ -30,6 +30,7 @@ import { RootStackParamList } from '../../router/router';
 import useUrokStore from '@store/UrokStore';
 import useProfileStore from '@store/ProfileStore';
 import Baner from './components/Baner';
+import { fetchData } from '@api/GetAlldata';
 
 
 type ApplyDataType = {
@@ -126,6 +127,21 @@ export default function Home() {
       }
     }
   }
+  const updated = async () => {
+    const token = await getData("tokens");
+    if (!token) return;
+    try {
+      const sc = await fetchData("schedule", token);
+      await storeData('schedule', JSON.stringify(sc));
+      alert("Розклад оновлено")
+      setLesions(sc)
+      navigation.replace("App", { screen: "Schedule" });
+    }
+    catch (error) {
+      alert(`Помилка:${error}`)
+    }
+
+  };
 
 
   useFocusEffect(
@@ -158,6 +174,11 @@ export default function Home() {
     const Profile = await getData('profile');
     Profile && setProfile(JSON.parse(Profile))
     if (!Schedule || !HomePage) return;
+
+
+    if (!JSON.parse(Schedule)[0][0].teach) {
+      updated()
+    }
     await applyData({
       HomePage: JSON.parse(HomePage),
       Schedule: JSON.parse(Schedule),
@@ -198,7 +219,7 @@ export default function Home() {
     setLoad(false);
   };
 
-  const fetchData = async (cash: boolean) => {
+  const fetchDatas = async (cash: boolean) => {
     const login = await getData('login');
     const password = await getData('password');
     if (!login || !password) return;
@@ -218,7 +239,7 @@ export default function Home() {
     setWidgetLoad(true);
 
     setLoad(true);
-    await fetchData(false);
+    await fetchDatas(false);
     setRefresh(false);
   }
 
@@ -236,7 +257,7 @@ export default function Home() {
         })
         .catch(err => console.error('Mock API error:', err));
     }
-    fetchData(true);
+    fetchDatas(true);
   }, []);
 
   const menu = [
