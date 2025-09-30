@@ -3,6 +3,8 @@ import { Lesson, ScheduleDay } from "../Schedule";
 import { Gstyle } from "styles/gstyles";
 
 type Schedule = {
+    setModalData: (obj: Lesson) => void;
+    setModalVis: (text: boolean) => void;
     day: ScheduleDay;
     index: number;
     les: string | null;
@@ -11,13 +13,19 @@ type Schedule = {
     daysOfWeek: Array<string>;
 }
 import { Animated } from "react-native";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
-const DayEl = ({ day, index, choiceDay, openDays, daysOfWeek, les }: Schedule) => {
+const DayEl = ({ setModalData, setModalVis, day, index, choiceDay, openDays, daysOfWeek, les, }: Schedule) => {
     const { gstyles, WidgetColorText } = Gstyle();
 
     const animHeight = useRef(new Animated.Value(0)).current;
     const animOpacity = useRef(new Animated.Value(0)).current;
+
+
+    const OpenModal = (obj: Lesson) => {
+        setModalData(obj)
+        setModalVis(true)
+    }
 
     useEffect(() => {
         if (openDays[index]) {
@@ -69,6 +77,7 @@ const DayEl = ({ day, index, choiceDay, openDays, daysOfWeek, les }: Schedule) =
             </TouchableOpacity>
 
 
+
             <Animated.View
                 style={{
                     overflow: "hidden",
@@ -81,37 +90,39 @@ const DayEl = ({ day, index, choiceDay, openDays, daysOfWeek, les }: Schedule) =
             >
                 <View style={[styles.cardsWrapper, gstyles.WidgetBack]}>
                     {day.map((urok: Lesson, lessonIndex: number) => (
-                        <View
-                            key={lessonIndex}
-                            style={[styles.card, gstyles.ScheduleBackMini]}
-                        >
-                            <View style={styles.cardHeader}>
-                                <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
-                                    <Text
-                                        style={[
-                                            styles.lessonTitle,
-                                            {
-                                                color:
-                                                    les && JSON.parse(les).u === lessonIndex
-                                                        ? "#2ecc71"
-                                                        : "#007aff",
-                                            },
-                                        ]}
-                                    >
-                                        {lessonIndex + 1}
-                                    </Text>
-                                    <Text
-                                        style={[
-                                            styles.lessonTitle,
-                                            { color: WidgetColorText, flexShrink: 1, flexWrap: "wrap" },
-                                        ]}
-                                    >
-                                        {urok.urok}
-                                    </Text>
+                        <TouchableOpacity key={lessonIndex} onPress={() => { OpenModal(urok) }} >
+                            
+                            <View
+                                style={[styles.card, gstyles.ScheduleBackMini]}
+                            >
+                                <View style={styles.cardHeader}>
+                                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
+                                        <Text
+                                            style={[
+                                                styles.lessonTitle,
+                                                {
+                                                    color:
+                                                        les && JSON.parse(les).u === lessonIndex
+                                                            ? "#2ecc71"
+                                                            : "#007aff",
+                                                },
+                                            ]}
+                                        >
+                                            {lessonIndex + 1}
+                                        </Text>
+                                        <Text
+                                            style={[
+                                                styles.lessonTitle,
+                                                { color: WidgetColorText, flexShrink: 1, flexWrap: "wrap" },
+                                            ]}
+                                        >
+                                            {urok.urok}
+                                        </Text>
+                                    </View>
+                                    <Text style={styles.timeValue}>{urok.time}</Text>
                                 </View>
-                                <Text style={styles.timeValue}>{urok.time}</Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     ))}
                 </View>
             </Animated.View>
@@ -124,7 +135,7 @@ const styles = StyleSheet.create({
     daySection: {
         marginBottom: 18,
         borderRadius: 18,
-        
+
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.07,

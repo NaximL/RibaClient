@@ -112,14 +112,26 @@ export default function Home() {
   });
   const loadOpacity = loadAnim;
 
-  const UpdateSchudle = async () => {
-    const lesionData = await GetLesion(lesion, setUrok);
-    setLesionText(lesionData);
+  const UpdateSchudle = async (Sch?: Array<any>, u?: boolean) => {
+    if (u) {
+      const schedule: any = await getData("schedule");
+      if (!schedule) return;
+      const lesionData = await GetLesion(JSON.parse(schedule), setUrok);
+      setLesionText(lesionData);
+    }
+    else {
+      if (Sch) {
+        const lesionData = await GetLesion(Sch, setUrok);
+        setLesionText(lesionData);
+      }
+    }
   }
+
 
   useFocusEffect(
     useCallback(() => {
-      UpdateSchudle()
+
+      UpdateSchudle([], true)
       cardAnim.forEach((anim, i) => {
         anim.setValue(0);
         Animated.timing(anim, { toValue: 1, duration: 400 + i * 120, useNativeDriver: Platform.OS !== 'web' }).start();
@@ -131,11 +143,11 @@ export default function Home() {
 
   const applyData = async ({ HomePage, Schedule, Haptic }: ApplyDataType) => {
     SetLoadText('Застосовуємо дані...');
+    setLesions(Schedule);
     SetBal(HomePage[14]);
     setMis(HomePage[15]);
     setPovidok(HomePage[10]);
-    setLesions(Schedule);
-    UpdateSchudle()
+    UpdateSchudle(Schedule, false)
     if (Haptic) await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
 

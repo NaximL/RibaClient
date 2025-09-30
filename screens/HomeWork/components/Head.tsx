@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -28,7 +28,7 @@ const formatDate = (date?: Date) =>
 
 const buildApiDate = (date: Date) => {
     const nextDay = new Date(date);
-    nextDay.setDate(nextDay.getDate() + 1);
+    nextDay.setDate(nextDay.getDate());
 
     const yyyy = nextDay.getFullYear();
     const mm = String(nextDay.getMonth() + 1).padStart(2, "0");
@@ -43,6 +43,11 @@ const Head = () => {
 
     const [showPicker, setShowPicker] = useState(false);
     const [showPickerAndroid, setShowPickerAndroid] = useState(false);
+
+    const dayes = new Date(Dates);
+
+
+    // dayes.setDate(dayes.getDate() + 1)
 
 
     const fetchHomework = async (date: Date) => {
@@ -71,11 +76,11 @@ const Head = () => {
             <BlurView
                 intensity={40}
                 tint={isDark ? "dark" : "light"}
-                style={[StyleSheet.absoluteFill,{borderRadius:15}]}
+                style={[StyleSheet.absoluteFill, { borderRadius: 15 }]}
             />
             {showPickerAndroid && (
                 <DateTimePicker
-                    value={Dates}
+                    value={dayes}
                     mode="date"
                     display={"spinner"}
                     onChange={onChange}
@@ -85,12 +90,12 @@ const Head = () => {
             {Platform.OS === "web" ? (
                 <TouchableOpacity onPress={() => setShowPicker(true)}>
                     <Text style={[styles.dateText, { color: MessageBubleText }]}>
-                        {formatDate(Dates)}
+                        {formatDate(dayes)}
                     </Text>
                 </TouchableOpacity>
             ) : Platform.OS === "ios" ? (
                 <DateTimePicker
-                    value={Dates}
+                    value={dayes}
                     mode="date"
                     display="compact"
                     onChange={onChange}
@@ -98,7 +103,7 @@ const Head = () => {
             ) :
                 <TouchableOpacity onPress={() => setShowPickerAndroid(true)}>
                     <Text style={[styles.dateText, { color: MessageBubleText }]}>
-                        {formatDate(Dates)}
+                        {formatDate(dayes)}
                     </Text>
                 </TouchableOpacity>
             }
@@ -129,7 +134,7 @@ const Head = () => {
                                     color: WidgetColorText,
                                     borderWidth: 0,
                                 }}
-                                value={Dates.toISOString().split("T")[0]}
+                                value={dayes.toISOString().split("T")[0]}
                                 onChange={onChange}
                             />
                         </View>

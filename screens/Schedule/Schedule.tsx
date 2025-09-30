@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
-import { GetLesion } from "../../api/MH/GetLesion";
+
 import { getData } from "../../components/LocalStorage";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated, Platform } from "react-native";
+import { Text, StyleSheet, ScrollView, Animated, Platform } from "react-native";
 import useLesionStore from "../../store/LesionStore";
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -9,7 +9,8 @@ import { useCallback } from 'react';
 import { Gstyle } from "styles/gstyles";
 import DayEl from "./components/DayEl";
 import useUrokStore from "@store/UrokStore";
-import { da } from "date-fns/locale";
+
+import FullScreenModal from "@components/Modal";
 
 const daysOfWeek = [
     "Понеділок",
@@ -22,6 +23,7 @@ const daysOfWeek = [
 export interface Lesson {
     urok: string;
     time: string;
+    teach: string;
 }
 
 export type ScheduleDay = Lesson[];
@@ -32,6 +34,13 @@ const Schedule = () => {
     const [openDays, setOpenDays] = useState<{ [key: number]: boolean }>({});
     const Urok = useUrokStore((state) => state.Urok);
     const { lesion, setLesions } = useLesionStore((state) => state);
+    const [ModalVis, SetModalVis] = useState(false)
+    const [ModalData, SetModalData] = useState<Lesson>({
+        "urok": "Інформатика",
+        "time": "8:00 - 8:40",
+        "teach": "Іванова Вікторія"
+    },)
+
 
     const [Le, setLe] = useState<ScheduleDay[]>([])
     const [anim] = useState(useRef(new Animated.Value(0)).current);
@@ -80,6 +89,14 @@ const Schedule = () => {
 
     return (
         <ScrollView style={[styles.container, gstyles.back]} showsVerticalScrollIndicator={false}>
+            <FullScreenModal
+                visible={ModalVis}
+                onClose={() => SetModalVis(false)}
+            >
+                <Text style={{ fontWeight: '600', fontSize: 30 }}>{ModalData.urok}</Text>
+                <Text style={{ fontWeight: '500', fontSize: 23,marginTop:10 }}>{`Вчитель: ${ModalData.teach}`}</Text>
+            </FullScreenModal>
+
             <Animated.View style={{
                 opacity: anim,
                 paddingBottom: Platform.OS === "android" ? 200 : 150,
@@ -93,7 +110,7 @@ const Schedule = () => {
                 ) : (
                     <>
                         {Array.isArray(Le) && Le.map((day: ScheduleDay, index: number) => (
-                            <DayEl les={Urok ? JSON.parse(Urok).d === index ? Urok : null : null} day={day} key={index} choiceDay={toggleDay} index={index} openDays={openDays} daysOfWeek={daysOfWeek} />
+                            <DayEl setModalData={SetModalData} setModalVis={SetModalVis} les={Urok ? JSON.parse(Urok).d === index ? Urok : null : null} day={day} key={index} choiceDay={toggleDay} index={index} openDays={openDays} daysOfWeek={daysOfWeek} />
                         ))}
                     </>
                 )}

@@ -3,6 +3,7 @@ import { create } from 'zustand';
 interface Lesson {
     urok: string;
     time: string;
+    teach:string;
 }
 
 type ScheduleDay = Lesson[];
