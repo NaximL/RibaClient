@@ -29,6 +29,7 @@ import { Gstyle } from 'styles/gstyles';
 import { RootStackParamList } from '../../router/router';
 import useUrokStore from '@store/UrokStore';
 import useProfileStore from '@store/ProfileStore';
+import Baner from './components/Baner';
 
 
 type ApplyDataType = {
@@ -48,6 +49,9 @@ export default function Home() {
   const [WidgetLoad, setWidgetLoad] = useState(true);
   const { setLoad } = useLoadingStore()
 
+
+  const [BanerText, setBanerText] = useState('орєщькі бігбоб');
+  const [BanerVis, setBanerVis] = useState(false);
 
 
 
@@ -211,6 +215,8 @@ export default function Home() {
       fetch('https://67e479672ae442db76d48b54.mockapi.io/allert')
         .then(res => res.json())
         .then(data => {
+          setBanerVis(data[0]?.baner_status)
+          setBanerText(data[0]?.baner_text)
           if (data[0]?.status) {
             seterrors(data[0]);
             navigation.replace('Stop')
@@ -248,6 +254,8 @@ export default function Home() {
             <LoadWidget independent={false} text={LoadText} />
           </Animated.View>
         )}
+
+        <Baner status={BanerVis} text={BanerText} />
 
         {menu.map((item, index) => (
           <Widget load={WidgetLoad} key={index} item={item} index={index} cardAnim={cardAnim} />

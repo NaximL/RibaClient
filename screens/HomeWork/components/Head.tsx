@@ -32,7 +32,7 @@ const buildApiDate = (date: Date) => {
 
     const yyyy = nextDay.getFullYear();
     const mm = String(nextDay.getMonth() + 1).padStart(2, "0");
-    const dd = String(nextDay.getDate() - 2).padStart(2, "0");
+    const dd = String(nextDay.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
 };
 

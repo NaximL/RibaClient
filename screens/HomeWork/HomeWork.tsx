@@ -76,15 +76,18 @@ export default function HomeWork() {
         const tokens = await getData("tokens")
         if (!tokens) return;
         const dateObj = new Date();
-        dateObj.setDate(dateObj.getDate() + 1);
+        dateObj.setDate(dateObj.getDate()+1);
         setDate(dateObj);
         const yyyy = dateObj.getFullYear();
-        const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const dd = String(dateObj.getDate() - 1).padStart(2, '0');
+        const mm = String(dateObj.getMonth() +1).padStart(2, '0');
+        const dd = String(dateObj.getDate()).padStart(2, '0');
         const date = `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
+        console.log(date)
+    
 
         const HomeWork = await fetchData("homework", tokens, date)
         // Failai
+        console.log(HomeWork)
         SetHomeWork(HomeWork.value);
         SetLoad(false);
         console.timeEnd("HomeWork")

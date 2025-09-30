@@ -99,7 +99,7 @@ const Head = ({ setActiveMod, ActiveMod, onPress, SetLoad }: Props) => {
 
       <TouchableOpacity onPress={onPress} style={styles.createBtn}>
         <Ionicons name="create-outline" size={18} color={MessageBubleTextActive} />
-        <Text style={[styles.bubbleText, { fontSize: FontSize, color: MessageBubleTextActive, marginLeft: 6 }]}>
+        <Text style={[styles.bubbleText, { fontSize: FontSize, color: MessageBubleTextActive, marginLeft: 6,marginBottom:0.5 }]}>
           Створити
         </Text>
       </TouchableOpacity>
