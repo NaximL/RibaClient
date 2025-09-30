@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 interface Lesson {
+    num:number;
     urok: string;
     time: string;
     teach:string;

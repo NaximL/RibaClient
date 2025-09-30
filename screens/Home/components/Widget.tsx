@@ -99,5 +99,6 @@ const styles = StyleSheet.create({
     fontSize: Platform.OS === 'android' ? 30 : 32,
     fontWeight: '700',
     letterSpacing: 0.5,
+    textAlign:"center"
   }
 });

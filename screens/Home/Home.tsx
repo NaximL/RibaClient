@@ -176,7 +176,7 @@ export default function Home() {
     if (!Schedule || !HomePage) return;
 
 
-    if (!JSON.parse(Schedule)[0][0].teach) {
+    if (!JSON.parse(Schedule)[0][0].teach || !JSON.parse(Schedule)[0][0].num) {
       updated()
     }
     await applyData({

@@ -3,14 +3,14 @@ export async function GetLesion(fs: Array<any>, setUrok: (Urok: string) => void)
   try {
     const now = new Date();
     const re = now.getDay(); 
-
+    
     const lessonsForToday = fs[re - 1];
 
     if (!lessonsForToday || lessonsForToday.length === 0) {
-      return 'На даний момент уроків немає.';
+      return 'На даний момент уроків немає';
     }
     if (now.getHours() < 8) {
-      return 'Уроки ще не почались.';
+      return 'Уроки ще не почались';
     }
 
     let found = false;
@@ -36,18 +36,18 @@ export async function GetLesion(fs: Array<any>, setUrok: (Urok: string) => void)
       if (now < startDate) {
         const diffMs = startDate.getTime() - now.getTime();
         const diffMin = Math.floor(diffMs / 60000);
-        rozkl = `Перерва, наступний: ${urk.urok} через ${diffMin} хв.`;
+        rozkl = `Перерва, наступний: ${urk.urok} через ${diffMin} хв`;
         found = true;
         break;
       }
     }
 
     if (!found) {
-      rozkl = 'Уроки на сьогодні закінчились.';
+      rozkl = 'Уроки на сьогодні закінчились';
     }
   } catch (error) {
     console.error('Помилка при обробці розкладу:', error);
-    rozkl = 'Не вдалося отримати розклад.';
+    rozkl = 'Не вдалося отримати розклад';
   }
 
   return rozkl;

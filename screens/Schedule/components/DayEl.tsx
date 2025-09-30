@@ -108,7 +108,7 @@ const DayEl = ({ setModalData, setModalVis, day, index, choiceDay, openDays, day
                                                 },
                                             ]}
                                         >
-                                            {lessonIndex + 1}
+                                            {urok.num}
                                         </Text>
                                         <Text
                                             style={[

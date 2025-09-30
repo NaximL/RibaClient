@@ -21,6 +21,7 @@ const daysOfWeek = [
 ];
 
 export interface Lesson {
+    num: number;
     urok: string;
     time: string;
     teach: string;
@@ -29,13 +30,14 @@ export interface Lesson {
 export type ScheduleDay = Lesson[];
 
 const Schedule = () => {
-    const { gstyles } = Gstyle();
+    const { gstyles, WidgetColorText } = Gstyle();
 
     const [openDays, setOpenDays] = useState<{ [key: number]: boolean }>({});
     const Urok = useUrokStore((state) => state.Urok);
     const { lesion, setLesions } = useLesionStore((state) => state);
     const [ModalVis, SetModalVis] = useState(false)
     const [ModalData, SetModalData] = useState<Lesson>({
+        "num": 1,
         "urok": "Інформатика",
         "time": "8:00 - 8:40",
         "teach": "Іванова Вікторія"
@@ -93,8 +95,8 @@ const Schedule = () => {
                 visible={ModalVis}
                 onClose={() => SetModalVis(false)}
             >
-                <Text style={{ fontWeight: '600', fontSize: 30 }}>{ModalData.urok}</Text>
-                <Text style={{ fontWeight: '500', fontSize: 23,marginTop:10 }}>{`Вчитель: ${ModalData.teach}`}</Text>
+                <Text style={{ color: WidgetColorText, fontWeight: '700', fontSize: 30 }}>{ModalData.urok}</Text>
+                <Text style={{ color: WidgetColorText, fontWeight: '500', fontSize: 23, marginTop: 10 }}>{`Вчитель: \n${ModalData.teach}`}</Text>
             </FullScreenModal>
 
             <Animated.View style={{
