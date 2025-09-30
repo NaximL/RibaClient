@@ -132,10 +132,10 @@ export default function Home() {
     if (!token) return;
     try {
       const sc = await fetchData("schedule", token);
-      await storeData('schedule', JSON.stringify(sc));
-      alert("Розклад оновлено")
       setLesions(sc)
-      navigation.replace("App", { screen: "Schedule" });
+      await storeData('schedule', JSON.stringify(sc));
+      UpdateSchudle(sc, false)
+      alert("Розклад оновлено")
     }
     catch (error) {
       alert(`Помилка:${error}`)
