@@ -84,7 +84,7 @@ const Diary = () => {
 
   const applytokendata = async (token: string, studentId: string) => {
     const date = new Date();
-    const mm: number = date.getMonth() + 1;
+    const mm: number = date.getMonth();
     await GetDiary(token, studentId, mm, 100).then(async (diary) => {
       await storeData("diary", JSON.stringify(diary));
       SetDiary(diary);
@@ -120,7 +120,8 @@ const Diary = () => {
             return;
           }
           await storeData("token_app", JSON.stringify(data));
-          const valids = await ValidToken(token);
+          const valids = await ValidToken(data);
+          
           applytokendata(data, valids.enrollments[0].studentId);
         }
       } else {
