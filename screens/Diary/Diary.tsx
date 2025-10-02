@@ -84,7 +84,7 @@ const Diary = () => {
 
   const applytokendata = async (token: string, studentId: string) => {
     const date = new Date();
-    const mm: number = date.getMonth();
+    const mm: number = date.getMonth()+1;
     await GetDiary(token, studentId, mm, 100).then(async (diary) => {
       await storeData("diary", JSON.stringify(diary));
       SetDiary(diary);
