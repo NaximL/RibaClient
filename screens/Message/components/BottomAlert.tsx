@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet, Text, View, Easing } from "react-native";
-import { Gstyle } from "styles/gstyles";
+import { Gstyle } from "@styles/gstyles";
 import { BlurView } from "expo-blur";
 
 type Props = {

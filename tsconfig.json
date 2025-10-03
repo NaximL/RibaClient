@@ -2,15 +2,16 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "baseUrl": ".",
     "paths": {
-      "@api/*": ["api/MH/*"],
-      "@components/*": ["components/*"],
-      "@screens/*": ["screens/*"],
-      "@assets/*": ["assets/*"],
-      "@emoji/*": ["assets/emoji/*"],
-      "@img/*": ["assets/image/*"],
-      "@store/*": ["store/*"]
+      "@api/*": ["./api/*"],
+      "@components/*": ["./components/*"],
+      "@screens/*": ["./screens/*"],
+      "@assets/*": ["./assets/*"],
+      "@emoji/*": ["./assets/emoji/*"],
+      "@img/*": ["./assets/image/*"],
+      "@store/*": ["./store/*"],
+      "@config/*": ["./config/*"],
+      "@styles/*": ["./styles/*"]
     }
   }
 }

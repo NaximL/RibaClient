@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { Gstyle } from "styles/gstyles";
+import { Gstyle } from "@styles/gstyles";
 
 type Props = {
     status: boolean;

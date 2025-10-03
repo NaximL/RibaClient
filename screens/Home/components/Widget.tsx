@@ -11,7 +11,7 @@ import {
 import { RootStackParamList } from '../../../router/router';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { Gstyle } from 'styles/gstyles';
+import { Gstyle } from '@styles/gstyles';
 
 
 type Item = {

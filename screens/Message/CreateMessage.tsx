@@ -13,10 +13,10 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import SelectModal from './components/SelectModal';
-import { SendMessage } from '@api/SendMessage';
+import { SendMessage } from '@api/MH/SendMessage';
 import { getData } from '@components/LocalStorage';
-import { Gstyle } from 'styles/gstyles';
-import { GetHuman } from '@api/GetHuman';
+import { Gstyle } from '@styles/gstyles';
+import { GetHuman } from '@api/MH/GetHuman';
 
 
 type Props = {

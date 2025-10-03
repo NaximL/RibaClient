@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Gstyle } from 'styles/gstyles';
+import { Gstyle } from '@styles/gstyles';
 
 type Option = {
   label: string;

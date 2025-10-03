@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, StyleSheet, Text, Pressable, ScrollView, Platform } from 'react-native';
-import { Gstyle } from 'styles/gstyles';
+import { Gstyle } from '@styles/gstyles';
 
 type FullScreenModalProps = {
   visible: boolean;

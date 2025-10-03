@@ -12,11 +12,11 @@ import useLesionStore from '@store/LesionStore';
 import UseErrorStore from '@store/Error';
 
 // Config and API
-import { ISPROD } from 'config/config';
+import { ISPROD } from '@config/config';
 import { getData, storeData } from '@components/LocalStorage';
-import { CheckToken } from '@api/CheckToken';
-import { GetLesion } from '@api/GetLesion';
-import { Logins } from '@api/Login';
+import { CheckToken } from '@api/MH/CheckToken';
+import { GetLesion } from '@api/MH/GetLesion';
+import { Logins } from '@api/MH/Login';
 
 // UI
 import BooksEmoji from '@emoji/Books.png';
@@ -25,12 +25,12 @@ import AnalitikEmoji from '@emoji/Analitik.png';
 import MedalEmoji from '@emoji/Medal.png';
 import Widget from './components/Widget';
 import LoadWidget from './components/LoadWidget';
-import { Gstyle } from 'styles/gstyles';
+import { Gstyle } from '@styles/gstyles';
 import { RootStackParamList } from '../../router/router';
 import useUrokStore from '@store/UrokStore';
 import useProfileStore from '@store/ProfileStore';
 import Baner from './components/Baner';
-import { fetchData } from '@api/GetAlldata';
+import { fetchData } from '@api/MH/GetAlldata';
 
 
 type ApplyDataType = {

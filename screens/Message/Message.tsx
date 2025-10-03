@@ -13,12 +13,12 @@ import {
 import { useRoute, useNavigation } from "@react-navigation/native";
 import RenderHTML from "react-native-render-html";
 import { getData } from "@components/LocalStorage";
-import { GetMessage } from "@api/GetMessage";
-import { GetMessageSend } from "@api/GetMessageSend";
+import { GetMessage } from "@api/MH/GetMessage";
+import { GetMessageSend } from "@api/MH/GetMessageSend";
 import { Ionicons } from "@expo/vector-icons";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../router/router";
-import { Gstyle } from "styles/gstyles";
+import { Gstyle } from "@styles/gstyles";
 
 type FileLink = { name: string; url: string };
 

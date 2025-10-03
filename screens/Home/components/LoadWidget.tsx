@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
-import { Gstyle } from 'styles/gstyles';
+import { Gstyle } from '@styles/gstyles';
 
 const LoadWidget = ({ text = "Оновлення…", independent = false }: { text?: string, independent: boolean }) => {
   const { gstyles, LoginText, isDark } = Gstyle();

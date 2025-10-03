@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from "react-native";
 import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";
-import { Gstyle } from "styles/gstyles";
+import { Gstyle } from "@styles/gstyles";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import FullScreenModal from "@components/Modal";
 
@@ -43,11 +43,11 @@ const DatePickerBar = ({ selectedDate, setSelectedDate }: any) => {
       style={styles.container}
     >
 
-        <TouchableOpacity onPress={openPicker} activeOpacity={0.7}>
-          <Text style={[styles.dateText, { color: MessageBubleText }]}>
-            {selectedDate ? formatDate(selectedDate) : formatDate(today)}
-          </Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={openPicker} activeOpacity={0.7}>
+        <Text style={[styles.dateText, { color: MessageBubleText }]}>
+          {selectedDate ? formatDate(selectedDate) : formatDate(today)}
+        </Text>
+      </TouchableOpacity>
 
 
 
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     borderRadius: 12,
+    //@ts-ignore
     border: "1px solid #ccc",
     outline: "none",
   },

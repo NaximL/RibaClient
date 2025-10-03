@@ -2,9 +2,9 @@ import React, { useRef, useEffect, useMemo } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Animated, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
-import { Gstyle } from 'styles/gstyles';
+import { Gstyle } from '@styles/gstyles';
 import { getData } from '@components/LocalStorage';
-import { fetchData } from '@api/GetAlldata';
+import { fetchData } from '@api/MH/GetAlldata';
 import useMessageStore from '@store/MessageStore';
 import { useMessageSendStore } from '@store/SendMessageStore';
 

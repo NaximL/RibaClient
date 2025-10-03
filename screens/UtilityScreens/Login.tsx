@@ -17,11 +17,11 @@ import { storeData } from "../../components/LocalStorage"
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router/router';
-import { ISPROD } from 'config/config';
+import { ISPROD } from '@config/config';
 import UseErrorStore from '@store/Error';
-import { Logins } from '@api/Login';
-import { Gstyle } from 'styles/gstyles';
-import { fetchData } from '@api/GetAlldata';
+import { Logins } from '@api/MH/Login';
+import { Gstyle } from '@styles/gstyles';
+import { fetchData } from '@api/MH/GetAlldata';
 
 
 

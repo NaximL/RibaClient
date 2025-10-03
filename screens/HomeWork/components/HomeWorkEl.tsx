@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, useWindowDimensions, Animated, Platform } from 'react-native';
 import RenderHTML from 'react-native-render-html';
-import { Gstyle } from 'styles/gstyles';
+import { Gstyle } from '@styles/gstyles';
 
 const HomeWorkEl = ({ item, cardAnim, index, SetSitemect }: any) => {
 

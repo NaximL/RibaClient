@@ -6,7 +6,7 @@ import useLesionStore from "../../store/LesionStore";
 
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { Gstyle } from "styles/gstyles";
+import { Gstyle } from "@styles/gstyles";
 import DayEl from "./components/DayEl";
 import useUrokStore from "@store/UrokStore";
 

@@ -11,18 +11,17 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import useDiaryStore from "@store/DiaryStore";
-import { Gstyle } from "styles/gstyles";
+import { Gstyle } from "@styles/gstyles";
 import { format, isToday, isYesterday, parseISO } from "date-fns";
 import { uk } from "date-fns/locale";
 import { Ionicons } from "@expo/vector-icons";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../router/router";
 import { getData, storeData } from "@components/LocalStorage";
-import { GetToken } from "api/MH_APP/GetToken";
-import { ValidToken } from "api/MH_APP/ValidToken";
-import { RefreshToken } from "api/MH_APP/RefreshToken";
-import { GetDiary } from "api/MH_APP/GetDiary";
+import { GetToken } from "@api/MH_APP/GetToken";
+import { ValidToken } from "@api/MH_APP/ValidToken";
+import { RefreshToken } from "@api/MH_APP/RefreshToken";
+import { GetDiary } from "@api/MH_APP/GetDiary";
 import UseErrorStore from "@store/Error";
 
 const systemicGradeTypeMap: Record<string, string> = {

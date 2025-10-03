@@ -16,12 +16,11 @@ import RenderHTML from "react-native-render-html";
 import FullScreenModal from "../../components/Modal";
 import useHomeWorkStore from "../../store/HomeWorkStore";
 import { useFocusEffect } from "@react-navigation/native";
-import { Gstyle } from "styles/gstyles";
+import { Gstyle } from "@styles/gstyles";
 import HomeWorkEl from "./components/HomeWorkEl";
 import Head from "./components/Head";
 import { getData } from "@components/LocalStorage";
-import { fetchData } from "@api/GetAlldata";
-import { setDate } from "date-fns";
+import { fetchData } from "@api/MH/GetAlldata";
 import useDateStore from "@store/DateStore";
 
 interface HomeworkItem {
@@ -77,7 +76,7 @@ export default function HomeWork() {
         if (!tokens) return;
 
         const dateObj = new Date();
-        dateObj.setDate(dateObj.getDate());
+        dateObj.setDate(dateObj.getDate() + 1);
 
 
         setDate(dateObj);

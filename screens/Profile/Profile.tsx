@@ -8,8 +8,8 @@ import { useCallback } from 'react';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../router/router';
 import { VERSION } from '../../config/config';
-import { Gstyle } from 'styles/gstyles';
-import { fetchData } from '@api/GetAlldata';
+import { Gstyle } from '@styles/gstyles';
+import { fetchData } from '@api/MH/GetAlldata';
 import useLesionStore from '@store/LesionStore';
 import FullScreenModal from '@components/Modal';
 

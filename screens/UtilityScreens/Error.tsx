@@ -12,7 +12,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import UseErrorStore from '@store/Error';
-import { Gstyle } from 'styles/gstyles';
+import { Gstyle } from '@styles/gstyles';
 
 export default function Stop() {
   const { gstyles,ProfilText } = Gstyle();

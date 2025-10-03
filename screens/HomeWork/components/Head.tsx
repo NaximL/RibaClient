@@ -9,12 +9,12 @@ import {
     Pressable,
 } from "react-native";
 import { BlurView } from "expo-blur";
-import { Gstyle } from "styles/gstyles";
+import { Gstyle } from "@styles/gstyles";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import FullScreenModal from "@components/Modal";
 import useDateStore from "@store/DateStore";
 import { getData } from "@components/LocalStorage";
-import { fetchData } from "@api/GetAlldata";
+import { fetchData } from "@api/MH/GetAlldata";
 import useHomeWorkStore from "@store/HomeWorkStore";
 
 const formatDate = (date?: Date) =>
@@ -32,7 +32,7 @@ const buildApiDate = (date: Date) => {
 
     const yyyy = nextDay.getFullYear();
     const mm = String(nextDay.getMonth() + 1).padStart(2, "0");
-    const dd = String(nextDay.getDate()).padStart(2, "0");
+    const dd = String(nextDay.getDate() - 1).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
 };
 
@@ -45,10 +45,6 @@ const Head = () => {
     const [showPickerAndroid, setShowPickerAndroid] = useState(false);
 
     const dayes = new Date(Dates);
-
-
-    // dayes.setDate(dayes.getDate() + 1)
-
 
     const fetchHomework = async (date: Date) => {
         setDate(date);

@@ -7,13 +7,15 @@ module.exports = function (api) {
         'module-resolver',
         {
           alias: {
-            '@api': './api/MH',
+            '@api': './api',
             '@components': './components',
             '@screens': './screens',
             '@assets': './assets',
             '@store': './store',
             '@img': './assets/image',
             '@emoji': './assets/emoji',
+            '@config': './config',
+            '@styles': './styles',
           },
         },
       ]

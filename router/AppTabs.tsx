@@ -10,7 +10,7 @@ import HomeWork from '../screens/HomeWork/HomeWork';
 import Schedule from '../screens/Schedule/Schedule';
 import Messages from '@screens/Message/Messages';
 import { isPWA } from '@components/isPWA';
-import { Gstyle } from 'styles/gstyles';
+import { Gstyle } from '@styles/gstyles';
 
 const Tab = createBottomTabNavigator();
 const IsWeb = Platform.OS === 'web';

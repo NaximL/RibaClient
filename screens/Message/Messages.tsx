@@ -16,13 +16,13 @@ import Head from "./components/Head";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../router/router";
-import { Gstyle } from "styles/gstyles";
+import { Gstyle } from "@styles/gstyles";
 import FullScreenModal from "@components/Modal";
 import CreateMessageScreen from './CreateMessage';
 import BottomAlert from "./components/BottomAlert";
 import { getData } from "@components/LocalStorage";
-import { fetchData } from "@api/GetAlldata";
-import LoadWidget from "@screens/Home/components/LoadWidget";
+import { fetchData } from "@api/MH/GetAlldata";
+
 const Messages = () => {
   const { gstyles, MessageTopicText } = Gstyle();
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;

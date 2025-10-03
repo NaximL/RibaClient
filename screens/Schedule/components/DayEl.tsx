@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Lesson, ScheduleDay } from "../Schedule";
-import { Gstyle } from "styles/gstyles";
+import { Gstyle } from "@styles/gstyles";
 
 type Schedule = {
     setModalData: (obj: Lesson) => void;
