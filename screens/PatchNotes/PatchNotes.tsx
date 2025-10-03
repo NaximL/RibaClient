@@ -29,7 +29,7 @@ export type PatchNoteSection = {
 const PatchNotesScreen = () => {
     const anim = useRef(new Animated.Value(0)).current;
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-    const { gstyles } = Gstyle();
+    const { gstyles,WidgetColorText } = Gstyle();
     useFocusEffect(
         useCallback(() => {
             anim.setValue(0);
@@ -43,7 +43,7 @@ const PatchNotesScreen = () => {
 
     const renderItem = ({ item }: { item: PatchNoteItem }) => (
         <View style={styles.card}>
-            <Text style={styles.cardText}>{item.text}</Text>
+            <Text style={[styles.cardText,{color:WidgetColorText}]}>{item.text}</Text>
         </View>
     );
 
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     },
     cardText: {
         fontSize: 15,
-        color: "#333",
+        
     },
     backButton: {
         flexDirection: "row",

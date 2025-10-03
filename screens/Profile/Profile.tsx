@@ -237,7 +237,7 @@ export default function Profile() {
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 10 }]} onPress={()=>{navigation.navigate("PatchNotes")}}>
-          <Text style={styles.VersionText}>Опис оновленн: <Text style={{ color: WidgetColorText }}>{VERSION}</Text></Text>
+          <Text style={[styles.VersionText,{color:WidgetColorText}]}>Опис оновлень: <Text>{VERSION}</Text></Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 40 }]} onPress={logout}>
