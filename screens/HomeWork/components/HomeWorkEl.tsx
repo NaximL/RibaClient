@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, useWindowDimensions, Animated, Platform } 
 import RenderHTML from 'react-native-render-html';
 import { Gstyle } from '@styles/gstyles';
 
-const HomeWorkEl = ({ item, cardAnim, index, SetSitemect }: any) => {
+const HomeWorkEl = ({ item, cardAnim, index, SetSitemect, SetModal }: any) => {
 
 
     const { gstyles, WidgetColorText } = Gstyle()
@@ -24,6 +24,7 @@ const HomeWorkEl = ({ item, cardAnim, index, SetSitemect }: any) => {
             }}
         >
             <Pressable onPress={() => {
+                SetModal(true);
                 SetSitemect(item);
             }}>
                 <Text style={[styles.label, { color: WidgetColorText }]}>{item.Dalykas ?? ''}</Text>

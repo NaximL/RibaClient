@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   useColorScheme,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Gstyle } from "@styles/gstyles";
@@ -29,6 +30,7 @@ const systemicGradeTypeMap: Record<string, string> = {
   Oral: "Усна відповідь",
   Test: "Тест",
 
+  Essay:"Твір",
   SubjectGrade: "Предметна оцінка",
   Homework: "Домашнє завдання",
   TheoreticalWork: "Теоритична робота",
@@ -49,6 +51,7 @@ const systemicGradeTypeMap: Record<string, string> = {
   Thematicassessment: "Тематичне оцінювання",
   Diagnosticwork: "Діагностична робота",
   Behavior: "Поведінка",
+  
   Other: "Інше",
   undefined: "Немає",
   null: "Немає",
@@ -83,7 +86,7 @@ const Diary = () => {
 
   const applytokendata = async (token: string, studentId: string) => {
     const date = new Date();
-    const mm: number = date.getMonth()+1;
+    const mm: number = date.getMonth() + 1;
     await GetDiary(token, studentId, mm, 100).then(async (diary) => {
       await storeData("diary", JSON.stringify(diary));
       SetDiary(diary);
@@ -120,7 +123,7 @@ const Diary = () => {
           }
           await storeData("token_app", JSON.stringify(data));
           const valids = await ValidToken(data);
-          
+
           applytokendata(data, valids.enrollments[0].studentId);
         }
       } else {
@@ -229,58 +232,58 @@ const Diary = () => {
     };
 
     return (
+      <Pressable onPress={()=>{console.log(item)}}>
+        <Animated.View
+          key={index}
+          style={[
+            styles.card,
+            {
+              transform: [
+                {
+                  scale: anim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0.97, 1],
+                  }),
+                },
+                {
+                  translateY: anim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [15, 0],
+                  }),
+                },
+              ],
+              opacity: anim,
+            },
+          ]}
+        >
+          <View style={styles.cardContent}>
+            <View style={styles.textBlock}>
 
-      <Animated.View
-        key={index}
-        style={[
-          styles.card,
-          {
-            transform: [
-              {
-                scale: anim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0.97, 1],
-                }),
-              },
-              {
-                translateY: anim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [15, 0],
-                }),
-              },
-            ],
-            opacity: anim,
-          },
-        ]}
-      >
-        <View style={styles.cardContent}>
-          <View style={styles.textBlock}>
+
+              <Text style={[styles.title, { color: WidgetColorText }]}>
+                {subject}
+              </Text>
 
 
-            <Text style={[styles.title, { color: WidgetColorText }]}>
-              {subject}
+              <Text style={styles.gradeType}>{gradeType}</Text>
+            </View>
+            <Text
+              style={[
+                styles.value,
+                {
+                  color: getGradeColor(
+                    grade,
+                    useColorScheme() ? "dark" : "light"
+                  ),
+                },
+              ]}
+            >
+              {grade}
             </Text>
-
-
-            <Text style={styles.gradeType}>{gradeType}</Text>
           </View>
-          <Text
-            style={[
-              styles.value,
-              {
-                color: getGradeColor(
-                  grade,
-                  useColorScheme() ? "dark" : "light"
-                ),
-              },
-            ]}
-          >
-            {grade}
-          </Text>
-        </View>
-      </Animated.View >
+        </Animated.View >
 
-
+      </Pressable>
     );
   };
 

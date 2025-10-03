@@ -51,6 +51,7 @@ export default function HomeWork() {
     const [Load, SetLoad] = useState<boolean>(true);
     const [attachments, setAttachments] = useState<FileLink[]>([]);
 
+    const [ModalVisivle, SetModalVisivle] = useState<boolean>(false);
     const [Select, SetSelect] = useState<HomeworkItem | null>(null);
     const { width } = useWindowDimensions();
     const { setDate } = useDateStore();
@@ -84,12 +85,10 @@ export default function HomeWork() {
         const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
         const dd = String(dateObj.getDate()).padStart(2, '0');
         const date = `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
-        console.log(date)
+
 
 
         const HomeWork = await fetchData("homework", tokens, date)
-        // Failai
-        // console.log(HomeWork)
         SetHomeWork(HomeWork.value);
         SetLoad(false);
         console.timeEnd("HomeWork")
@@ -140,7 +139,7 @@ export default function HomeWork() {
         <>
             <View style={[styles.container, gstyles.back]}>
 
-                <FullScreenModal onClose={() => SetSelect(null)} visible={!!Select}>
+                <FullScreenModal onClose={() => { SetModalVisivle(false); SetSelect(null); }} visible={ModalVisivle}>
                     <Text style={[styles.label, { color: WidgetColorText, fontSize: 30 }]}>
                         {Select?.Dalykas ?? ""}
                     </Text>
@@ -209,6 +208,7 @@ export default function HomeWork() {
                                 index={index}
                                 cardAnim={cardAnim}
                                 SetSitemect={SetSelect}
+                                SetModal={SetModalVisivle}
                             />
                         )}
 
