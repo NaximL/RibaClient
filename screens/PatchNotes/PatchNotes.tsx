@@ -13,26 +13,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { Gstyle } from "@styles/gstyles";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../router/router";
+import { patchNotes } from "@config/config";
 
 type PatchNoteItem = {
     text: string;
 };
 
-type PatchNoteSection = {
+export type PatchNoteSection = {
     version: string;
     data: PatchNoteItem[];
 };
 
 
-const patchNotes: PatchNoteSection[] = [
-    {
-        version: "1.8.1",
-        data: [
-            { text: "Фікс бага у щоденнику з відсутністю оцінок" },
-            { text: "Додавання патчноуту" },
-        ],
-    },
-];
 
 const PatchNotesScreen = () => {
     const anim = useRef(new Animated.Value(0)).current;
