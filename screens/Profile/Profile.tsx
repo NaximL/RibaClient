@@ -208,7 +208,7 @@ export default function Profile() {
         >
           <Image
             source={require("../../assets/image/homyak.jpeg")}
-            style={{ width: 300, height: 300,borderRadius:15 }}
+            style={{ width: 300, height: 300, borderRadius: 15 }}
           />
         </FullScreenModal>
 
@@ -236,14 +236,13 @@ export default function Profile() {
           <Text style={styles.OnlineText}>Оновити розклад</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 10 }]} onPress={logout}>
+        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 10 }]} onPress={()=>{navigation.navigate("PatchNotes")}}>
+          <Text style={styles.VersionText}>Опис оновленн: <Text style={{ color: WidgetColorText }}>{VERSION}</Text></Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 40 }]} onPress={logout}>
           <Text style={styles.logoutText}>Вийти</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={Pazinich}>
-          <Text style={styles.versionText}>{VERSION}</Text>
-        </TouchableOpacity>
-
       </Animated.View>
     </ScrollView>
   )
@@ -358,14 +357,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     elevation: 2,
+    gap: 20
   },
-  versionText: {
-    color: '#888',
-    fontSize: 16,
-    textAlign: 'center',
 
-    marginTop: 20,
-  },
+  VersionText: { color: '#007aff', fontSize: 16, fontWeight: '600' },
   logoutText: { color: '#d21919', fontSize: 16, fontWeight: '600' },
   OnlineText: { color: '#007aff', fontSize: 16, fontWeight: '600' },
 

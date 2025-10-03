@@ -11,6 +11,7 @@ import Diary from '@screens/Diary/Diary';
 import AppTabs from './AppTabs';
 
 import { getData } from '@components/LocalStorage';
+import PatchNotesScreen from '@screens/PatchNotes/PatchNotes';
 
 // Types
 export type AppTabParamList = {
@@ -19,6 +20,7 @@ export type AppTabParamList = {
   Profile: undefined;
   HomeWork: undefined;
   Schedule: undefined;
+  PatchNotes: undefined;
 };
 
 export type RootStackParamList = {
@@ -34,6 +36,7 @@ export type RootStackParamList = {
   };
   Diary: undefined;
   Stop: undefined;
+  PatchNotes: undefined;
   CreateMessage: undefined;
 };
 
@@ -92,7 +95,7 @@ export default function Router() {
     initializeApp();
   }, []);
 
-  
+
   if (isLoading || !initialScreen) {
     return <LoadingScreen />;
   }
@@ -103,7 +106,7 @@ export default function Router() {
         screenOptions={screenOptions}
         initialRouteName={initialScreen}
       >
-        
+
         <Stack.Group>
           <Stack.Screen
             name="Login"
@@ -115,19 +118,19 @@ export default function Router() {
           />
         </Stack.Group>
 
-        
+
         <Stack.Group>
           <Stack.Screen
             name="App"
             component={AppTabs}
             options={{
               ...screenOptions,
-              gestureEnabled: false, 
+              gestureEnabled: false,
             }}
           />
         </Stack.Group>
 
-      
+
         <Stack.Group screenOptions={modalScreenOptions}>
           <Stack.Screen
             name="FullMessage"
@@ -146,9 +149,17 @@ export default function Router() {
               title: 'Щоденник',
             }}
           />
+          <Stack.Screen
+            name="PatchNotes"
+            component={PatchNotesScreen}
+            options={{
+              ...modalScreenOptions,
+              title: 'ПатчНоут',
+            }}
+          />
         </Stack.Group>
 
-        
+
         <Stack.Group>
           <Stack.Screen
             name="Stop"

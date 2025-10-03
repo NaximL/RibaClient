@@ -30,7 +30,7 @@ const systemicGradeTypeMap: Record<string, string> = {
   Oral: "Усна відповідь",
   Test: "Тест",
 
-  Essay:"Твір",
+  Essay: "Твір",
   SubjectGrade: "Предметна оцінка",
   Homework: "Домашнє завдання",
   TheoreticalWork: "Теоритична робота",
@@ -51,7 +51,7 @@ const systemicGradeTypeMap: Record<string, string> = {
   Thematicassessment: "Тематичне оцінювання",
   Diagnosticwork: "Діагностична робота",
   Behavior: "Поведінка",
-  
+
   Other: "Інше",
   undefined: "Немає",
   null: "Немає",
@@ -232,58 +232,55 @@ const Diary = () => {
     };
 
     return (
-      <Pressable onPress={()=>{console.log(item)}}>
-        <Animated.View
-          key={index}
-          style={[
-            styles.card,
-            {
-              transform: [
-                {
-                  scale: anim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.97, 1],
-                  }),
-                },
-                {
-                  translateY: anim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [15, 0],
-                  }),
-                },
-              ],
-              opacity: anim,
-            },
-          ]}
-        >
-          <View style={styles.cardContent}>
-            <View style={styles.textBlock}>
+      <Animated.View
+        key={index}
+        style={[
+          styles.card,
+          {
+            transform: [
+              {
+                scale: anim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.97, 1],
+                }),
+              },
+              {
+                translateY: anim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [15, 0],
+                }),
+              },
+            ],
+            opacity: anim,
+          },
+        ]}
+      >
+        <View style={styles.cardContent}>
+          <View style={styles.textBlock}>
 
 
-              <Text style={[styles.title, { color: WidgetColorText }]}>
-                {subject}
-              </Text>
-
-
-              <Text style={styles.gradeType}>{gradeType}</Text>
-            </View>
-            <Text
-              style={[
-                styles.value,
-                {
-                  color: getGradeColor(
-                    grade,
-                    useColorScheme() ? "dark" : "light"
-                  ),
-                },
-              ]}
-            >
-              {grade}
+            <Text style={[styles.title, { color: WidgetColorText }]}>
+              {subject}
             </Text>
-          </View>
-        </Animated.View >
 
-      </Pressable>
+
+            <Text style={styles.gradeType}>{gradeType}</Text>
+          </View>
+          <Text
+            style={[
+              styles.value,
+              {
+                color: getGradeColor(
+                  grade,
+                  useColorScheme() ? "dark" : "light"
+                ),
+              },
+            ]}
+          >
+            {grade}
+          </Text>
+        </View>
+      </Animated.View>
     );
   };
 
@@ -330,18 +327,24 @@ const Diary = () => {
 
 
       {
-        Load && Diaty.length === 0 ? (
+        Load ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#007aff" />
           </View>
-        ) : <SectionList
-          sections={sections}
-          keyExtractor={(item, index) => item.lessonCreatedOn + index}
-          renderItem={renderItem}
-          renderSectionHeader={renderSectionHeader}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
+        ) :
+          Diaty.length === 0 ?
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{fontSize:25,fontWeight:600}}>Поки що немає оцінок 😔</Text>
+            </View>
+            :
+            <SectionList
+              sections={sections}
+              keyExtractor={(item, index) => item.lessonCreatedOn + index}
+              renderItem={renderItem}
+              renderSectionHeader={renderSectionHeader}
+              contentContainerStyle={styles.listContent}
+              showsVerticalScrollIndicator={false}
+            />
       }
 
     </View>
