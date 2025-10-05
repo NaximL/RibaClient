@@ -4,7 +4,7 @@ export const ISPROD: boolean = true;
 
 export const UPDATE_SCHEDULE: number = 0;
 
-export const VERSION: string = `v1.8.2 ${ISPROD ? '' : 'dev'}`;
+export const VERSION: string = `v1.8.3 ${ISPROD ? '' : 'dev'}`;
 
 //https://fatsharkserv.online
 //http://192.168.31.162
@@ -15,6 +15,12 @@ export const SERVER_URL: string =
         'http://localhost';
 
 export const patchNotes: PatchNoteSection[] = [
+    {
+        version: "1.8.3",
+        data: [
+            { text: "Виправлено помилку під час отримання домашнього завдання" },
+        ],
+    },
     {
         version: "1.8.2",
         data: [

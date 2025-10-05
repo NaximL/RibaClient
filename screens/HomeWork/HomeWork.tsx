@@ -83,7 +83,7 @@ export default function HomeWork() {
         setDate(dateObj);
         const yyyy = dateObj.getFullYear();
         const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const dd = String(dateObj.getDate()).padStart(2, '0');
+        const dd = String(dateObj.getDate()-1).padStart(2, '0');
         const date = `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
 
 
