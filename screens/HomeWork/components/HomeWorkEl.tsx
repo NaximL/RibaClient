@@ -38,6 +38,13 @@ const HomeWorkEl = ({ item, cardAnim, index, SetSitemect, SetModal }: any) => {
                             selectable: false,
                         }}
                         tagsStyles={{
+                            div: {
+                                borderRadius: 4,
+                                paddingHorizontal: 4,
+                                paddingVertical: 2,
+                                backgroundColor: 'rgb(255,255,255)',
+                                color: "black",
+                            },
                             span: {
                                 borderRadius: 4,
                                 paddingHorizontal: 4,

@@ -37,7 +37,6 @@ export default function HomeWork() {
         try {
             const today = new Date();
 
-            // 🔹 Формуємо 3 дати: сьогодні, завтра, післязавтра
             const days = [0, 1, 2].map((offset) => {
                 const date = new Date(today);
                 date.setDate(today.getDate() + offset);
@@ -87,11 +86,18 @@ export default function HomeWork() {
             SetHomeWork(homeworkByDay);
 
             const dayTitles = ["Сьогодні", "Завтра", "Післязавтра"];
-            const grouped = (Object.keys(homeworkByDay) as unknown as (keyof HomeworkByDay)[]).map((key) => ({
-                title: dayTitles[key],
-                data: homeworkByDay[key],
-            }));
 
+            const grouped = (Object.keys(homeworkByDay) as unknown as (keyof HomeworkByDay)[]).map((key) => {
+                const firstHomework = homeworkByDay[key][0];
+                const formattedDate = firstHomework?.AtliktiIki
+                    ? formatDate(firstHomework.AtliktiIki)
+                    : "";
+
+                return {
+                    title: `${dayTitles[key]}${formattedDate ? ` (${formattedDate})` : ""}`,
+                    data: homeworkByDay[key],
+                };
+            });
             setSections(grouped);
             SetLoad(false);
             console.timeEnd("HomeWork");
@@ -128,57 +134,7 @@ export default function HomeWork() {
         });
     };
 
-    const renderItem = ({ item }: { item: HomeworkItem }) => (
-        <Animated.View
-            style={[
-                styles.card,
-                {
-                    opacity: cardAnim,
-                    transform: [
-                        {
-                            scale: cardAnim.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [0.97, 1],
-                            }),
-                        },
-                        {
-                            translateY: cardAnim.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [15, 0],
-                            }),
-                        },
-                    ],
-                },
-            ]}
-        >
-            <TouchableOpacity
-                onPress={() => {
-                    SetSelect(item);
-                    SetModalVisible(true);
-                }}
-            >
-                <Text style={[styles.subject, { color: WidgetColorText }]}>
-                    {item.Dalykas ?? "Без назви"}
-                </Text>
-                {item.UzduotiesAprasymas ? (
-                    containsHTML(item.UzduotiesAprasymas) ? (
-                        <RenderHTML
-                            contentWidth={400}
-                            source={{ html: item.UzduotiesAprasymas }}
-                            baseStyle={{ ...styles.desc, color: WidgetColorText }}
-                            ignoredDomTags={["o:p"]}
-                        />
-                    ) : (
-                        <Text style={[styles.desc, { color: WidgetColorText }]}>
-                            {item.UzduotiesAprasymas}
-                        </Text>
-                    )
-                ) : (
-                    <Text style={[styles.desc, { color: WidgetColorText }]}>...</Text>
-                )}
-            </TouchableOpacity>
-        </Animated.View>
-    );
+
 
     const renderSectionHeader = ({ section: { title } }: any) => (
         <Animated.View
