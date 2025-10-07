@@ -83,52 +83,67 @@ const Diary = () => {
   const [Load, SetLoad] = useState(true);
 
   const seterrors = UseErrorStore((state) => state.setError);
+  const applyTokenData = async (token: string, studentId: string) => {
+    try {
+      const date = new Date();
+      const mm = date.getMonth() + 1;
 
-  const applytokendata = async (token: string, studentId: string) => {
-    const date = new Date();
-    const mm: number = date.getMonth() + 1;
-    await GetDiary(token, studentId, mm, 100).then(async (diary) => {
+      const diary = await GetDiary(token, studentId, mm, 100);
       await storeData("diary", JSON.stringify(diary));
+
       SetDiary(diary);
       SetLoad(false);
-    })
+    } catch (error) {
+      console.error("Помилка при отриманні щоденника:", error);
+      SetLoad(false);
+    }
   };
 
   const handleTokenLogic = async (login: string, password: string) => {
-    const tokensRaw = await getData("token_app");
+    try {
+      let tokenData = await getData("token_app");
+      let tokenObj;
 
-    if (!tokensRaw) {
-      const data = await GetToken(login, password);
-      await storeData("token_app", JSON.stringify(data));
-    } else {
-      const token = JSON.parse(tokensRaw);
-      const valid = await ValidToken(token);
+      if (!tokenData) {
+        const data = await GetToken(login, password);
+        if (!data) throw new Error("Не вдалося отримати токен");
+
+        tokenObj = data;
+        await storeData("token_app", JSON.stringify(tokenObj));
+      } else {
+        tokenObj = JSON.parse(tokenData);
+      }
+      let valid = await ValidToken(tokenObj);
 
       if (!valid) {
-        const newTokens = await RefreshToken(token);
+        const newTokens = await RefreshToken(tokenObj);
+
         if (newTokens) {
-          const validsd = await ValidToken(newTokens);
-          applytokendata(newTokens, validsd.enrollments[0].studentId);
+          tokenObj = newTokens;
+          valid = await ValidToken(newTokens);
           await storeData("token_app", JSON.stringify(newTokens));
         } else {
-          const data = await GetToken(login, password);
-          if (!data) {
-            seterrors({
-              name: "token error",
-              status: true,
-              label: "Не вдалось отримати токени",
-            });
-            navigation.navigate("Stop");
-            return;
-          }
-          await storeData("token_app", JSON.stringify(data));
-          const valids = await ValidToken(data);
+          const newData = await GetToken(login, password);
+          if (!newData) throw new Error("Не вдалося оновити токен");
 
-          applytokendata(data, valids.enrollments[0].studentId);
+          tokenObj = newData;
+          valid = await ValidToken(newData);
+          await storeData("token_app", JSON.stringify(newData));
         }
-      } else {
-        applytokendata(token, valid.enrollments[0].studentId);
       }
+      if (valid && valid.enrollments?.[0]?.studentId) {
+        await applyTokenData(tokenObj, valid.enrollments[0].studentId);
+      } else {
+        throw new Error("Не знайдено studentId у токені");
+      }
+    } catch (error: any) {
+      console.error("Помилка handleTokenLogic:", error);
+      seterrors({
+        name: "token error",
+        status: true,
+        label: error.message || "Помилка при обробці токену",
+      });
+      navigation.navigate("Stop");
     }
   };
 
@@ -334,7 +349,7 @@ const Diary = () => {
         ) :
           Diaty.length === 0 ?
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{fontSize:25,fontWeight:600}}>Поки що немає оцінок 😔</Text>
+              <Text style={{ fontSize: 25, fontWeight: 600 }}>Поки що немає оцінок 😔</Text>
             </View>
             :
             <SectionList

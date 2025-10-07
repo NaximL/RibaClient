@@ -1,114 +1,120 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
-    FlatList,
-    StyleSheet,
-    Text,
-    useWindowDimensions,
     View,
+    Text,
+    SectionList,
+    StyleSheet,
     Animated,
     Platform,
     ActivityIndicator,
-    Linking,
     TouchableOpacity,
 } from "react-native";
-import RenderHTML from "react-native-render-html";
-import FullScreenModal from "../../components/Modal";
-import useHomeWorkStore from "../../store/HomeWorkStore";
 import { useFocusEffect } from "@react-navigation/native";
 import { Gstyle } from "@styles/gstyles";
-import HomeWorkEl from "./components/HomeWorkEl";
-import Head from "./components/Head";
 import { getData } from "@components/LocalStorage";
 import { fetchData } from "@api/MH/GetAlldata";
-import useDateStore from "@store/DateStore";
+import useHomeWorkStore, { HomeworkByDay, HomeworkItem } from "@store/HomeWorkStore";
+import RenderHTML from "react-native-render-html";
+import FullScreenModal from "../../components/Modal";
+import HomeWorkEl from "./components/HomeWorkEl";
 
-interface HomeworkItem {
-    Id: string;
-    Dalykas?: string;
-    MokytojoVardasPavarde?: string;
-    AtliktiIki?: string;
-    PamokosData?: string;
-    Failai: Array<any> | null;
-    UzduotiesAprasymas?: string;
-    [key: string]: string | Array<any> | null | undefined;
-}
-type FileLink = { Id: string; Pavadinimas: string };
 export default function HomeWork() {
     const { gstyles, WidgetColorText } = Gstyle();
+    const [Load, SetLoad] = useState(true);
+    const [ModalVisible, SetModalVisible] = useState(false);
+    const [Select, SetSelect] = useState<HomeworkItem | null>(null);
+    const [sections, setSections] = useState<{ title: string; data: HomeworkItem[] }[]>([]);
 
-    const rem = (arr: HomeworkItem[], key: string) => {
-        const seen = new Set();
-        return arr.filter((item) => {
-            const value = item[key];
-            if (seen.has(value)) return false;
-            seen.add(value);
-            return true;
-        });
+    const { SetHomeWork } = useHomeWorkStore();
+    const cardAnim = useRef(new Animated.Value(0)).current;
+
+    const getHomeWork = async () => {
+        console.time("HomeWork");
+
+        const tokens = await getData("tokens");
+        if (!tokens) return;
+
+        try {
+            const today = new Date();
+
+            // 🔹 Формуємо 3 дати: сьогодні, завтра, післязавтра
+            const days = [0, 1, 2].map((offset) => {
+                const date = new Date(today);
+                date.setDate(today.getDate() + offset);
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, "0");
+                const dd = String(date.getDate()).padStart(2, "0");
+                return `${yyyy}-${mm}-${dd}T00:00:00+03:00`;
+            });
+            type HomeworkByDay = {
+                0: HomeworkItem[];
+                1: HomeworkItem[];
+                2: HomeworkItem[];
+            };
+
+
+            const results: HomeworkByDay[] = await Promise.all(
+                days.map(async (day, index) => {
+                    try {
+                        const res = await fetchData("homework", tokens, day);
+
+                        return {
+                            0: index === 0 ? res?.value || [] : [],
+                            1: index === 1 ? res?.value || [] : [],
+                            2: index === 2 ? res?.value || [] : [],
+                        };
+                    } catch {
+                        return {
+                            0: [],
+                            1: [],
+                            2: [],
+                        };
+                    }
+                })
+            );
+
+
+            const homeworkByDay: HomeworkByDay = results.reduce(
+                (acc, curr) => ({
+                    0: [...acc[0], ...curr[0]],
+                    1: [...acc[1], ...curr[1]],
+                    2: [...acc[2], ...curr[2]],
+                }),
+                { 0: [], 1: [], 2: [] }
+            );
+
+
+            SetHomeWork(homeworkByDay);
+
+            const dayTitles = ["Сьогодні", "Завтра", "Післязавтра"];
+            const grouped = (Object.keys(homeworkByDay) as unknown as (keyof HomeworkByDay)[]).map((key) => ({
+                title: dayTitles[key],
+                data: homeworkByDay[key],
+            }));
+
+            setSections(grouped);
+            SetLoad(false);
+            console.timeEnd("HomeWork");
+        } catch (err) {
+            console.error("Помилка getHomeWork:", err);
+            SetLoad(false);
+        }
     };
 
-    const [List, SetList] = useState<HomeworkItem[]>([]);
-    const [Load, SetLoad] = useState<boolean>(true);
-    const [attachments, setAttachments] = useState<FileLink[]>([]);
-
-    const [ModalVisivle, SetModalVisivle] = useState<boolean>(false);
-    const [Select, SetSelect] = useState<HomeworkItem | null>(null);
-    const { width } = useWindowDimensions();
-    const { setDate } = useDateStore();
-
-    const { HomeWork, SetHomeWork } = useHomeWorkStore();
-
-    const [cardAnim] = useState(new Animated.Value(0));
+    useEffect(() => {
+        getHomeWork();
+    }, []);
 
     useFocusEffect(
         useCallback(() => {
             cardAnim.setValue(0);
             Animated.timing(cardAnim, {
                 toValue: 1,
-                duration: 900,
+                duration: 800,
                 useNativeDriver: Platform.OS !== "web",
             }).start();
-        }, [cardAnim])
+        }, [])
     );
-
-    const getHomeWork = async () => {
-        console.time("HomeWork")
-        const tokens = await getData("tokens")
-        if (!tokens) return;
-
-        const dateObj = new Date();
-        dateObj.setDate(dateObj.getDate() + 1);
-
-
-        setDate(dateObj);
-        const yyyy = dateObj.getFullYear();
-        const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const dd = String(dateObj.getDate()-1).padStart(2, '0');
-        const date = `${yyyy}-${mm}-${dd}T21:00:00+00:00`;
-
-
-
-        const HomeWork = await fetchData("homework", tokens, date)
-        SetHomeWork(HomeWork.value);
-        SetLoad(false);
-        console.timeEnd("HomeWork")
-    }
-
-    useEffect(() => {
-        SetList(rem(HomeWork, "UzduotiesAprasymas"));
-    }, [HomeWork]);
-
-
-
-    useEffect(() => {
-        getHomeWork();
-        Animated.timing(cardAnim, {
-            toValue: 1,
-            duration: 900,
-            useNativeDriver: Platform.OS !== "web",
-        }).start();
-        SetList(rem(HomeWork, "UzduotiesAprasymas"));
-    }, []);
 
     const containsHTML = (str: string) =>
         typeof str === "string" && /<\/?[a-z][\s\S]*>/i.test(str);
@@ -122,165 +128,196 @@ export default function HomeWork() {
         });
     };
 
-    const tagsStyles = useMemo(
-        () => ({
-            span: {
-                borderRadius: 4,
-                paddingHorizontal: 4,
-                paddingVertical: 2,
-                backgroundColor: "white",
-                color: "black",
-            },
-        }),
-        []
+    const renderItem = ({ item }: { item: HomeworkItem }) => (
+        <Animated.View
+            style={[
+                styles.card,
+                {
+                    opacity: cardAnim,
+                    transform: [
+                        {
+                            scale: cardAnim.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [0.97, 1],
+                            }),
+                        },
+                        {
+                            translateY: cardAnim.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [15, 0],
+                            }),
+                        },
+                    ],
+                },
+            ]}
+        >
+            <TouchableOpacity
+                onPress={() => {
+                    SetSelect(item);
+                    SetModalVisible(true);
+                }}
+            >
+                <Text style={[styles.subject, { color: WidgetColorText }]}>
+                    {item.Dalykas ?? "Без назви"}
+                </Text>
+                {item.UzduotiesAprasymas ? (
+                    containsHTML(item.UzduotiesAprasymas) ? (
+                        <RenderHTML
+                            contentWidth={400}
+                            source={{ html: item.UzduotiesAprasymas }}
+                            baseStyle={{ ...styles.desc, color: WidgetColorText }}
+                            ignoredDomTags={["o:p"]}
+                        />
+                    ) : (
+                        <Text style={[styles.desc, { color: WidgetColorText }]}>
+                            {item.UzduotiesAprasymas}
+                        </Text>
+                    )
+                ) : (
+                    <Text style={[styles.desc, { color: WidgetColorText }]}>...</Text>
+                )}
+            </TouchableOpacity>
+        </Animated.View>
+    );
+
+    const renderSectionHeader = ({ section: { title } }: any) => (
+        <Animated.View
+            style={[
+                styles.sectionHeader,
+                {
+                    opacity: cardAnim,
+                    transform: [
+                        {
+                            translateY: cardAnim.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [15, 0],
+                            }),
+                        },
+                    ],
+                },
+            ]}
+        >
+            <Text style={styles.sectionTitle}>{title}</Text>
+            <View style={styles.line} />
+        </Animated.View>
     );
 
     return (
-        <>
-            <View style={[styles.container, gstyles.back]}>
-
-                <FullScreenModal onClose={() => { SetModalVisivle(false); SetSelect(null); }} visible={ModalVisivle}>
-                    <Text style={[styles.label, { color: WidgetColorText, fontSize: 30 }]}>
-                        {Select?.Dalykas ?? ""}
-                    </Text>
+        <View style={[styles.container, gstyles.back]}>
+            <FullScreenModal visible={ModalVisible} onClose={() => SetModalVisible(false)}>
+                <Text style={[styles.label, { color: WidgetColorText, fontSize: 28 }]}>
+                    {Select?.Dalykas ?? ""}
+                </Text>
+                {Select?.PamokosData && (
                     <Text style={[styles.label, { color: WidgetColorText }]}>
-                        {Select?.PamokosData
-                            ? `Задано: ${formatDate(Select.PamokosData)}`
-                            : ""}
+                        Задано: {formatDate(Select.PamokosData)}
                     </Text>
+                )}
+                {Select?.AtliktiIki && (
                     <Text style={[styles.label, { color: WidgetColorText }]}>
-                        {Select?.AtliktiIki
-                            ? `Дата здачі: ${formatDate(Select.AtliktiIki)}`
-                            : ""}
+                        До: {formatDate(Select.AtliktiIki)}
                     </Text>
-                    <View style={{ marginTop: 30 }}>
-                        {Select?.UzduotiesAprasymas ? (
-                            containsHTML(Select.UzduotiesAprasymas) ? (
-                                <RenderHTML
-                                    contentWidth={width}
-                                    source={{ html: Select.UzduotiesAprasymas }}
-                                    baseStyle={{ ...styles.value, color: WidgetColorText }}
-                                    ignoredDomTags={["o:p"]}
-                                    defaultTextProps={{
-                                        selectable: true,
-                                    }}
-                                    tagsStyles={tagsStyles}
-                                />
-                            ) : (
-                                <Text style={{ color: WidgetColorText, fontSize: 15 }}>
-                                    {Select.UzduotiesAprasymas}
-                                </Text>
-                            )
-                        ) : (
-                            <Text style={{ color: WidgetColorText }}>...</Text>
-                        )}
-                        {Select?.Failai && Select.Failai.length > 0 && (
-                            <View style={styles.section}>
-                                <Text style={[styles.label, { color: WidgetColorText }]}>Додані файли:</Text>
-                                {Select.Failai.map((file, i) => (
-                                    <TouchableOpacity
-                                        key={i}
-                                        onPress={() => Linking.openURL(`https://app.moiashkola.ua/Pamoka/Siustis/${file.Id}`)}
-                                        activeOpacity={0.7}
-                                    >
-                                        <Text style={styles.fileName} numberOfLines={1}>
-                                            {file.Pavadinimas}
-                                        </Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>)}
-
-                    </View>
-                </FullScreenModal>
-                <Head />
-
-
-                {Load ?
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <ActivityIndicator size="large" color="#007aff" />
-                    </View> :
-                    <FlatList
-                        data={List}
-                        keyExtractor={(item) => item.Id.toString()}
-                        renderItem={({ item, index }) => (
-                            <HomeWorkEl
-                                item={item}
-                                index={index}
-                                cardAnim={cardAnim}
-                                SetSitemect={SetSelect}
-                                SetModal={SetModalVisivle}
+                )}
+                <View style={{ marginTop: 30 }}>
+                    {Select?.UzduotiesAprasymas ? (
+                        containsHTML(Select.UzduotiesAprasymas) ? (
+                            <RenderHTML
+                                contentWidth={400}
+                                source={{ html: Select.UzduotiesAprasymas }}
+                                baseStyle={{ color: WidgetColorText }}
                             />
-                        )}
+                        ) : (
+                            <Text style={{ color: WidgetColorText }}>{Select.UzduotiesAprasymas}</Text>
+                        )
+                    ) : (
+                        <Text style={{ color: WidgetColorText }}>...</Text>
+                    )}
+                </View>
+            </FullScreenModal>
 
-                        ListEmptyComponent={
-                            <Animated.View
-                                style={{
-                                    opacity: cardAnim,
-                                    transform: [
-                                        {
-                                            scale: cardAnim.interpolate({
-                                                inputRange: [0, 1],
-                                                outputRange: [0.95, 1],
-                                            }),
-                                        },
-                                        {
-                                            translateY: cardAnim.interpolate({
-                                                inputRange: [0, 1],
-                                                outputRange: [30, 0],
-                                            }),
-                                        },
-                                    ],
-                                }}
-                            >
-                                <Text style={styles.emptyText}>
-                                    Наразі немає домашнього завдання
-                                </Text>
-                            </Animated.View>
-                        }
-                        contentContainerStyle={styles.contentContainer}
-                        showsVerticalScrollIndicator={false}
-                    />
-                }
-
-            </View>
-            <StatusBar style="dark" />
-        </>
+            {Load ? (
+                <View style={styles.loader}>
+                    <ActivityIndicator size="large" color="#007aff" />
+                </View>
+            ) : (
+                <SectionList
+                    sections={sections}
+                    keyExtractor={(item, index) => `${item.Id}_${index}`}
+                    renderItem={({ item, index }) => (
+                        <HomeWorkEl
+                            item={item}
+                            index={index}
+                            cardAnim={cardAnim}
+                            SetSitemect={SetSelect}
+                            SetModal={SetModalVisible}
+                        />
+                    )}
+                    renderSectionHeader={renderSectionHeader}
+                    contentContainerStyle={styles.listContent}
+                    showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={
+                        <Text style={styles.emptyText}>Немає домашнього завдання 😴</Text>
+                    }
+                />
+            )}
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "rgb(247, 247, 250)",
-        paddingVertical: Platform.OS === "ios" || Platform.OS === "android" ? 50 : 0,
+        paddingTop: Platform.OS === "android" ? 50 : 30,
     },
-    contentContainer: {
-        padding: 18,
-        paddingBottom: 65,
-        paddingTop: 55,
+    listContent: {
+        paddingHorizontal: 18,
+        paddingBottom: 100,
+    },
+    sectionHeader: {
+        paddingVertical: 8,
+    },
+    sectionTitle: {
+        fontSize: 15,
+        fontWeight: "600",
+        color: "#777",
+        marginBottom: 4,
+    },
+    line: {
+        height: 1,
+        backgroundColor: "#ccc",
+        marginBottom: 8,
     },
     card: {
-        borderRadius: 18,
-        padding: 20,
-        marginBottom: 14,
-        boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-        elevation: 2,
+        borderRadius: 20,
+        padding: 16,
+        backgroundColor: "rgba(255,255,255,0.1)",
+        marginBottom: 12,
+        shadowColor: "#000",
+        shadowOpacity: 0.06,
+        shadowRadius: 10,
+    },
+    subject: {
+        fontSize: 18,
+        fontWeight: "600",
+    },
+    desc: {
+        fontSize: 15,
+        marginTop: 4,
+    },
+    emptyText: {
+        textAlign: "center",
+        color: "#999",
+        fontSize: 16,
+        marginTop: 40,
+    },
+    loader: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
     label: {
         fontWeight: "600",
         fontSize: 17,
         marginBottom: 8,
     },
-    value: {
-        fontSize: 15,
-        color: "#444",
-    },
-    emptyText: {
-        textAlign: "center",
-        marginTop: 40,
-        color: "#aaa",
-        fontSize: 16,
-    },
-    fileName: { color: "#007aff", textDecorationLine: "underline", fontSize: 15, marginVertical: 4 },
-    section: { marginTop: 24 },
 });

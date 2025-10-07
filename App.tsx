@@ -9,7 +9,7 @@ export default function App() {
   return (
     <>
       {Platform.OS === "web" &&
-          <Analytics/>
+        <Analytics />
       }
 
       {ISPROD && <TelegramInit />}
