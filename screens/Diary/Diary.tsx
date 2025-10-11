@@ -28,8 +28,9 @@ import UseErrorStore from "@store/Error";
 const systemicGradeTypeMap: Record<string, string> = {
   Notebook: "Зошит",
   Oral: "Усна відповідь",
-  Test: "Тест",
 
+  Test: "Тест",
+  TestWork: "Тест",
   Essay: "Твір",
   SubjectGrade: "Предметна оцінка",
   Homework: "Домашнє завдання",
@@ -247,55 +248,57 @@ const Diary = () => {
     };
 
     return (
-      <Animated.View
-        key={index}
-        style={[
-          styles.card,
-          {
-            transform: [
-              {
-                scale: anim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0.97, 1],
-                }),
-              },
-              {
-                translateY: anim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [15, 0],
-                }),
-              },
-            ],
-            opacity: anim,
-          },
-        ]}
-      >
-        <View style={styles.cardContent}>
-          <View style={styles.textBlock}>
+      <Pressable onPress={() => console.log(item)}>
+        <Animated.View
+          key={index}
+          style={[
+            styles.card,
+            {
+              transform: [
+                {
+                  scale: anim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0.97, 1],
+                  }),
+                },
+                {
+                  translateY: anim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [15, 0],
+                  }),
+                },
+              ],
+              opacity: anim,
+            },
+          ]}
+        >
+          <View style={styles.cardContent}>
+            <View style={styles.textBlock}>
 
 
-            <Text style={[styles.title, { color: WidgetColorText }]}>
-              {subject}
+              <Text style={[styles.title, { color: WidgetColorText }]}>
+                {subject}
+              </Text>
+
+
+              <Text style={styles.gradeType}>{gradeType}</Text>
+            </View>
+            <Text
+              style={[
+                styles.value,
+                {
+                  color: getGradeColor(
+                    grade,
+                    useColorScheme() ? "dark" : "light"
+                  ),
+                },
+              ]}
+            >
+              {grade}
             </Text>
-
-
-            <Text style={styles.gradeType}>{gradeType}</Text>
           </View>
-          <Text
-            style={[
-              styles.value,
-              {
-                color: getGradeColor(
-                  grade,
-                  useColorScheme() ? "dark" : "light"
-                ),
-              },
-            ]}
-          >
-            {grade}
-          </Text>
-        </View>
-      </Animated.View>
+        </Animated.View>
+      </Pressable>
     );
   };
 

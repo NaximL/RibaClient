@@ -27,7 +27,6 @@ export default function HomeWork() {
 
     const { SetHomeWork } = useHomeWorkStore();
     const cardAnim = useRef(new Animated.Value(0)).current;
-
     const getHomeWork = async () => {
         console.time("HomeWork");
 
@@ -37,41 +36,57 @@ export default function HomeWork() {
         try {
             const today = new Date();
 
-            const days = [0, 1, 2].map((offset) => {
+            
+            const days: { iso: string; label: string }[] = [];
+            let offset = 0;
+
+            while (days.length < 3) {
                 const date = new Date(today);
                 date.setDate(today.getDate() + offset);
-                const yyyy = date.getFullYear();
-                const mm = String(date.getMonth() + 1).padStart(2, "0");
-                const dd = String(date.getDate()).padStart(2, "0");
-                return `${yyyy}-${mm}-${dd}T00:00:00+03:00`;
-            });
+
+                const dayOfWeek = date.getDay();
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                    const yyyy = date.getFullYear();
+                    const mm = String(date.getMonth() + 1).padStart(2, "0");
+                    const dd = String(date.getDate()).padStart(2, "0");
+                    const iso = `${yyyy}-${mm}-${dd}T00:00:00+03:00`;
+
+
+                    const diffDays = Math.floor((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+                    let label = "";
+                    if (diffDays === 0) label = "Сьогодні";
+                    else if (diffDays === 1) label = "Завтра";
+                    else if (diffDays === 2) label = "Післязавтра";
+                    else label = date.toLocaleDateString("uk-UA", {
+                        weekday: "long"
+                    });
+
+                    days.push({ iso, label });
+                }
+                offset++;
+            }
+
             type HomeworkByDay = {
                 0: HomeworkItem[];
                 1: HomeworkItem[];
                 2: HomeworkItem[];
             };
 
-
             const results: HomeworkByDay[] = await Promise.all(
                 days.map(async (day, index) => {
                     try {
-                        const res = await fetchData("homework", tokens, day);
-
+                        const res = await fetchData("homework", tokens, day.iso);
                         return {
                             0: index === 0 ? res?.value || [] : [],
                             1: index === 1 ? res?.value || [] : [],
                             2: index === 2 ? res?.value || [] : [],
                         };
                     } catch {
-                        return {
-                            0: [],
-                            1: [],
-                            2: [],
-                        };
+                        return { 0: [], 1: [], 2: [] };
                     }
                 })
             );
-
 
             const homeworkByDay: HomeworkByDay = results.reduce(
                 (acc, curr) => ({
@@ -82,22 +97,23 @@ export default function HomeWork() {
                 { 0: [], 1: [], 2: [] }
             );
 
-
             SetHomeWork(homeworkByDay);
 
-            const dayTitles = ["Сьогодні", "Завтра", "Післязавтра"];
 
-            const grouped = (Object.keys(homeworkByDay) as unknown as (keyof HomeworkByDay)[]).map((key) => {
-                const firstHomework = homeworkByDay[key][0];
-                const formattedDate = firstHomework?.AtliktiIki
-                    ? formatDate(firstHomework.AtliktiIki)
-                    : "";
+            const grouped = (Object.keys(homeworkByDay) as unknown as (keyof HomeworkByDay)[]).map(
+                (key, index) => {
+                    const firstHomework = homeworkByDay[key][0];
+                    const formattedDate = firstHomework?.AtliktiIki
+                        ? formatDate(firstHomework.AtliktiIki)
+                        : formatDate(days[index].iso);
+                    console.log(days[index].label)
+                    return {
+                        title: `${days[index].label}  (${formattedDate})`,
+                        data: homeworkByDay[key],
+                    };
+                }
+            );
 
-                return {
-                    title: `${dayTitles[key]}${formattedDate ? ` (${formattedDate})` : ""}`,
-                    data: homeworkByDay[key],
-                };
-            });
             setSections(grouped);
             SetLoad(false);
             console.timeEnd("HomeWork");
@@ -106,7 +122,6 @@ export default function HomeWork() {
             SetLoad(false);
         }
     };
-
     useEffect(() => {
         getHomeWork();
     }, []);
