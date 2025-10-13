@@ -8,17 +8,17 @@ import {
 import { Gstyle } from '@styles/gstyles';
 
 const LoadWidget = ({ text = "Оновлення…", independent = false }: { text?: string, independent: boolean }) => {
-  const { gstyles, LoginText, isDark } = Gstyle();
+  const { gstyles, LoginText, isDark, GlobalColor } = Gstyle();
   return (
     <>
       {independent ?
         <BlurView intensity={60} tint={isDark ? "dark" : "light"} style={[gstyles.LoadingBack, styles.LargeLoad]}>
-          < ActivityIndicator size="small" color="#007aff" />
+          < ActivityIndicator size="small" color={GlobalColor} />
           <Text style={[styles.LargeLoadText, { color: LoginText }]} >{text}</Text>
         </BlurView >
         :
         <View style={[gstyles.LoadingBack, styles.LargeLoad]}>
-          <ActivityIndicator size="small" color="#007aff" />
+          <ActivityIndicator size="small" color={GlobalColor} />
           <Text style={[styles.LargeLoadText, { color: LoginText }]} >{text}</Text>
         </View>
       }

@@ -16,7 +16,7 @@ import { Animated } from "react-native";
 import { useRef, useEffect, useState } from "react";
 
 const DayEl = ({ setModalData, setModalVis, day, index, choiceDay, openDays, daysOfWeek, les, }: Schedule) => {
-    const { gstyles, WidgetColorText } = Gstyle();
+    const { gstyles, WidgetColorText, GlobalColor } = Gstyle();
 
     const animHeight = useRef(new Animated.Value(0)).current;
     const animOpacity = useRef(new Animated.Value(0)).current;
@@ -91,7 +91,7 @@ const DayEl = ({ setModalData, setModalVis, day, index, choiceDay, openDays, day
                 <View style={[styles.cardsWrapper, gstyles.WidgetBack]}>
                     {day.map((urok: Lesson, lessonIndex: number) => (
                         <TouchableOpacity key={lessonIndex} onPress={() => { OpenModal(urok) }} >
-                            
+
                             <View
                                 style={[styles.card, gstyles.ScheduleBackMini]}
                             >
@@ -104,7 +104,7 @@ const DayEl = ({ setModalData, setModalVis, day, index, choiceDay, openDays, day
                                                     color:
                                                         les && JSON.parse(les).u === lessonIndex
                                                             ? "#2ecc71"
-                                                            : "#007aff",
+                                                            : GlobalColor,
                                                 },
                                             ]}
                                         >
@@ -119,7 +119,7 @@ const DayEl = ({ setModalData, setModalVis, day, index, choiceDay, openDays, day
                                             {urok.urok}
                                         </Text>
                                     </View>
-                                    <Text style={styles.timeValue}>{urok.time}</Text>
+                                    <Text style={[styles.timeValue,{color:GlobalColor}]}>{urok.time}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
@@ -199,7 +199,6 @@ const styles = StyleSheet.create({
     },
     timeValue: {
         fontSize: 15,
-        color: "#007aff",
         fontWeight: "600",
     }
 })

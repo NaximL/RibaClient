@@ -19,7 +19,7 @@ import FullScreenModal from "../../components/Modal";
 import HomeWorkEl from "./components/HomeWorkEl";
 
 export default function HomeWork() {
-    const { gstyles, WidgetColorText } = Gstyle();
+    const { gstyles, WidgetColorText,GlobalColor } = Gstyle();
     const [Load, SetLoad] = useState(true);
     const [ModalVisible, SetModalVisible] = useState(false);
     const [Select, SetSelect] = useState<HomeworkItem | null>(null);
@@ -106,7 +106,7 @@ export default function HomeWork() {
                     const formattedDate = firstHomework?.AtliktiIki
                         ? formatDate(firstHomework.AtliktiIki)
                         : formatDate(days[index].iso);
-                    console.log(days[index].label)
+    
                     return {
                         title: `${days[index].label}  (${formattedDate})`,
                         data: homeworkByDay[key],
@@ -208,7 +208,7 @@ export default function HomeWork() {
 
             {Load ? (
                 <View style={styles.loader}>
-                    <ActivityIndicator size="large" color="#007aff" />
+                    <ActivityIndicator size="large" color={GlobalColor} />
                 </View>
             ) : (
                 <SectionList

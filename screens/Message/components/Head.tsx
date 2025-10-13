@@ -15,7 +15,7 @@ type Props = {
 }
 
 const Head = ({ setActiveMod, ActiveMod, onPress, SetLoad }: Props) => {
-  const { isDark, MessageBubleActive, MessageBubleText, MessageBubleTextActive, MessageBuble } = Gstyle();
+  const { isDark, GlobalColor, MessageBubleText, MessageBubleTextActive, MessageBuble } = Gstyle();
   const { SetMessage } = useMessageStore();
   const { setMessageSend } = useMessageSendStore();
 
@@ -80,7 +80,7 @@ const Head = ({ setActiveMod, ActiveMod, onPress, SetLoad }: Props) => {
         <Animated.View
           style={[
             styles.activeBg,
-            { backgroundColor: MessageBubleActive, transform: [{ translateX: translateX }], width: width },
+            { backgroundColor: GlobalColor, transform: [{ translateX: translateX }], width: width },
           ]}
         />
 

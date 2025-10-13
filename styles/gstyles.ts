@@ -72,7 +72,7 @@ export const Gstyle = () => {
   const Login = isDark ? '#1d1d26' : '#fff';
 
   const MessageBuble = isDark ? '#2c2c2e' : '#e5e5ea';
-  const MessageBubleActive = isDark ? '#3390ec' : '#007aff';
+  const GlobalColor = isDark ? '#3390ec' : '#007aff';
   const MessageBubleText = isDark ? '#fff' : '#000';
   const MessageBubleTextActive = '#fff';
 
@@ -90,7 +90,7 @@ export const Gstyle = () => {
     Login,
     LoginText,
     MessageBuble,
-    MessageBubleActive,
+    GlobalColor,
     MessageBubleText,
     MessageBubleTextActive
   };

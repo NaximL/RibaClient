@@ -16,7 +16,7 @@ import FullScreenModal from '@components/Modal';
 
 
 export default function Profile() {
-  const { gstyles, ProfilText, WidgetColorText, ProfilTextValue, ProfilCircle } = Gstyle();
+  const { gstyles, ProfilText, WidgetColorText, ProfilTextValue, ProfilCircle, GlobalColor } = Gstyle();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const { Prof, setProfile } = useProfileStore();
@@ -216,6 +216,7 @@ export default function Profile() {
           <View style={[styles.scoreCircle, { backgroundColor: ProfilCircle }]}>
             <Text
               style={[
+                { color: GlobalColor },
                 styles.scoreText,
                 Bal && Bal.toString().length > 4 ? styles.scoreTextSmall : styles.scoreTextLarge,
               ]}
@@ -233,16 +234,21 @@ export default function Profile() {
 
 
         <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 20 }]} onPress={update}>
-          <Text style={styles.OnlineText}>Оновити розклад</Text>
+          <Text style={[styles.OnlineText, { color: GlobalColor }]}>Оновити розклад</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 10 }]} onPress={()=>{navigation.navigate("PatchNotes")}}>
-          <Text style={[styles.VersionText,{color:WidgetColorText}]}>Опис оновлень: <Text>{VERSION}</Text></Text>
-        </TouchableOpacity>
+        {/* <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack]} onPress={() => { navigation.navigate("Teachers") }}>
+          <Text style={[styles.OnlineText, { color: GlobalColor }]}>Мої вчителі</Text>
+        </TouchableOpacity> */}
 
         <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 40 }]} onPress={logout}>
           <Text style={styles.logoutText}>Вийти</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={Pazinich}>
+          <Text style={styles.versionText}>{VERSION}</Text>
+        </TouchableOpacity>
+
       </Animated.View>
     </ScrollView>
   )
@@ -299,7 +305,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 16,
   },
-  scoreText: { color: '#007aff', fontWeight: 'bold' },
+  scoreText: { fontWeight: 'bold' },
   scoreTextLarge: { fontSize: 24 },
   scoreTextSmall: { fontSize: 19 },
   scoreTitle: { fontSize: 18, fontWeight: '600', marginBottom: 2 },
@@ -360,8 +366,16 @@ const styles = StyleSheet.create({
     gap: 20
   },
 
-  VersionText: { color: '#007aff', fontSize: 16, fontWeight: '600' },
+  OnlineText: { fontSize: 16, fontWeight: '600' },
+  VersionText: { fontSize: 16, fontWeight: '600' },
   logoutText: { color: '#d21919', fontSize: 16, fontWeight: '600' },
-  OnlineText: { color: '#007aff', fontSize: 16, fontWeight: '600' },
 
+
+  versionText: {
+    color: '#888',
+    fontSize: 16,
+    textAlign: 'center',
+
+    marginTop: 20,
+  },
 });

@@ -16,7 +16,7 @@ const Tab = createBottomTabNavigator();
 const IsWeb = Platform.OS === 'web';
 
 function AppTabs() {
-  const { gstyles, isDark } = Gstyle();
+  const { gstyles, isDark, GlobalColor } = Gstyle();
   const tabAnim = useRef(new Animated.Value(0)).current;
 
 
@@ -51,8 +51,8 @@ function AppTabs() {
           if (route.name === 'Message') iconName = focused ? 'mail' : 'mail-outline';
           return <Ionicons name={iconName} size={24} color={color} />;
         },
-        tabBarActiveTintColor: '#007aff',
-        tabBarInactiveTintColor: '#b0b3b8',
+        tabBarActiveTintColor: GlobalColor,
+        tabBarInactiveTintColor: isDark ? '#888888' : '#b0b3b8',
 
         tabBarBackground: () =>
           IsWeb ? (
@@ -70,7 +70,7 @@ function AppTabs() {
           ),
         tabBarStyle: {
           position: 'absolute',
-          bottom:-1,
+          bottom: -1,
           height: isPWA() ? 83 : IsWeb ? null : 83,
           borderTopColor: isDark ? '#1c1c1e' : '#e4e4e6',
         },

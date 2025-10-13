@@ -24,7 +24,7 @@ import { getData } from "@components/LocalStorage";
 import { fetchData } from "@api/MH/GetAlldata";
 
 const Messages = () => {
-  const { gstyles, MessageTopicText } = Gstyle();
+  const { gstyles, MessageTopicText,GlobalColor } = Gstyle();
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
 
@@ -99,6 +99,7 @@ const Messages = () => {
       >
         <Text
           style={[
+            { color: GlobalColor },
             styles.sender,
             ActiveMod === 0
               ? !item.ArPerskaite && styles.noreed
@@ -148,7 +149,7 @@ const Messages = () => {
       {
         Load ?
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color="#007aff" />
+            <ActivityIndicator size="large" color={GlobalColor} />
           </View>
           :
           <FlatList
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
     elevation: 4,
   },
-  sender: { fontSize: 16, fontWeight: "600", color: "#007aff", marginBottom: 4 },
+  sender: { fontSize: 16, fontWeight: "600", marginBottom: 4 },
   topic: { fontSize: 15, fontWeight: "500", color: "#1c1c1e", marginBottom: 8 },
   meta: { flexDirection: "row", justifyContent: "space-between" },
   date: { fontSize: 13, color: "#6e6e73" },

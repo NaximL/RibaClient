@@ -11,16 +11,17 @@ import Diary from '@screens/Diary/Diary';
 import AppTabs from './AppTabs';
 
 import { getData } from '@components/LocalStorage';
-import PatchNotesScreen from '@screens/PatchNotes/PatchNotes';
+import Teachers from '@screens/MyTeachers/Teachers';
+
 
 // Types
 export type AppTabParamList = {
   Home: undefined;
   Message: undefined;
   Profile: undefined;
+  Teachers: undefined;
   HomeWork: undefined;
   Schedule: undefined;
-  PatchNotes: undefined;
 };
 
 export type RootStackParamList = {
@@ -34,9 +35,9 @@ export type RootStackParamList = {
     item: any;
     status: number;
   };
+  Teachers: undefined;
   Diary: undefined;
   Stop: undefined;
-  PatchNotes: undefined;
   CreateMessage: undefined;
 };
 
@@ -150,11 +151,11 @@ export default function Router() {
             }}
           />
           <Stack.Screen
-            name="PatchNotes"
-            component={PatchNotesScreen}
+            name="Teachers"
+            component={Teachers}
             options={{
               ...modalScreenOptions,
-              title: 'ПатчНоут',
+              title: 'Teachers',
             }}
           />
         </Stack.Group>

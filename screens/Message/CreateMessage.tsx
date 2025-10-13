@@ -33,13 +33,13 @@ const options = [
 ];
 
 const CreateMessageScreen = ({ onClose, setAlertVal, setTextAlert }: Props) => {
-    const { isDark, WidgetColorText } = Gstyle();
+    const { isDark, WidgetColorText,GlobalColor } = Gstyle();
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
     const [selected, setSelected] = useState(options[0]);
 
     const [modalVisible, setModalVisible] = useState(false);
-    
+
     const [HumanList, setHumanList] = useState([{ label: 'start', value: 'start' }]);
     const [typeSelected, setTypeSelected] = useState(HumanList[0]);
     const [typeModalVisible, setTypeModalVisible] = useState(false);
@@ -157,10 +157,10 @@ const CreateMessageScreen = ({ onClose, setAlertVal, setTextAlert }: Props) => {
                 <Animated.View style={{ transform: [{ scale: sendAnim }], width: '100%' }}>
                     {load ? (
                         <View style={{ marginTop: 12, alignItems: 'center' }}>
-                            <ActivityIndicator size="small" color="#007aff" />
+                            <ActivityIndicator size="small" color={GlobalColor} />
                         </View>
                     ) : (
-                        <TouchableOpacity style={styles.sendButton} onPress={onSend} activeOpacity={0.85}>
+                        <TouchableOpacity style={[styles.sendButton, { backgroundColor: GlobalColor }]} onPress={onSend} activeOpacity={0.85}>
                             <Text style={styles.sendText}>Відправити</Text>
                         </TouchableOpacity>
                     )}
@@ -195,13 +195,12 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 14,
         fontSize: 15,
-        marginBottom:10,
+        marginBottom: 10,
         borderWidth: 1,
         minHeight: 44,
     },
     inputBody: { minHeight: 80, maxHeight: 160, textAlignVertical: 'top' },
     sendButton: {
-        backgroundColor: '#007aff',
         borderRadius: 14,
         paddingVertical: 12,
         alignItems: 'center',

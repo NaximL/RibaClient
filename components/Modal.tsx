@@ -10,7 +10,7 @@ type FullScreenModalProps = {
 };
 
 export default function FullScreenModal({ visible, onClose, close, children }: FullScreenModalProps) {
-  const { gstyles } = Gstyle();
+  const { gstyles,GlobalColor } = Gstyle();
   return (
     <Modal
       animationType="fade"
@@ -23,7 +23,7 @@ export default function FullScreenModal({ visible, onClose, close, children }: F
             {children}
           </ScrollView>
           {!close &&
-            <Pressable style={styles.closeButton} onPress={onClose}>
+            <Pressable style={[styles.closeButton,{backgroundColor:GlobalColor}]} onPress={onClose}>
               <Text style={styles.closeText}>Закрити</Text>
             </Pressable>
           }
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   closeButton: {
     marginTop: 20,
     alignSelf: 'center',
-    backgroundColor: '#007aff',
+    
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 12,

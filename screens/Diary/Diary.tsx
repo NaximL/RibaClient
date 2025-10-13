@@ -29,6 +29,8 @@ const systemicGradeTypeMap: Record<string, string> = {
   Notebook: "Зошит",
   Oral: "Усна відповідь",
 
+
+  Simplework: "Звичайне завдання",
   Test: "Тест",
   TestWork: "Тест",
   Essay: "Твір",
@@ -150,7 +152,7 @@ const Diary = () => {
 
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
-  const { gstyles, WidgetColorText } = Gstyle();
+  const { gstyles, WidgetColorText, GlobalColor } = Gstyle();
 
   const p = async () => {
     const login = await getData("login");
@@ -337,8 +339,8 @@ const Diary = () => {
           style={styles.backButton}
           onPress={() => navigation.replace("App", { screen: "Home" })}
         >
-          <Ionicons name="arrow-back" size={24} color="#007aff" />
-          <Text style={styles.backText}>Назад</Text>
+          <Ionicons name="chevron-back" size={24} color="#007aff" />
+          <Text style={[styles.backText, { color: GlobalColor }]}>Назад</Text>
         </TouchableOpacity>
       }
 
@@ -347,7 +349,7 @@ const Diary = () => {
       {
         Load ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color="#007aff" />
+            <ActivityIndicator size="large" color={GlobalColor} />
           </View>
         ) :
           Diaty.length === 0 ?
@@ -403,10 +405,6 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor:
       Platform.OS === "android" ? "" : "transparent",
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-
   },
   cardContent: {
     flexDirection: "row",
@@ -441,10 +439,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
     marginLeft: 20,
+    right: 5
   },
   backText: {
-    color: "#007aff",
     fontSize: 16,
-    marginLeft: 6,
+    marginLeft: 3,
+    fontWeight: "500",
   },
 });
