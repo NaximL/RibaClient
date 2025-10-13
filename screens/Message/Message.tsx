@@ -19,11 +19,12 @@ import { Ionicons } from "@expo/vector-icons";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../router/router";
 import { Gstyle } from "@styles/gstyles";
+import ReturnElem from "@components/ReturnElement";
 
 type FileLink = { name: string; url: string };
 
 const FullMessage = () => {
-  const { gstyles, ChatText, ChatTitle ,GlobalColor} = Gstyle();
+  const { gstyles, ChatText, ChatTitle, GlobalColor } = Gstyle();
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
 
@@ -71,30 +72,21 @@ const FullMessage = () => {
 
   return (
     <ScrollView contentContainerStyle={[gstyles.back, styles.container]}>
-
-      {Platform.OS !== "ios" &&
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.replace("App", { screen: "Home" })}
-        >
-          <Ionicons name="chevron-back" size={24} color={GlobalColor} />
-          <Text style={[styles.backText,{color:GlobalColor}]}>Назад</Text>
-        </TouchableOpacity>
-      }
+      <ReturnElem style={{ right: 5 }} />
 
 
       <Text style={[styles.title, { color: ChatTitle }]}>{item.Tema}</Text>
       <Text style={styles.date}>{new Date(item.Data).toLocaleString()}</Text>
 
       <View style={styles.section}>
-        <Text style={[styles.label,,{color:GlobalColor}]}>{status === 0 ? "Від" : "Кому"}:</Text>
+        <Text style={[styles.label, , { color: GlobalColor }]}>{status === 0 ? "Від" : "Кому"}:</Text>
         <Text style={[styles.value, { color: ChatText }]}>
           {status === 0 ? item.Siuntejas : item.GavejoPavardeVardasTevavardis}
         </Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={[styles.label,{color:GlobalColor}]}>Повідомлення:</Text>
+        <Text style={[styles.label, { color: GlobalColor }]}>Повідомлення:</Text>
         {body ? (
           <RenderHTML
             contentWidth={width - 40}
@@ -127,7 +119,7 @@ const FullMessage = () => {
               onPress={() => Linking.openURL(file.url)}
               activeOpacity={0.7}
             >
-              <Text style={[styles.fileName,{color:GlobalColor}]} numberOfLines={1}>
+              <Text style={[styles.fileName, { color: GlobalColor }]} numberOfLines={1}>
                 {file.name}
               </Text>
             </TouchableOpacity>
@@ -142,18 +134,11 @@ export default FullMessage;
 
 const styles = StyleSheet.create({
   container: { flexGrow: 1, padding: 20, paddingTop: Platform.OS === "ios" ? 32 : Platform.OS === "android" ? 50 : 32 },
-  backButton: { flexDirection: "row", alignItems: "center", marginBottom: 12,right:5 },
-  backText: {
-    
-    fontSize: 16,
-    marginLeft: 3,
-    fontWeight: "500",
-  },
   title: { fontSize: 24, fontWeight: "700", marginBottom: 6 },
   date: { fontSize: 13, color: "#777", marginBottom: 18 },
   section: { marginBottom: 24 },
   label: { fontSize: 15, fontWeight: "600", marginBottom: 8 },
   value: { fontSize: 16 },
   html: { fontSize: 16, lineHeight: 24 },
-  fileName: {  textDecorationLine: "underline", fontSize: 15, marginVertical: 4 },
+  fileName: { textDecorationLine: "underline", fontSize: 15, marginVertical: 4 },
 });

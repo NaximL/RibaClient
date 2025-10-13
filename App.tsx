@@ -11,8 +11,8 @@ export default function App() {
       {Platform.OS === "web" &&
         <Analytics />
       }
-
       {ISPROD && <TelegramInit />}
+
       <Router />
     </>
   )

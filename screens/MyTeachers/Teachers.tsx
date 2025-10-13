@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../router/router";
 import { Gstyle } from "@styles/gstyles";
+import ReturnElem from "@components/ReturnElement";
 
 type TeacherItem = {
     urok: string;
@@ -21,7 +22,9 @@ type TeacherItem = {
 
 const Teachers = () => {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-    const { gstyles, WidgetColorText, isDark,GlobalColor } = Gstyle();
+    const { gstyles, WidgetColorText, isDark, GlobalColor } = Gstyle();
+
+    // console.log(les && JSON.parse(les).u)
 
     const teachers: TeacherItem[] = [
         { urok: "Зарубіжна література", teach: "Шанаєва О.В." },
@@ -84,16 +87,7 @@ const Teachers = () => {
 
     return (
         <View style={[styles.container, gstyles.back]}>
-            <View style={styles.header}>
-                <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => navigation.replace("App", { screen: "Home" })}
-                >
-                    <Ionicons name="chevron-back" size={24} color={GlobalColor} />
-                    <Text style={[styles.backText, { color: GlobalColor }]}>Назад</Text>
-                </TouchableOpacity>
-            </View>
-
+            <ReturnElem style={{ right: 5 }} />
             <FlatList
                 data={teachers}
                 renderItem={renderItem}

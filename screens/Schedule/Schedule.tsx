@@ -112,7 +112,17 @@ const Schedule = () => {
                 ) : (
                     <>
                         {Array.isArray(Le) && Le.map((day: ScheduleDay, index: number) => (
-                            <DayEl setModalData={SetModalData} setModalVis={SetModalVis} les={Urok ? JSON.parse(Urok).d === index ? Urok : null : null} day={day} key={index} choiceDay={toggleDay} index={index} openDays={openDays} daysOfWeek={daysOfWeek} />
+                            <DayEl
+                                setModalData={SetModalData}
+                                setModalVis={SetModalVis}
+                                les={Urok ? JSON.parse(Urok).d === index ? Urok : null : null}
+                                day={day}
+                                key={index}
+                                choiceDay={toggleDay}
+                                index={index}
+                                openDays={openDays}
+                                daysOfWeek={daysOfWeek}
+                            />
                         ))}
                     </>
                 )}

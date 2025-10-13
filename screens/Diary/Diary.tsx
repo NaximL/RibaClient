@@ -15,7 +15,6 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Gstyle } from "@styles/gstyles";
 import { format, isToday, isYesterday, parseISO } from "date-fns";
 import { uk } from "date-fns/locale";
-import { Ionicons } from "@expo/vector-icons";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../router/router";
 import { getData, storeData } from "@components/LocalStorage";
@@ -24,6 +23,7 @@ import { ValidToken } from "@api/MH_APP/ValidToken";
 import { RefreshToken } from "@api/MH_APP/RefreshToken";
 import { GetDiary } from "@api/MH_APP/GetDiary";
 import UseErrorStore from "@store/Error";
+import ReturnElem from "@components/ReturnElement";
 
 const systemicGradeTypeMap: Record<string, string> = {
   Notebook: "Зошит",
@@ -334,16 +334,7 @@ const Diary = () => {
 
   return (
     <View style={[styles.container, gstyles.back]}>
-      {Platform.OS !== "ios" &&
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.replace("App", { screen: "Home" })}
-        >
-          <Ionicons name="chevron-back" size={24} color="#007aff" />
-          <Text style={[styles.backText, { color: GlobalColor }]}>Назад</Text>
-        </TouchableOpacity>
-      }
-
+      <ReturnElem style={{ marginLeft: 20 }} />
 
 
       {
@@ -433,17 +424,5 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "700",
     color: "#000",
-  },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-    marginLeft: 20,
-    right: 5
-  },
-  backText: {
-    fontSize: 16,
-    marginLeft: 3,
-    fontWeight: "500",
   },
 });

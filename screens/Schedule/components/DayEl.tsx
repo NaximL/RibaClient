@@ -27,6 +27,7 @@ const DayEl = ({ setModalData, setModalVis, day, index, choiceDay, openDays, day
         setModalVis(true)
     }
 
+
     useEffect(() => {
         if (openDays[index]) {
             Animated.parallel([
@@ -119,7 +120,7 @@ const DayEl = ({ setModalData, setModalVis, day, index, choiceDay, openDays, day
                                             {urok.urok}
                                         </Text>
                                     </View>
-                                    <Text style={[styles.timeValue,{color:GlobalColor}]}>{urok.time}</Text>
+                                    <Text style={[styles.timeValue, { color: GlobalColor }]}>{urok.time}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
