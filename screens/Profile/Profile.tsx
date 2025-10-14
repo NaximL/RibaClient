@@ -50,6 +50,53 @@ export default function Profile() {
     }
   };
 
+
+  const [swStatus, setSwStatus] = useState<string>('Не проверялось');
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration().then((reg) => {
+        if (!reg) {
+          setSwStatus('Service Worker не зарегистрирован');
+          return;
+        }
+
+        const sw = reg.active || reg.waiting || reg.installing;
+
+        if (!sw) {
+          setSwStatus('Нет активного Service Worker');
+          return;
+        }
+
+        switch (sw.state) {
+          case 'installing':
+            setSwStatus('Service Worker устанавливается');
+            break;
+          case 'installed':
+            setSwStatus('Service Worker установлен (кэш готов)');
+            break;
+          case 'activating':
+            setSwStatus('Service Worker активируется');
+            break;
+          case 'activated':
+            setSwStatus('Service Worker активен');
+            break;
+          case 'redundant':
+            setSwStatus('Service Worker устарел (redundant)');
+            break;
+          default:
+            setSwStatus(`Неизвестное состояние: ${sw.state}`);
+        }
+
+        sw.addEventListener('statechange', () => {
+          setSwStatus(`Service Worker сейчас: ${sw.state}`);
+        });
+      });
+    } else {
+      setSwStatus('Service Worker не поддерживается');
+    }
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       anim.setValue(0);
@@ -210,6 +257,10 @@ export default function Profile() {
             source={require("../../assets/image/homyak.jpeg")}
             style={{ width: 300, height: 300, borderRadius: 15 }}
           />
+          <View style={{ padding: 20 }}>
+            <Text>Статус Service Worker:</Text>
+            <Text>{swStatus}</Text>
+          </View>
         </FullScreenModal>
 
         <View style={[styles.scoreBlock, gstyles.WidgetBack]}>

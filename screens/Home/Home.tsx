@@ -113,6 +113,14 @@ export default function Home() {
   });
   const loadOpacity = loadAnim;
 
+  const triggerVibrate = () => {
+    if (Platform.OS === 'web' && navigator.vibrate) {
+      navigator.vibrate(200);
+    } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+  };
+
   const UpdateSchudle = async (Sch?: Array<any>, u?: boolean) => {
     if (u) {
       const schedule: any = await getData("schedule");
@@ -164,7 +172,7 @@ export default function Home() {
     setMis(HomePage[15]);
     setPovidok(HomePage[10]);
     UpdateSchudle(Schedule, false)
-    if (Haptic) await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    if (Haptic) triggerVibrate();
   };
 
   const ApplyCash = async () => {
