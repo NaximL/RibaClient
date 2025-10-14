@@ -66,6 +66,7 @@ function AppTabs() {
             right: 0,
             bottom: isPWA() ? 32 : 16,
             marginHorizontal: 18,
+            
             //@ts-ignore
             border: "none",
             borderRadius: 40,
