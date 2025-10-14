@@ -1,4 +1,7 @@
-const CACHE_NAME = 'fastshark-cache-v2';
+importScripts('./ConfigSW.js');
+
+const CACHE_NAME = `fastshark-ch-${VERSION_APP}`;
+
 const ASSETS = [
   '/',
   '/index.html',
@@ -15,6 +18,15 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
+self.addEventListener('message', async (event) => {
+  if (event.data && event.data.type === 'UPDATE_CACHE') {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((key) => caches.delete(key)));
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(ASSETS);
+    console.log('Старый кэш удален, новый кэш обновлён!');
+  }
+});
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
@@ -33,14 +45,14 @@ self.addEventListener('fetch', (event) => {
 
   const url = event.request.url;
 
-  
+
   if (!url.startsWith(self.location.origin)) return;
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
 
-  
+
       return fetch(event.request)
         .then((response) => {
 
@@ -48,7 +60,7 @@ self.addEventListener('fetch', (event) => {
             return response;
           }
 
-          
+
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
 

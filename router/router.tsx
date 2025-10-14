@@ -12,6 +12,8 @@ import AppTabs from './AppTabs';
 
 import { getData } from '@components/LocalStorage';
 import Teachers from '@screens/MyTeachers/Teachers';
+import { Gstyle } from '@styles/gstyles';
+import Profile from '@screens/Profile/Profile';
 
 
 // Types
@@ -28,6 +30,7 @@ export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   Register: undefined;
+  Profile: undefined;
   App: {
     screen?: keyof AppTabParamList;
   };
@@ -44,16 +47,19 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 
-const LoadingScreen = () => (
-  <View style={{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F2F2F7'
-  }}>
-    <ActivityIndicator size="large" color="#007AFF" />
-  </View>
-);
+const LoadingScreen = () => {
+  const { GlobalColor } = Gstyle();
+  return (
+    <View style={{
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#F2F2F7'
+    }}>
+      <ActivityIndicator size="large" color={GlobalColor} />
+    </View>
+  );
+}
 
 const screenOptions = {
   headerShown: false,
@@ -156,6 +162,14 @@ export default function Router() {
             options={{
               ...modalScreenOptions,
               title: 'Teachers',
+            }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              ...modalScreenOptions,
+              title: 'Профіль',
             }}
           />
         </Stack.Group>

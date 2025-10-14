@@ -53,10 +53,10 @@ export const Gstyle = () => {
       justifyContent: 'center',
     },
     blur: {
-      flex: 1,
+      borderRadius:40,
       // @ts-ignore 
-      backdropFilter: "blur(8px)",
-      WebkitBackdropFilter: "blur(8px)",
+      backdropFilter: "blur(10px)",
+      WebkitBackdropFilter: "blur(10px)",
     },
   });
 
@@ -72,7 +72,7 @@ export const Gstyle = () => {
   const Login = isDark ? '#1d1d26' : '#fff';
 
   const MessageBuble = isDark ? '#2c2c2e' : '#e5e5ea';
-  const GlobalColor = isDark ? '#3390ec' : '#007aff';
+  const GlobalColor = isDark ? '#2d8ff2ff' : '#007aff';
   const MessageBubleText = isDark ? '#fff' : '#000';
   const MessageBubleTextActive = '#fff';
 

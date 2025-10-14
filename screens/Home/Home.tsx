@@ -20,6 +20,7 @@ import { Logins } from '@api/MH/Login';
 
 // UI
 import BooksEmoji from '@emoji/Books.png';
+import GearEmoji from '@emoji/Gear.png';
 import MailEmoji from '@emoji/Mail.png';
 import AnalitikEmoji from '@emoji/Analitik.png';
 import MedalEmoji from '@emoji/Medal.png';
@@ -31,6 +32,7 @@ import useUrokStore from '@store/UrokStore';
 import useProfileStore from '@store/ProfileStore';
 import Baner from './components/Baner';
 import { fetchData } from '@api/MH/GetAlldata';
+import SettingsWidget from './components/SettingsWidget';
 
 
 type ApplyDataType = {
@@ -66,6 +68,8 @@ export default function Home() {
     useRef(new Animated.Value(0)).current,
     useRef(new Animated.Value(0)).current,
     useRef(new Animated.Value(0)).current,
+    useRef(new Animated.Value(0)).current,
+
   ]);
 
   const [Refresh, setRefresh] = useState(false);
@@ -269,10 +273,27 @@ export default function Home() {
   }, []);
 
   const menu = [
-    { image: BooksEmoji, lable: 'Урок зараз', data: Lesion || '...' },
-    { image: MailEmoji, lable: 'Повідомлення', data: Povidok || '...' },
-    { image: AnalitikEmoji, lable: 'Середній бал', data: Bal || '...', source: "Diary" },
-    { image: MedalEmoji, lable: 'Місце в класі', data: mis ? `${mis} з 32` : '...' },
+    {
+      image: BooksEmoji,
+      lable: 'Урок зараз',
+      data: Lesion || '...'
+    },
+    {
+      image: MailEmoji,
+      lable: 'Повідомлення',
+      data: Povidok || '...'
+    },
+    {
+      image: AnalitikEmoji,
+      lable: 'Середній бал',
+      data: Bal || '...',
+      source: "Diary"
+    },
+    {
+      image: MedalEmoji,
+      lable: 'Місце в класі',
+      data: mis ? `${mis} з 32` : '...'
+    },
 
   ];
 
@@ -301,7 +322,7 @@ export default function Home() {
         {menu.map((item, index) => (
           <Widget load={WidgetLoad} key={index} item={item} index={index} cardAnim={cardAnim} />
         ))}
-
+        <SettingsWidget index={4} cardAnim={cardAnim} />
         <StatusBar style="auto" />
       </ScrollView>
     </SafeAreaView>

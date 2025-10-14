@@ -34,7 +34,10 @@
 <body>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QRXM72QX6J"></script>
-  <script>
+
+
+  <script >
+    
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
@@ -46,7 +49,9 @@
           });
       });
     }
+
   </script>
+
   <script>
 
     window.dataLayer = window.dataLayer || [];

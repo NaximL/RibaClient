@@ -72,7 +72,7 @@ const FullMessage = () => {
 
   return (
     <ScrollView contentContainerStyle={[gstyles.back, styles.container]}>
-      <ReturnElem style={{ right: 5 }} />
+      <ReturnElem style={{ right: 5 }} url={"Message"} />
 
 
       <Text style={[styles.title, { color: ChatTitle }]}>{item.Tema}</Text>

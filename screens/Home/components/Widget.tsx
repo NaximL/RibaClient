@@ -18,6 +18,8 @@ type Item = {
   image: ImageSourcePropType;
   lable: string;
   data: string | number;
+  big?: boolean,
+  source_app?: boolean,
   source?: string;
 };
 
@@ -55,21 +57,31 @@ const Widget: React.FC<WidgetProps> = ({ item, index, cardAnim, load }) => {
         activeOpacity={0.8}
         style={{ width: '100%', alignItems: 'center' }}
         onPress={() => {
-          if (item.source && typeof item.source === 'string') {
+          if (item.source) {
             navigation.navigate(item.source as any);
           }
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-          {item.image && (
+          {item.image && !item.big && (
             <Image
               source={typeof item.image === 'string' ? { uri: item.image } : item.image}
               style={{ width: 20, height: 20, marginRight: 8 }}
               resizeMode="contain"
             />
           )}
-          <Text style={styles.label}>{item.lable}</Text>
+          {!item.big && <Text style={styles.label}>{item.lable}</Text>}
         </View>
+
+        {item.big &&
+          item.image && (
+            <Image
+              source={typeof item.image === 'string' ? { uri: item.image } : item.image}
+              style={{ width: 30, height: 30, marginRight: 8 }}
+              resizeMode="contain"
+            />
+          )
+        }
         <Text style={[styles.value, { color: load ? '#888' : WidgetColorText }]}>{item.data}</Text>
       </TouchableOpacity>
     </Animated.View>
@@ -81,6 +93,7 @@ export default Widget;
 
 const styles = StyleSheet.create({
   card: {
+
     borderRadius: 24,
     padding: 28,
     marginVertical: 14,
@@ -99,6 +112,6 @@ const styles = StyleSheet.create({
     fontSize: Platform.OS === 'android' ? 30 : 32,
     fontWeight: '700',
     letterSpacing: 0.5,
-    textAlign:"center"
+    textAlign: "center"
   }
 });

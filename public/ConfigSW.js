@@ -1,0 +1,1 @@
+const VERSION_APP = 1

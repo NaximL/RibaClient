@@ -12,6 +12,8 @@ import { Gstyle } from '@styles/gstyles';
 import { fetchData } from '@api/MH/GetAlldata';
 import useLesionStore from '@store/LesionStore';
 import FullScreenModal from '@components/Modal';
+import ReturnElem from '@components/ReturnElement';
+import usePageStore from '@store/PageStore';
 
 
 
@@ -23,7 +25,7 @@ export default function Profile() {
   const [Bal, setBal] = useState<string>("0.00")
   const setLesions = useLesionStore((state) => state.setLesions);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const { SetPage } = usePageStore();
   const navigation = useNavigation<NavigationProp>();
   const [login, setLogin] = React.useState<string | null>(null);
   const [anim] = React.useState(new Animated.Value(0));
@@ -97,6 +99,19 @@ export default function Profile() {
     }
   }, []);
 
+
+  const handleUpdateCache = () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.active?.postMessage({
+          type: 'UPDATE_CACHE',
+        })
+      }).then(() => {
+        alert('Застосунок оновлено')
+      })
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       anim.setValue(0);
@@ -160,6 +175,8 @@ export default function Profile() {
       await storeData('schedule', JSON.stringify(sc));
       alert("Розклад оновлено")
       setLesions(sc)
+
+      SetPage(3);
       navigation.replace("App", { screen: "Schedule" });
     }
     catch (error) {
@@ -222,6 +239,7 @@ export default function Profile() {
       ]}
       contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 }]}
     >
+      <ReturnElem />
       <Animated.View
         style={{
           opacity: anim,
@@ -257,10 +275,9 @@ export default function Profile() {
             source={require("../../assets/image/homyak.jpeg")}
             style={{ width: 300, height: 300, borderRadius: 15 }}
           />
-          <View style={{ padding: 20 }}>
-            <Text>Статус Service Worker:</Text>
-            <Text>{swStatus}</Text>
-          </View>
+          
+            <Text style={{color:WidgetColorText}}>{swStatus}</Text>
+          
         </FullScreenModal>
 
         <View style={[styles.scoreBlock, gstyles.WidgetBack]}>
@@ -287,6 +304,11 @@ export default function Profile() {
         <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack, { marginTop: 20 }]} onPress={update}>
           <Text style={[styles.OnlineText, { color: GlobalColor }]}>Оновити розклад</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack]} onPress={() => { handleUpdateCache() }}>
+          <Text style={[styles.OnlineText, { color: GlobalColor }]}>Оновити застосунок</Text>
+        </TouchableOpacity>
+
 
         {/* <TouchableOpacity style={[styles.logoutBtn, gstyles.WidgetBack]} onPress={() => { navigation.navigate("Teachers") }}>
           <Text style={[styles.OnlineText, { color: GlobalColor }]}>Мої вчителі</Text>
