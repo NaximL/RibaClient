@@ -50,7 +50,6 @@ function AppTabs() {
 
   const handlePress = (index: number, e: any, originalPress: any) => {
     SetPage(index)
-    // setSelectedIndex(index);
     originalPress?.(e);
   };
 
@@ -70,7 +69,7 @@ function AppTabs() {
             //@ts-ignore
             border: "none",
             borderRadius: 40,
-            height: 60,
+            height: 63,
             backgroundColor: 'transparent',
 
           },
@@ -219,7 +218,7 @@ function AppTabs() {
               position: 'absolute',
               bottom: isPWA() ? 36 : 20,
               width: tabWidth * 0.9,
-              height: 52,
+              height: 55,
               borderRadius: 40,
               backgroundColor: isDark
                 ? 'rgba(255,255,255,0.08)'
@@ -238,7 +237,7 @@ function AppTabs() {
                     ],
                   }),
                 },
-                { translateY: 0 },
+                { translateY: -0.1 },
               ],
             }}
           />
