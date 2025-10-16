@@ -23,6 +23,7 @@ export default function Profile() {
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const { Prof, setProfile } = useProfileStore();
   const [Bal, setBal] = useState<string>("0.00")
+  const [Imgs, SetImgs] = useState(require("../../assets/image/homyak.jpeg"))
   const setLesions = useLesionStore((state) => state.setLesions);
   const [modalVisible, setModalVisible] = useState(false);
   const { SetPage } = usePageStore();
@@ -39,16 +40,18 @@ export default function Profile() {
       pazinichi = 0;
 
       const secrets = [
-        "homyak",
+        require("../../assets/image/homyak.jpeg"),
+        require("../../assets/image/s.webp"),
+        require("../../assets/image/evre.jpg")
       ];
 
       const randomIndex = Math.floor(Math.random() * secrets.length);
-      if (secrets[randomIndex] === "homyak") {
-        setModalVisible(true)
-      }
-      else {
-        alert(secrets[randomIndex]);
-      }
+      
+      SetImgs(secrets[randomIndex])
+      setModalVisible(true)
+
+
+
     }
   };
 
@@ -272,12 +275,12 @@ export default function Profile() {
           onClose={() => setModalVisible(false)}
         >
           <Image
-            source={require("../../assets/image/homyak.jpeg")}
+            source={Imgs}
             style={{ width: 300, height: 300, borderRadius: 15 }}
           />
-          
-            <Text style={{color:WidgetColorText}}>{swStatus}</Text>
-          
+
+          <Text style={{ color: WidgetColorText }}>{swStatus}</Text>
+
         </FullScreenModal>
 
         <View style={[styles.scoreBlock, gstyles.WidgetBack]}>

@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   label: {
-    fontSize: 20,
+    fontSize: 23,
     fontWeight: '500',
   },
 });
