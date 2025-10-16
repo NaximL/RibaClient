@@ -82,10 +82,10 @@ const styles = StyleSheet.create({
   icon: {
     width: 24,
     height: 24,
-    marginRight: 12,
+    marginRight: 8
   },
   label: {
-    fontSize: 23,
-    fontWeight: '500',
+    fontSize: 25,
+    fontWeight: '700',
   },
 });

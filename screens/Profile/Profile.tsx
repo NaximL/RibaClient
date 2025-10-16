@@ -23,7 +23,7 @@ export default function Profile() {
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
   const { Prof, setProfile } = useProfileStore();
   const [Bal, setBal] = useState<string>("0.00")
-  const [Imgs, SetImgs] = useState(require("../../assets/image/homyak.jpeg"))
+  const [Imgs, SetImgs] = useState(require("../../assets/image/2.webp"))
   const setLesions = useLesionStore((state) => state.setLesions);
   const [modalVisible, setModalVisible] = useState(false);
   const { SetPage } = usePageStore();
@@ -40,14 +40,16 @@ export default function Profile() {
       pazinichi = 0;
 
       const secrets = [
-        require("../../assets/image/homyak.jpeg"),
-        require("../../assets/image/s.webp"),
-        require("../../assets/image/evre.jpg")
+        require("../../assets/image/1.jpeg"),
+        require("../../assets/image/2.webp"),
+        require("../../assets/image/3.jpg"),
+        require("../../assets/image/4.jpeg"),
+        require("../../assets/image/5.jpeg"),
       ];
 
       const randomIndex = Math.floor(Math.random() * secrets.length);
-      
       SetImgs(secrets[randomIndex])
+
       setModalVisible(true)
 
 

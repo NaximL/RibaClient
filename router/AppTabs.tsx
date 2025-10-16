@@ -233,7 +233,7 @@ function AppTabs() {
                     inputRange: [0, tabs.length - 1],
                     outputRange: [
                       14 + tabWidth * 0.095,
-                      14 + (tabs.length - 1) * tabWidth + tabWidth * 0.065,
+                      14 + (tabs.length - 1) * tabWidth + tabWidth * 0.0655,
                     ],
                   }),
                 },
