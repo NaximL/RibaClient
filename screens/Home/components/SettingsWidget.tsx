@@ -64,8 +64,9 @@ export default SettingsWidget;
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 24,
-    padding: 28,
+    borderRadius: 20,
+    paddingInline: 28,
+    paddingVertical: 16,
     marginVertical: 14,
     width: '90%',
     alignItems: 'center',
@@ -86,6 +87,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 25,
-    fontWeight: '700',
+    fontWeight: '600',
   },
 });

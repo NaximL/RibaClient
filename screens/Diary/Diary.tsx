@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Animated,
   Platform,
-  TouchableOpacity,
   useColorScheme,
   ActivityIndicator,
   Pressable,
@@ -152,7 +151,7 @@ const Diary = () => {
 
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
-  const { gstyles, WidgetColorText, GlobalColor } = Gstyle();
+  const { gstyles, WidgetColorText, GlobalColor, isDark } = Gstyle();
 
   const p = async () => {
     const login = await getData("login");
@@ -334,7 +333,9 @@ const Diary = () => {
 
   return (
     <View style={[styles.container, gstyles.back]}>
+
       <ReturnElem style={{ marginLeft: 20 }} />
+
 
 
       {

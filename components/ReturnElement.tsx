@@ -15,7 +15,7 @@ interface ReturnElemProps {
 }
 
 const ReturnElem = ({ style, url = "Home" }: ReturnElemProps) => {
-    if (Platform.OS === "ios") return null; 
+    if (Platform.OS === "ios") return null;
 
     const navigation = useNavigation<NavigationProp>();
     const { GlobalColor } = Gstyle();
