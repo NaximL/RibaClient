@@ -19,12 +19,12 @@ import FullScreenModal from "../../components/Modal";
 import HomeWorkEl from "./components/HomeWorkEl";
 
 export default function HomeWork() {
-    const { gstyles, WidgetColorText,GlobalColor } = Gstyle();
+    const { gstyles, WidgetColorText, GlobalColor } = Gstyle();
     const [Load, SetLoad] = useState(true);
     const [ModalVisible, SetModalVisible] = useState(false);
     const [Select, SetSelect] = useState<HomeworkItem | null>(null);
     const [sections, setSections] = useState<{ title: string; data: HomeworkItem[] }[]>([]);
-
+    const [Prims, SetPrims] = useState(0);
     const { SetHomeWork } = useHomeWorkStore();
     const cardAnim = useRef(new Animated.Value(0)).current;
     const getHomeWork = async () => {
@@ -36,7 +36,7 @@ export default function HomeWork() {
         try {
             const today = new Date();
 
-            
+
             const days: { iso: string; label: string }[] = [];
             let offset = 0;
 
@@ -77,6 +77,9 @@ export default function HomeWork() {
                 days.map(async (day, index) => {
                     try {
                         const res = await fetchData("homework", tokens, day.iso);
+                        if (!res.value) {
+                            SetPrims(Prims + 1);
+                        }
                         return {
                             0: index === 0 ? res?.value || [] : [],
                             1: index === 1 ? res?.value || [] : [],
@@ -106,7 +109,7 @@ export default function HomeWork() {
                     const formattedDate = firstHomework?.AtliktiIki
                         ? formatDate(firstHomework.AtliktiIki)
                         : formatDate(days[index].iso);
-    
+
                     return {
                         title: `${days[index].label}  (${formattedDate})`,
                         data: homeworkByDay[key],
@@ -211,25 +214,27 @@ export default function HomeWork() {
                     <ActivityIndicator size="large" color={GlobalColor} />
                 </View>
             ) : (
-                <SectionList
-                    sections={sections}
-                    keyExtractor={(item, index) => `${item.Id}_${index}`}
-                    renderItem={({ item, index }) => (
-                        <HomeWorkEl
-                            item={item}
-                            index={index}
-                            cardAnim={cardAnim}
-                            SetSitemect={SetSelect}
-                            SetModal={SetModalVisible}
-                        />
-                    )}
-                    renderSectionHeader={renderSectionHeader}
-                    contentContainerStyle={styles.listContent}
-                    showsVerticalScrollIndicator={false}
-                    ListEmptyComponent={
+                Prims ?
+                    <SectionList
+                        sections={sections}
+                        keyExtractor={(item, index) => `${item.Id}_${index}`}
+                        renderItem={({ item, index }) => (
+                            <HomeWorkEl
+                                item={item}
+                                index={index}
+                                cardAnim={cardAnim}
+                                SetSitemect={SetSelect}
+                                SetModal={SetModalVisible}
+                            />
+                        )}
+                        renderSectionHeader={renderSectionHeader}
+                        contentContainerStyle={styles.listContent}
+                        showsVerticalScrollIndicator={false}
+                    />
+                    :
+                    <View style={styles.loader}>
                         <Text style={styles.emptyText}>Немає домашнього завдання 😴</Text>
-                    }
-                />
+                    </View>
             )}
         </View>
     );
