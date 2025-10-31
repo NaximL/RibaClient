@@ -6,10 +6,10 @@ import {
   StyleSheet,
   Animated,
   Platform,
-  useColorScheme,
   ActivityIndicator,
   Pressable,
   TouchableOpacity,
+  useColorScheme,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Gstyle } from "@styles/gstyles";
@@ -24,13 +24,11 @@ import { RefreshToken } from "@api/MH_APP/RefreshToken";
 import { GetDiary } from "@api/MH_APP/GetDiary";
 import UseErrorStore from "@store/Error";
 import ReturnElem from "@components/ReturnElement";
-import SelectModal from '@screens/Message/components/SelectModal'
+import SelectModal from "@screens/Message/components/SelectModal";
 
 const systemicGradeTypeMap: Record<string, string> = {
   Notebook: "Зошит",
   Oral: "Усна відповідь",
-
-
   Simplework: "Звичайне завдання",
   Test: "Тест",
   TestWork: "Тест",
@@ -40,8 +38,6 @@ const systemicGradeTypeMap: Record<string, string> = {
   TheoreticalWork: "Теоритична робота",
   ClassWork: "Класна робота",
   PracticalWork: "Практична робота",
-
-
   "Additional test": "Додатковий тест",
   Controlwork: "Контрольна робота",
   LaboratoryWork: "Лабораторна робота",
@@ -55,12 +51,10 @@ const systemicGradeTypeMap: Record<string, string> = {
   Thematicassessment: "Тематичне оцінювання",
   Diagnosticwork: "Діагностична робота",
   Behavior: "Поведінка",
-
   Other: "Інше",
   undefined: "Немає",
   null: "Немає",
 };
-
 
 const months: { label: string; value: string }[] = [
   { label: "січень", value: "1" },
@@ -79,23 +73,16 @@ const months: { label: string; value: string }[] = [
 
 function groupByDate(data: any[]) {
   const groups: Record<string, any[]> = {};
-
   data.forEach((item) => {
     const date = parseISO(item.lessonCreatedOn);
     let key = "";
-
     if (isToday(date)) key = "Сьогодні";
     else if (isYesterday(date)) key = "Вчора";
     else key = format(date, "dd MMMM", { locale: uk });
-
     if (!groups[key]) groups[key] = [];
     groups[key].push(item);
   });
-
-  return Object.entries(groups).map(([title, data]) => ({
-    title,
-    data,
-  }));
+  return Object.entries(groups).map(([title, data]) => ({ title, data }));
 }
 
 const Diary = () => {
@@ -103,16 +90,18 @@ const Diary = () => {
   const [Load, SetLoad] = useState(true);
   const [typeSelected, setTypeSelected] = useState(months[new Date().getMonth()]);
   const [typeModalVisible, setTypeModalVisible] = useState(false);
-  const [NumMonth, SetNumMonth] = useState(new Date().getMonth()+1);
-
 
   const seterrors = UseErrorStore((state) => state.setError);
+
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, "Login">>();
+  const { gstyles, WidgetColorText, GlobalColor, isDark } = Gstyle();
+  const anim = useRef(new Animated.Value(0)).current;
+
   const applyTokenData = async (token: string, studentId: string) => {
     try {
-
-      const diary = await GetDiary(token, studentId, NumMonth, 100);
+      SetLoad(true);
+      const diary = await GetDiary(token, studentId, Number(typeSelected.value), 100);
       await storeData("diary", JSON.stringify(diary));
-
       SetDiary(diary);
       SetLoad(false);
     } catch (error) {
@@ -120,39 +109,22 @@ const Diary = () => {
       SetLoad(false);
     }
   };
-  const p = async () => {
-    const login = await getData("login");
-    const password = await getData("password");
-    if (!login || !password) return;
-
-    console.time("token");
-    await handleTokenLogic(login, password);
-    console.timeEnd("token");
-  };
-  useEffect(() => {
-    SetNumMonth(Number(typeSelected.value)-1);
-    p()
-  }, [typeSelected])
 
   const handleTokenLogic = async (login: string, password: string) => {
     try {
       let tokenData = await getData("token_app");
       let tokenObj;
-
       if (!tokenData) {
-        const data = await GetToken(login, password);
-        if (!data) throw new Error("Не вдалося отримати токен");
-
-        tokenObj = data;
+        tokenObj = await GetToken(login, password);
+        if (!tokenObj) throw new Error("Не вдалося отримати токен");
         await storeData("token_app", JSON.stringify(tokenObj));
       } else {
         tokenObj = JSON.parse(tokenData);
       }
-      let valid = await ValidToken(tokenObj);
 
+      let valid = await ValidToken(tokenObj);
       if (!valid) {
         const newTokens = await RefreshToken(tokenObj);
-
         if (newTokens) {
           tokenObj = newTokens;
           valid = await ValidToken(newTokens);
@@ -160,12 +132,12 @@ const Diary = () => {
         } else {
           const newData = await GetToken(login, password);
           if (!newData) throw new Error("Не вдалося оновити токен");
-
           tokenObj = newData;
           valid = await ValidToken(newData);
           await storeData("token_app", JSON.stringify(newData));
         }
       }
+
       if (valid && valid.enrollments?.[0]?.studentId) {
         await applyTokenData(tokenObj, valid.enrollments[0].studentId);
       } else {
@@ -182,18 +154,21 @@ const Diary = () => {
     }
   };
 
-  type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
-  const navigation = useNavigation<NavigationProp>();
-  const { gstyles, WidgetColorText, GlobalColor, isDark } = Gstyle();
-
-
+  const loadDiary = async () => {
+    const login = await getData("login");
+    const password = await getData("password");
+    if (!login || !password) return;
+    await handleTokenLogic(login, password);
+  };
 
   useEffect(() => {
-    p();
+    loadDiary();
   }, []);
 
-  const sections = groupByDate(Diaty);
-  const anim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    loadDiary();
+  }, [typeSelected]);
+
 
   useFocusEffect(
     useCallback(() => {
@@ -206,8 +181,9 @@ const Diary = () => {
     }, [])
   );
 
+  const sections = groupByDate(Diaty);
+
   const renderItem = ({ item, index }: any) => {
-    const date = new Date(item.lessonCreatedOn).toLocaleDateString("uk-UA");
     const gradeType =
       item.systemicGradeType === null
         ? item.nonSystemicGradeType
@@ -269,10 +245,9 @@ const Diary = () => {
       theme: "dark" | "light" = "dark"
     ) => {
       const key = String(grade);
-      const palette = theme === "dark" ? gradeColorDark : gradeColorLight;
+      const palette = theme === "dark" ? gradeColorLight : gradeColorDark;
       return palette[key] ?? WidgetColorText;
     };
-
     return (
       <Pressable onPress={() => console.log(item)}>
         <Animated.View
@@ -281,18 +256,8 @@ const Diary = () => {
             styles.card,
             {
               transform: [
-                {
-                  scale: anim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.97, 1],
-                  }),
-                },
-                {
-                  translateY: anim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [15, 0],
-                  }),
-                },
+                { scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.97, 1] }) },
+                { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [15, 0] }) },
               ],
               opacity: anim,
             },
@@ -300,53 +265,20 @@ const Diary = () => {
         >
           <View style={styles.cardContent}>
             <View style={styles.textBlock}>
-
-
-              <Text style={[styles.title, { color: WidgetColorText }]}>
-                {subject}
-              </Text>
-
-
+              <Text style={[styles.title, { color: WidgetColorText }]}>{subject}</Text>
               <Text style={styles.gradeType}>{gradeType}</Text>
             </View>
-            <Text
-              style={[
-                styles.value,
-                {
-                  color: getGradeColor(
-                    grade,
-                    useColorScheme() ? "dark" : "light"
-                  ),
-                },
-              ]}
-            >
-              {grade}
-            </Text>
+            <Text style={[styles.value, {
+              color: getGradeColor(
+                grade,
+                useColorScheme() ? "dark" : "light"
+              ),
+            },]}>{grade}</Text>
           </View>
         </Animated.View>
       </Pressable>
     );
   };
-
-
-
-  const SelectField = ({ label, onPress }: { label: string; onPress: () => void }) => (
-    <TouchableOpacity
-      style={[
-        styles.select,
-        { backgroundColor: isDark ? '#23232b' : '#f7f7fa', borderColor: isDark ? '#333' : '#e0e0e0' },
-      ]}
-      onPress={onPress}
-      activeOpacity={0.85}
-    >
-      <Text style={[styles.selectText, { color: isDark ? '#f5f5f5' : '#222' }]} numberOfLines={1}>{label}</Text>
-    </TouchableOpacity>
-  );
-
-
-
-
-
 
   const renderSectionHeader = ({ section: { title } }: any) => (
     <Animated.View
@@ -354,18 +286,8 @@ const Diary = () => {
         styles.sectionHeader,
         {
           transform: [
-            {
-              scale: anim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0.97, 1],
-              }),
-            },
-            {
-              translateY: anim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [15, 0],
-              }),
-            },
+            { scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.97, 1] }) },
+            { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [15, 0] }) },
           ],
           opacity: anim,
         },
@@ -376,9 +298,23 @@ const Diary = () => {
     </Animated.View>
   );
 
+  const SelectField = ({ label, onPress }: { label: string; onPress: () => void }) => (
+    <TouchableOpacity
+      style={[
+        styles.select,
+        { backgroundColor: isDark ? "#23232b" : "#f7f7fa", borderColor: isDark ? "#333" : "#e0e0e0" },
+      ]}
+      onPress={onPress}
+      activeOpacity={0.85}
+    >
+      <Text style={[styles.selectText, { color: isDark ? "#f5f5f5" : "#222" }]} numberOfLines={1}>
+        {label}
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={[styles.container, gstyles.back]}>
-
       <ReturnElem style={{ marginLeft: 20 }} />
 
       <SelectField label={typeSelected.label} onPress={() => setTypeModalVisible(true)} />
@@ -392,30 +328,26 @@ const Diary = () => {
           setTypeModalVisible(false);
         }}
         onClose={() => setTypeModalVisible(false)}
-
       />
 
-      {
-        Load ? (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color={GlobalColor} />
-          </View>
-        ) :
-          Diaty.length === 0 ?
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ fontSize: 25, fontWeight: 600 }}>Поки що немає оцінок 😔</Text>
-            </View>
-            :
-            <SectionList
-              sections={sections}
-              keyExtractor={(item, index) => item.lessonCreatedOn + index}
-              renderItem={renderItem}
-              renderSectionHeader={renderSectionHeader}
-              contentContainerStyle={styles.listContent}
-              showsVerticalScrollIndicator={false}
-            />
-      }
-
+      {Load ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color={GlobalColor} />
+        </View>
+      ) : Diaty.length === 0 ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <Text style={{ fontSize: 25, fontWeight: "600" }}>Поки що немає оцінок 😔</Text>
+        </View>
+      ) : (
+        <SectionList
+          sections={sections}
+          keyExtractor={(item, index) => item.lessonCreatedOn + index}
+          renderItem={renderItem}
+          renderSectionHeader={renderSectionHeader}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 };
@@ -423,76 +355,17 @@ const Diary = () => {
 export default Diary;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: Platform.OS === "android" ? 50 : 32,
-  },
-  listContent: {
-    paddingHorizontal: 18,
-    paddingBottom: 100,
-  },
-  sectionHeader: {
-    paddingHorizontal: 4,
-    paddingTop: 16,
-    paddingBottom: 6,
-    backgroundColor: "transparent",
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#777",
-    marginBottom: 4,
-  },
-  line: {
-    height: 1,
-    backgroundColor: "#ccc",
-    marginHorizontal: 8,
-  },
-  card: {
-    borderRadius: 20,
-    overflow: "hidden",
-    padding: 16,
-    backgroundColor:
-      Platform.OS === "android" ? "" : "transparent",
-  },
-  cardContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  textBlock: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1c1c1e",
-  },
-  date: {
-    fontSize: 13,
-    color: "#8e8e93",
-    marginTop: 4,
-  },
-  gradeType: {
-    fontSize: 14,
-    color: "#6e6e73",
-    marginTop: 2,
-  },
-  value: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#000",
-  },
-  select: {
-    position: "absolute",
-    right: 20,
-    top: 23,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding:8,
-    minHeight: 44,
-  },
-  selectText: { fontSize: 15, flex: 1, fontWeight: '500' },
-
-
+  container: { flex: 1, paddingTop: Platform.OS === "android" ? 50 : 32 },
+  listContent: { paddingHorizontal: 18, paddingBottom: 100 },
+  sectionHeader: { paddingHorizontal: 4, paddingTop: 16, paddingBottom: 6, backgroundColor: "transparent" },
+  sectionTitle: { fontSize: 14, fontWeight: "600", color: "#777", marginBottom: 4 },
+  line: { height: 1, backgroundColor: "#ccc", marginHorizontal: 8 },
+  card: { borderRadius: 20, overflow: "hidden", padding: 16, backgroundColor: Platform.OS === "android" ? "" : "transparent" },
+  cardContent: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  textBlock: { flex: 1 },
+  title: { fontSize: 18, fontWeight: "600", color: "#1c1c1e" },
+  gradeType: { fontSize: 14, color: "#6e6e73", marginTop: 2 },
+  value: { fontSize: 22, fontWeight: "700", color: "#000" },
+  select: { position: "absolute", right: 20, top: 23, flexDirection: "row", alignItems: "center", padding: 8, minHeight: 44 },
+  selectText: { fontSize: 15, flex: 1, fontWeight: "500" },
 });

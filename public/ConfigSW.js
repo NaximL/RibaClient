@@ -1,1 +1,1 @@
-const VERSION_APP = 7
+const VERSION_APP = 8
