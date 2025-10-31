@@ -2,7 +2,7 @@ export const ISPROD: boolean = true;
 
 export const UPDATE_SCHEDULE: number = 0;
 
-export const VERSION: string = `v2.0.5 ${ISPROD ? '' : 'dev'}`;
+export const VERSION: string = `v2.1.0 ${ISPROD ? '' : 'dev'}`;
 
 //https://fatsharkserv.online
 //http://192.168.31.162

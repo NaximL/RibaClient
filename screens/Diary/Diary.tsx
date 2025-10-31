@@ -9,6 +9,7 @@ import {
   useColorScheme,
   ActivityIndicator,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Gstyle } from "@styles/gstyles";
@@ -23,6 +24,7 @@ import { RefreshToken } from "@api/MH_APP/RefreshToken";
 import { GetDiary } from "@api/MH_APP/GetDiary";
 import UseErrorStore from "@store/Error";
 import ReturnElem from "@components/ReturnElement";
+import SelectModal from '@screens/Message/components/SelectModal'
 
 const systemicGradeTypeMap: Record<string, string> = {
   Notebook: "Зошит",
@@ -59,6 +61,22 @@ const systemicGradeTypeMap: Record<string, string> = {
   null: "Немає",
 };
 
+
+const months: { label: string; value: string }[] = [
+  { label: "січень", value: "1" },
+  { label: "лютий", value: "2" },
+  { label: "березень", value: "3" },
+  { label: "квітень", value: "4" },
+  { label: "травень", value: "5" },
+  { label: "червень", value: "6" },
+  { label: "липень", value: "7" },
+  { label: "серпень", value: "8" },
+  { label: "вересень", value: "9" },
+  { label: "жовтень", value: "10" },
+  { label: "листопад", value: "11" },
+  { label: "грудень", value: "12" },
+];
+
 function groupByDate(data: any[]) {
   const groups: Record<string, any[]> = {};
 
@@ -83,14 +101,16 @@ function groupByDate(data: any[]) {
 const Diary = () => {
   const [Diaty, SetDiary] = useState<any[]>([]);
   const [Load, SetLoad] = useState(true);
+  const [typeSelected, setTypeSelected] = useState(months[new Date().getMonth()]);
+  const [typeModalVisible, setTypeModalVisible] = useState(false);
+  const [NumMonth, SetNumMonth] = useState(new Date().getMonth()+1);
+
 
   const seterrors = UseErrorStore((state) => state.setError);
   const applyTokenData = async (token: string, studentId: string) => {
     try {
-      const date = new Date();
-      const mm = date.getMonth() + 1;
 
-      const diary = await GetDiary(token, studentId, mm, 100);
+      const diary = await GetDiary(token, studentId, NumMonth, 100);
       await storeData("diary", JSON.stringify(diary));
 
       SetDiary(diary);
@@ -100,6 +120,19 @@ const Diary = () => {
       SetLoad(false);
     }
   };
+  const p = async () => {
+    const login = await getData("login");
+    const password = await getData("password");
+    if (!login || !password) return;
+
+    console.time("token");
+    await handleTokenLogic(login, password);
+    console.timeEnd("token");
+  };
+  useEffect(() => {
+    SetNumMonth(Number(typeSelected.value)-1);
+    p()
+  }, [typeSelected])
 
   const handleTokenLogic = async (login: string, password: string) => {
     try {
@@ -153,15 +186,7 @@ const Diary = () => {
   const navigation = useNavigation<NavigationProp>();
   const { gstyles, WidgetColorText, GlobalColor, isDark } = Gstyle();
 
-  const p = async () => {
-    const login = await getData("login");
-    const password = await getData("password");
-    if (!login || !password) return;
 
-    console.time("token");
-    await handleTokenLogic(login, password);
-    console.timeEnd("token");
-  };
 
   useEffect(() => {
     p();
@@ -303,6 +328,26 @@ const Diary = () => {
     );
   };
 
+
+
+  const SelectField = ({ label, onPress }: { label: string; onPress: () => void }) => (
+    <TouchableOpacity
+      style={[
+        styles.select,
+        { backgroundColor: isDark ? '#23232b' : '#f7f7fa', borderColor: isDark ? '#333' : '#e0e0e0' },
+      ]}
+      onPress={onPress}
+      activeOpacity={0.85}
+    >
+      <Text style={[styles.selectText, { color: isDark ? '#f5f5f5' : '#222' }]} numberOfLines={1}>{label}</Text>
+    </TouchableOpacity>
+  );
+
+
+
+
+
+
   const renderSectionHeader = ({ section: { title } }: any) => (
     <Animated.View
       style={[
@@ -336,7 +381,19 @@ const Diary = () => {
 
       <ReturnElem style={{ marginLeft: 20 }} />
 
+      <SelectField label={typeSelected.label} onPress={() => setTypeModalVisible(true)} />
 
+      <SelectModal
+        visible={typeModalVisible}
+        options={months}
+        selectedValue={typeSelected.value}
+        onSelect={(item) => {
+          setTypeSelected(item);
+          setTypeModalVisible(false);
+        }}
+        onClose={() => setTypeModalVisible(false)}
+
+      />
 
       {
         Load ? (
@@ -426,4 +483,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#000",
   },
+  select: {
+    position: "absolute",
+    right: 20,
+    top: 23,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding:8,
+    minHeight: 44,
+  },
+  selectText: { fontSize: 15, flex: 1, fontWeight: '500' },
+
+
 });
