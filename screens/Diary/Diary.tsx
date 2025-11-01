@@ -300,10 +300,7 @@ const Diary = () => {
 
   const SelectField = ({ label, onPress }: { label: string; onPress: () => void }) => (
     <TouchableOpacity
-      style={[
-        styles.select,
-        { backgroundColor: isDark ? "#23232b" : "#f7f7fa", borderColor: isDark ? "#333" : "#e0e0e0" },
-      ]}
+      style={styles.select}
       onPress={onPress}
       activeOpacity={0.85}
     >
@@ -366,6 +363,6 @@ const styles = StyleSheet.create({
   title: { fontSize: 18, fontWeight: "600", color: "#1c1c1e" },
   gradeType: { fontSize: 14, color: "#6e6e73", marginTop: 2 },
   value: { fontSize: 22, fontWeight: "700", color: "#000" },
-  select: { position: "absolute", right: 20, top: 23, flexDirection: "row", alignItems: "center", padding: 8, minHeight: 44 },
+  select: { position: "absolute", right: 20, top: 25, flexDirection: "row", alignItems: "center", padding: 10, minHeight: 37, borderRadius: 15 },
   selectText: { fontSize: 15, flex: 1, fontWeight: "500" },
 });

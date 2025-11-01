@@ -223,7 +223,7 @@ function AppTabs() {
               backgroundColor: isDark
                 ? 'rgba(255,255,255,0.08)'
                 : 'rgba(137,137,137,0.1)',
-              borderWidth: 1,
+              borderWidth: 0,
               borderColor: isDark
                 ? 'rgba(255,255,255,0.05)'
                 : 'rgba(0,0,0,0.04)',

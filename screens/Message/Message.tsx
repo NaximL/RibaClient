@@ -24,14 +24,20 @@ import ReturnElem from "@components/ReturnElement";
 type FileLink = { name: string; url: string };
 
 const FullMessage = () => {
-  const { gstyles, ChatText, ChatTitle, GlobalColor } = Gstyle();
+  const { gstyles, ChatText, ChatTitle, GlobalColor, WidgetColorText } = Gstyle();
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
-
+  const [Load, SetLoad] = useState(true);
   const { width } = useWindowDimensions();
   const route = useRoute();
-  const { item, status } = route.params as any;
-
+  const { id, status } = route.params as any;
+  const [Message, SetMessage] = useState({
+    tema: "(Немає)",
+    siuntejas: "(Немає)",
+    data: "(Не визначено)",
+    body: "<b>(Немає)<b/>",
+    links: []
+  });
   const [attachments, setAttachments] = useState<FileLink[]>([]);
   const [body, setBody] = useState("");
 
@@ -41,11 +47,14 @@ const FullMessage = () => {
       if (!tokens) return;
 
       const fetcher = status === 0 ? GetMessage : GetMessageSend;
-      const msg = await fetcher(tokens, item.Id);
+      const msg = await fetcher(tokens, id);
+      SetMessage(msg);
+      console.log(msg)
       setAttachments(msg.links || []);
       setBody(msg.body || "");
+      SetLoad(false);
     })();
-  }, [item.Id]);
+  }, [id]);
 
   function autoLinkify(html: string) {
     if (!html) return "";
@@ -70,62 +79,87 @@ const FullMessage = () => {
     );
   }
 
+  function parseUaDate(uaDateStr: string) {
+    if (!uaDateStr) return '';
+    const [datePart, timePart] = uaDateStr.split(' ');
+    if (!datePart || !timePart) return uaDateStr;
+    const [day, month, year] = datePart.split('.').map(Number);
+    const [hours, minutes] = timePart.split(':').map(Number);
+    const date = new Date(year, month - 1, day, hours, minutes);
+    return date.toLocaleString('uk-UA', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
   return (
+
     <ScrollView contentContainerStyle={[gstyles.back, styles.container]}>
-      <ReturnElem style={{ right: 5 }} url={"Message"} />
-
-
-      <Text style={[styles.title, { color: ChatTitle }]}>{item.Tema}</Text>
-      <Text style={styles.date}>{new Date(item.Data).toLocaleString()}</Text>
-
-      <View style={styles.section}>
-        <Text style={[styles.label, , { color: GlobalColor }]}>{status === 0 ? "Від" : "Кому"}:</Text>
-        <Text style={[styles.value, { color: ChatText }]}>
-          {status === 0 ? item.Siuntejas : item.GavejoPavardeVardasTevavardis}
-        </Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={[styles.label, { color: GlobalColor }]}>Повідомлення:</Text>
-        {body ? (
-          <RenderHTML
-            contentWidth={width - 40}
-            source={{ html: autoLinkify(body) }}
-            defaultTextProps={{
-              selectable: true,
-            }}
-            baseStyle={{ ...styles.html, color: ChatText }}
-            tagsStyles={{
-              span: {
-                borderRadius: 4,
-                paddingHorizontal: 4,
-                paddingVertical: 2,
-                backgroundColor: 'white',
-                color: "black",
-              },
-            }}
-          />
-        ) : (
-          <ActivityIndicator size="large" color={GlobalColor} style={{ marginTop: 40 }} />
-        )}
-      </View>
-
-      {attachments.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.label}>Додані файли:</Text>
-          {attachments.map((file, i) => (
-            <TouchableOpacity
-              key={i}
-              onPress={() => Linking.openURL(file.url)}
-              activeOpacity={0.7}
-            >
-              <Text style={[styles.fileName, { color: GlobalColor }]} numberOfLines={1}>
-                {file.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
+      {Load ?
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color={GlobalColor} />
         </View>
-      )}
+        :
+        <>
+
+          <ReturnElem style={{ right: 5 }} url={"Message"} />
+
+
+          <Text style={[styles.title, { color: ChatTitle }]}>{Message.tema}</Text>
+          <Text style={styles.date}>{parseUaDate(Message.data)}</Text>
+
+          <View style={styles.section}>
+            <Text style={[styles.label, , { color: GlobalColor }]}>{status === 0 ? "Від" : "Кому"}:</Text>
+            <Text style={[styles.value, { color: ChatText }]}>
+              {Message.siuntejas}
+            </Text>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={[styles.label, { color: GlobalColor }]}>Повідомлення:</Text>
+            {body ? (
+              <RenderHTML
+                contentWidth={width - 40}
+                source={{ html: autoLinkify(body) }}
+                defaultTextProps={{
+                  selectable: true,
+                }}
+                baseStyle={{ ...styles.html, color: ChatText }}
+                tagsStyles={{
+                  span: {
+                    borderRadius: 4,
+                    paddingHorizontal: 4,
+                    paddingVertical: 2,
+                    backgroundColor: 'white',
+                    color: "black",
+                  },
+                }}
+              />
+            ) : (
+              <ActivityIndicator size="large" color={GlobalColor} style={{ marginTop: 40 }} />
+            )}
+          </View>
+
+          {attachments.length > 0 && (
+            <View style={styles.section}>
+              <Text style={[styles.label, { color: WidgetColorText }]}>Додані файли:</Text>
+              {attachments.map((file, i) => (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => Linking.openURL(file.url)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.fileName, { color: GlobalColor }]} numberOfLines={1}>
+                    {file.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </>
+      }
     </ScrollView>
   );
 };

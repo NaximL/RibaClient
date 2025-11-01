@@ -30,7 +30,7 @@ const SelectModal: React.FC<SelectModalProps> = ({
   onSelect,
   onClose,
 }) => {
-  const { isDark } = Gstyle();
+  const { isDark,GlobalColor } = Gstyle();
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -70,7 +70,7 @@ const SelectModal: React.FC<SelectModalProps> = ({
                     style={[
                       styles.optionText,
                       { color: isDark ? '#f5f5f5' : '#222' },
-                      isSelected && { color: '#007aff', fontWeight: '600' },
+                      isSelected && { color: GlobalColor, fontWeight: '600' },
                     ]}
                   >
                     {item.label}
@@ -79,7 +79,7 @@ const SelectModal: React.FC<SelectModalProps> = ({
                     <Ionicons
                       name="checkmark"
                       size={18}
-                      color="#007aff"
+                      color={GlobalColor}
                       style={{ marginLeft: 8 }}
                     />
                   )}

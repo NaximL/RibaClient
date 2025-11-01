@@ -24,7 +24,7 @@ import { getData } from "@components/LocalStorage";
 import { fetchData } from "@api/MH/GetAlldata";
 
 const Messages = () => {
-  const { gstyles, MessageTopicText,GlobalColor } = Gstyle();
+  const { gstyles, MessageTopicText, GlobalColor } = Gstyle();
   type NavigationProp = StackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<NavigationProp>();
 
@@ -93,7 +93,10 @@ const Messages = () => {
       <TouchableOpacity
         style={[styles.messageContainer, gstyles.WidgetBack]}
         onPress={() =>
-          navigation.navigate("FullMessage", { item: item, status: ActiveMod })
+          navigation.navigate("FullMessage", {
+            id: item.Id,
+            status: ActiveMod,
+          })
         }
         activeOpacity={0.8}
       >
