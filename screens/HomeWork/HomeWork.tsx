@@ -24,9 +24,28 @@ export default function HomeWork() {
     const [ModalVisible, SetModalVisible] = useState(false);
     const [Select, SetSelect] = useState<HomeworkItem | null>(null);
     const [sections, setSections] = useState<{ title: string; data: HomeworkItem[] }[]>([]);
-    const [Prims, SetPrims] = useState(0);
+    const [Prims, SetPrims] = useState(1);
     const { SetHomeWork } = useHomeWorkStore();
     const cardAnim = useRef(new Animated.Value(0)).current;
+
+    function getTimeSeason(): '2' | '3' {
+        const now = new Date();
+
+
+        const january = new Date(now.getFullYear(), 0, 1);
+        const july = new Date(now.getFullYear(), 6, 1);
+
+        const stdTimezoneOffset = Math.max(january.getTimezoneOffset(), july.getTimezoneOffset());
+
+        const currentOffset = now.getTimezoneOffset();
+
+
+        if (currentOffset < stdTimezoneOffset) {
+            return '3';
+        } else {
+            return '2';
+        }
+    }
     const getHomeWork = async () => {
         console.time("HomeWork");
 
@@ -49,7 +68,7 @@ export default function HomeWork() {
                     const yyyy = date.getFullYear();
                     const mm = String(date.getMonth() + 1).padStart(2, "0");
                     const dd = String(date.getDate()).padStart(2, "0");
-                    const iso = `${yyyy}-${mm}-${dd}T00:00:00+03:00`;
+                    const iso = `${yyyy}-${mm}-${dd}T00:00:00+0${getTimeSeason()}:00`;
 
 
                     const diffDays = Math.floor((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -77,9 +96,15 @@ export default function HomeWork() {
                 days.map(async (day, index) => {
                     try {
                         const res = await fetchData("homework", tokens, day.iso);
-                        if (!res.value) {
-                            SetPrims(Prims + 1);
+
+
+                        if (res['@odata.count'] === 0) {
+                            SetPrims(prev => {
+                                console.log(prev);
+                                return prev + 1;
+                            });
                         }
+
                         return {
                             0: index === 0 ? res?.value || [] : [],
                             1: index === 1 ? res?.value || [] : [],
@@ -214,7 +239,7 @@ export default function HomeWork() {
                     <ActivityIndicator size="large" color={GlobalColor} />
                 </View>
             ) : (
-                Prims ?
+                Prims < 3 ?
                     <SectionList
                         sections={sections}
                         keyExtractor={(item, index) => `${item.Id}_${index}`}
