@@ -205,6 +205,8 @@ export default function Home() {
 
     const page = await CheckToken(tokens);
 
+
+    
     if (!page.status) {
       SetLoadText('Оновлюємо сесію...');
       const data = await Logins(login, password);

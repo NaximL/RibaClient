@@ -11,7 +11,7 @@ export async function fetchData(endpoint: string, token: string, date?: string) 
 
   const data = await res.json();
 
-
+  console.log(res.status)
   if (res.status === 500 || (data?.error?.message === "An error has occurred.")) {
     const login = await getData("login");
     const password = await getData("password");

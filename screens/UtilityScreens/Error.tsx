@@ -76,7 +76,7 @@ export default function Stop() {
         ]}
       >
         <Image
-          source={require("@emoji/Warning.png")}
+          source={require("@emoji/fawf.png")}
           style={styles.icon}
         />
         <Text style={[styles.title,{color:ProfilText}]}>{title}</Text>
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   icon: {
-    width: 50,
-    height: 50,
+    width: 300,
+    height: 300,
     marginBottom: 20,
   },
   title: {

@@ -10,4 +10,4 @@ export const VERSION: string = `v2.1.2 ${ISPROD ? '' : 'dev'}`;
 export const SERVER_URL: string =
     ISPROD ?
         "https://fatsharkserv.online" :
-        'http://localhost';
+        'https://fatsharkserv.online';
